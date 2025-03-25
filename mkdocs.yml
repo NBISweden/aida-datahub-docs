@@ -8,7 +8,13 @@ theme:
   palette:
     primary: white
     accent: indigo
+  icon:
+    repo: fontawesome/brands/github
 extra:
   social:
     - icon: fontawesome/brands/github
 
+
+
+repo_url: https://github.com/NBISweden/aida-datahub-docs/
+repo_name: NBISweden/aida-datahub-docs
