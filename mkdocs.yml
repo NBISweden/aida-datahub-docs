@@ -1,0 +1,14 @@
+site_name: AIDA datahub documentation
+theme:
+  name: material
+  logo: imgs/logos/aida-icon-logo.png
+  favicon: imgs/logos/AIDA-icon-6.png
+  features:
+    - content.code.copy
+  palette:
+    primary: white
+    accent: indigo
+extra:
+  social:
+    - icon: fontawesome/brands/github
+
