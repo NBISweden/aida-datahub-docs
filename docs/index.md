@@ -21,7 +21,6 @@
         margin: unset;
         line-height: 1;
         font-size: 20px;
-        font-weight: var(--csc-font-weight--body);
       "
     >User guides and tutorials</h2>
 </div>
