@@ -8,7 +8,7 @@ When you go to [the DSP login page](https://dsp.aida.scilifelab.se/) you'll be
 greeted by a simple screen where you today only have the choice of
 authenticating with [Life Science Login](https://lifescience-ri.eu/ls-login/).
 
-![DSP login image](/imgs/guides/dsp-first-login/dsp-login-screen.png).
+![DSP login image](imgs/dsp-first-login/dsp-login-screen.png).
 
 ## Life Science federation login
 
@@ -17,7 +17,7 @@ can choose between different services, or type the name of your home
 organisation to authenticate there if they are available (will likely be the
 case for academia).
 
-![LS Login Screen](/imgs/guides/dsp-first-login/ls-login-login-screen.png)
+![LS Login Screen](imgs/dsp-first-login/ls-login-login-screen.png)
 
 If your organisation is not available, there are other common services that can
 be used for authentication (e.g. ORCID, GitHub, LinkedIn, Google, Apple), or if
@@ -32,7 +32,7 @@ e-mail to the one from your home organisation. This can be done on the
 for "Preferred mail" and click the pen to update the mail (note that the new
 e-mail must be verified which may take some time).
 
-![LS Login User Profile site](/imgs/guides/dsp-first-login/ls-login-profile-screen.png)
+![LS Login User Profile site](imgs/dsp-first-login/ls-login-profile-screen.png)
 
 ## Multifactor authentication
 
@@ -54,7 +54,7 @@ For clarity; there's nothing wrong with using a hardware token (e.g. USB key) or
 other solution, but since the Time-based One-Time Password (TOTP) support is the
 common denominator, that's shown here.
 
-![Life Science Login MFA login](/imgs/guides/dsp-first-login/ls-login-mfa-login-screen.png).
+![Life Science Login MFA login](imgs/dsp-first-login/ls-login-mfa-login-screen.png).
 
 Since Life Science Login tries to be useful, it supports using modern standards
 for authentication over the web. Unfortunately, that may mean you get different
@@ -70,12 +70,12 @@ When arriving at the [MFA site](https://mfa.aai.lifescience-ri.eu/) the first
 time, it will tell you who you are authenticated as in Life Science Login and
 inform you that you get in without additional credentials this time.
 
-![Life Science Login MFA first time](/imgs/guides/dsp-first-login/ls-login-mfa-enroll-loggedin.png)
+![Life Science Login MFA first time](imgs/dsp-first-login/ls-login-mfa-enroll-loggedin.png)
 
 You will then be guided through the enrollment flow, starting with the ability
 to name your token.
 
-![MFA enrollment first step](/imgs/guides/dsp-first-login/ls-login-mfa-enroll-welcome.png)
+![MFA enrollment first step](imgs/dsp-first-login/ls-login-mfa-enroll-welcome.png)
 
 Next, the flow tries to ensure you have a TOTP application available. It
 suggests alternatives for Android and iOS, but you don't need to use those
@@ -88,7 +88,7 @@ recommend choosing one that supports some kind of secure network synchronisation
 to handle cases where your device stops working (this should do encryption on
 device).
 
-![MFA app check](/imgs/guides/dsp-first-login/ls-login-mfa-enroll-totp-app.png)
+![MFA app check](imgs/dsp-first-login/ls-login-mfa-enroll-totp-app.png)
 
 Once you have confirmed you have an app, it will show you a QR code for easy
 addition of the second factor. If you are using a phone, you should be able to
@@ -101,26 +101,26 @@ Once you have added the account to your solution, it should present you with
 the current code (this will update regularly, at any time it is requested you
 should enter what is currently shown).
 
-![MFA add account](/imgs/guides/dsp-first-login/ls-login-mfa-enroll-totp-add-account.png)
+![MFA add account](imgs/dsp-first-login/ls-login-mfa-enroll-totp-add-account.png)
 
 If that works, it will remember that you have registered the account on your
 side. It calls with that the "token is enrolled"
 
-![MFA token enrolled](/imgs/guides/dsp-first-login/ls-login-mfa-enroll-complete.png)
+![MFA token enrolled](imgs/dsp-first-login/ls-login-mfa-enroll-complete.png)
 
 It will then let you know that multifactor authentication has been activated.
 
-![MFA activated](/imgs/guides/dsp-first-login/ls-login-mfa-activated.png)
+![MFA activated](imgs/dsp-first-login/ls-login-mfa-activated.png)
 
 Next, it will inform you about backup codes (in case you loose your phone or
 similar). Even if you have a solution that helps with network backup,
 downloading backup codes and storing them securely is strongly recommended.
 
-![MFA backup codes](/imgs/guides/dsp-first-login/ls-login-mfa-backup-codes.png)
+![MFA backup codes](imgs/dsp-first-login/ls-login-mfa-backup-codes.png)
 
 Once you've done that, MFA activation is complete.
 
-![MFA success](/imgs/guides/dsp-first-login/ls-login-mfa-success.png)
+![MFA success](imgs/dsp-first-login/ls-login-mfa-success.png)
 
 ## Life Science Login test registration
 
@@ -131,20 +131,20 @@ a click-through on each invocation.
 
 If you don't register, you'll get an access denied error.
 
-![Test environment access denied](/imgs/guides/dsp-first-login/ls-login-access-denied-no-test.png)
+![Test environment access denied](imgs/dsp-first-login/ls-login-access-denied-no-test.png)
 
 To register, follow the link to registration.
 
-![Test environment registration](/imgs/guides/dsp-first-login/ls-login-test-registration.png)
+![Test environment registration](imgs/dsp-first-login/ls-login-test-registration.png)
 
 Once you click through, it should acknowledge.
 
-![Registration successful](/imgs/guides/dsp-first-login/ls-login-test-registration-successful.png)
+![Registration successful](imgs/dsp-first-login/ls-login-test-registration-successful.png)
 
 And while it may take a little time, typically on the next attempt you should
 get a warning to click through.
 
-![Test environment warning screen](/imgs/guides/dsp-first-login/ls-login-test-warning.png)
+![Test environment warning screen](imgs/dsp-first-login/ls-login-test-warning.png)
 
 ## Attribute release
 
@@ -155,7 +155,7 @@ Click "Yes, continue" to let Life Science Login give us those details. If you
 want to, you can choose "Remember" not to have to click through that screen
 the next time.
 
-![Attribute release screen](/imgs/guides/dsp-first-login/ls-login-release-screen.png)
+![Attribute release screen](imgs/dsp-first-login/ls-login-release-screen.png)
 
 ## Back at DSP
 
@@ -164,10 +164,10 @@ not be let into DSP as your account needs to be assigned membership details.
 Instead you will receive the message "Login failed: You are not authorized for
 any projects or domains."
 
-![DSP not authorized](/imgs/guides/dsp-first-login/dsp-login-not-authorized.png)
+![DSP not authorized](imgs/dsp-first-login/dsp-login-not-authorized.png)
 
 Once your account has been adjusted to allow log in, the next time you return
 you will be let into Horizon.
 
-![DSP Horizon](/imgs/guides/dsp-first-login/dsp-horizon-screen.png)
+![DSP Horizon](imgs/dsp-first-login/dsp-horizon-screen.png)
 

@@ -1,7 +1,7 @@
 # Setting up and logging into a machine in DSP
 
 This guide assumes you have access to the Horizon interface, if not, see
-[the first login guide](../dsp-first-login).
+[the first login guide](dsp-first-login.md).
 
 ## Some terminology
 
@@ -53,17 +53,17 @@ part of a ssh key pair so it can be preloaded on machines you create.
 This is accessible in Horizon under Compute &#2092; Key Pairs where you can see
 your keys and import or create new ones.
 
-![Finding Key Pairs in the menu](/imgs/guides/dsp-vm-access/dsp-key-pairs-in-menu.png)
+![Finding Key Pairs in the menu](imgs/dsp-vm-access/dsp-key-pairs-in-menu.png)
 
 On the key pairs screen, your known key pairs will be listed and you have
 buttons to create a new key pair (you probably don't want to use this),
 import a key and delete a key.
 
-![Buttons on key pairs screen](/imgs/guides/dsp-vm-access/dsp-key-pairs-import-button.png)
+![Buttons on key pairs screen](imgs/dsp-vm-access/dsp-key-pairs-import-button.png)
 
 Click the "Import Public Key" to open the key importer.
 
-![Key importer](/imgs/guides/dsp-vm-access/dsp-key-pairs-import.png)
+![Key importer](imgs/dsp-vm-access/dsp-key-pairs-import.png)
 
 Choose a name for your key, select the type (SSH Key) and either upload or copy
 paste the **public** part of your key pair (authentication depends on you 
@@ -75,12 +75,12 @@ the public part).
 Now, you can actually create a VM, go to the Instances screen (Compute &#2092; 
 Instances).
 
-![Finding Instances in the menu](/imgs/guides/dsp-vm-access/dsp-instances-in-menu.png)
+![Finding Instances in the menu](imgs/dsp-vm-access/dsp-instances-in-menu.png)
 
 Similarly as for key pairs, you get to see a list of resources (instances) and
 have a few buttons for quick access.
 
-![Buttons on instances screen](/imgs/guides/dsp-vm-access/dsp-instances-buttons.png)
+![Buttons on instances screen](imgs/dsp-vm-access/dsp-instances-buttons.png)
 
 Clicking the "Launch Instance" buttons brings up the instance launcher which
 will guide you through the instance creation. While it has a guided flow, you
@@ -91,7 +91,7 @@ On the first screen, you enter a name and a description for your VM.
 
 Once done, advance by clicking the "Next" button to the lower right.
 
-![Instance launcher details screen](/imgs/guides/dsp-vm-access/dsp-instances-launch-1.png)
+![Instance launcher details screen](imgs/dsp-vm-access/dsp-instances-launch-1.png)
 
 On the second screen, you need to choose what to start. The "Select Boot Source"
 lets you choose between Image (can be said to be a prepared VM),
@@ -106,7 +106,7 @@ demonstration.
 
 Once done, advance by clicking the "Next" button to the lower right.
 
-![Instance launcher source screen](/imgs/guides/dsp-vm-access/dsp-instances-launch-2.png)
+![Instance launcher source screen](imgs/dsp-vm-access/dsp-instances-launch-2.png)
 
 Next, you'll need to choose the flavor to use. A flavor in OpenStack describes
 the resources (memory, cores, disk and such, GPUs) allocated to the VM. Same
@@ -124,7 +124,7 @@ automatically deleted when you remove your virtual machine.
 
 Advance by clicking the "Next" button to the lower right.
 
-![Instance launcher flavor screen](/imgs/guides/dsp-vm-access/dsp-instances-launch-3.png)
+![Instance launcher flavor screen](imgs/dsp-vm-access/dsp-instances-launch-3.png)
 
 Next up is the networks screen which allows e.g. choosing what virtual networks
 are connected if you have access to many. It's unlikely you will want to do
@@ -132,7 +132,7 @@ anything there for now.
 
 Advance by clicking the "Next" button to the lower right.
 
-![Instance launcher network screen](/imgs/guides/dsp-vm-access/dsp-instances-launch-4.png)
+![Instance launcher network screen](imgs/dsp-vm-access/dsp-instances-launch-4.png)
 
 Next up is the network ports screen which allows e.g. choosing what virtual
 network connectors that are used if you have access to many. You probably don't
@@ -140,7 +140,7 @@ need to do anything here..
 
 Advance by clicking the "Next" button to the lower right.
 
-![Instance launcher network port screen](/imgs/guides/dsp-vm-access/dsp-instances-launch-5.png)
+![Instance launcher network port screen](imgs/dsp-vm-access/dsp-instances-launch-5.png)
 
 Security groups determine what security groups are attached to the virtual
 machine. A machine can have any number of security groups attached, each
@@ -148,7 +148,7 @@ attached will potentially allow additional traffic to/from the VM.
 
 Advance by clicking the "Next" button to the lower right.
 
-![Instance launcher security groups screen](/imgs/guides/dsp-vm-access/dsp-instances-launch-6.png)
+![Instance launcher security groups screen](imgs/dsp-vm-access/dsp-instances-launch-6.png)
 
 Next up is the key pair screen which lets you choose which key pair to preload.
 Same as with other screens, you can select one by clicking the arrow up button.
@@ -165,7 +165,7 @@ image, it will be added to the `ubuntu` user.
 
 Advance by clicking the "Next" button to the lower right.
 
-![Instance launcher key pair screen](/imgs/guides/dsp-vm-access/dsp-instances-launch-7.png)
+![Instance launcher key pair screen](imgs/dsp-vm-access/dsp-instances-launch-7.png)
 
 The technology used to offer the key pair chosen above can do a lot more - see
 [the cloud-init documentation](https://cloudinit.readthedocs.io/) for more
@@ -179,7 +179,7 @@ This is an advanced future that will not be used in this guide.
 
 Advance by clicking the "Next" button to the lower right.
 
-![Instance launcher configuration screen](/imgs/guides/dsp-vm-access/dsp-instances-launch-8.png)
+![Instance launcher configuration screen](imgs/dsp-vm-access/dsp-instances-launch-8.png)
 
 Next up is the server group screen where you can decide which (if any) server
 groups a virtual machine should belong to. These will be used to decide how
@@ -189,7 +189,7 @@ This is an advanced future that will not be used in this guide.
 
 Advance by clicking the "Next" button to the lower right.
 
-![Instance launcher server group screen](/imgs/guides/dsp-vm-access/dsp-instances-launch-9.png)
+![Instance launcher server group screen](imgs/dsp-vm-access/dsp-instances-launch-9.png)
 
 Next up is the scheduler hints screen where you can provide hints for the
 scheduler.
@@ -198,7 +198,7 @@ This is an advanced future that will not be used in this guide.
 
 Advance by clicking the "Next" button to the lower right.
 
-![Instance launcher scheduler hints screen](/imgs/guides/dsp-vm-access/dsp-instances-launch-10.png)
+![Instance launcher scheduler hints screen](imgs/dsp-vm-access/dsp-instances-launch-10.png)
 
 Finally the metadata screen allows you assign metadata to the virtual machine,
 either from a list of preloaded suggestions or custom keys (once added to your
@@ -207,7 +207,7 @@ virtual machine you can provide values).
 Since we've reached the end of the guided experience, we'll create our virtual
 machine by clicking "Launch Instance".
 
-![Instance launcher metadata hints screen](/imgs/guides/dsp-vm-access/dsp-instances-launch-11.png)
+![Instance launcher metadata hints screen](imgs/dsp-vm-access/dsp-instances-launch-11.png)
 
 After a short while, you'll be taken back to the Instance view where after some
 time your new virtual machine should pop up in the list. It will go through
@@ -217,16 +217,16 @@ various stages but unless there is an issue, it should end up in Power state
 You have a button for quick actions to the right or you can click your machine
 to go into the details screen for it.
 
-![Instance vm in list screen](/imgs/guides/dsp-vm-access/dsp-instances-vm-in-list.png)
+![Instance vm in list screen](imgs/dsp-vm-access/dsp-instances-vm-in-list.png)
 
 After clicking your virtual machine to see more details, you will be presented
 with a view with more information in various tab, e.g. an overview.
 
-![Instance vm overview](/imgs/guides/dsp-vm-access/dsp-instances-vm-details.png)
+![Instance vm overview](imgs/dsp-vm-access/dsp-instances-vm-details.png)
 
 There is also a tab for the machine log that can be useful when troubleshooting.
 
-![Instance vm log](/imgs/guides/dsp-vm-access/dsp-instances-vm-log.png)
+![Instance vm log](imgs/dsp-vm-access/dsp-instances-vm-log.png)
 
 And there is a console tab for emergency access to the "graphical console" of
 the virtual machine. This is not indented to be used for a virtual desktop but
@@ -240,12 +240,12 @@ the upper right to fold out the menu.
 Some operations that are considered especially dangerous is marked by using
 another text color (red instead of black here).
 
-![Instance vm actions](/imgs/guides/dsp-vm-access/dsp-instances-vm-actions-menu.png)
+![Instance vm actions](imgs/dsp-vm-access/dsp-instances-vm-actions-menu.png)
 
 Since we want to reach our VM from the outside, we'll go ahead and click
 "Associate floating IP" from the list.
 
-![Instance vm floating ip association](/imgs/guides/dsp-vm-access/dsp-instances-vm-floating-ip.png)
+![Instance vm floating ip association](imgs/dsp-vm-access/dsp-instances-vm-floating-ip.png)
 
 There will be a drop-down list of addresses to choose from at IP address. We
 pick one at random.
@@ -253,7 +253,7 @@ pick one at random.
 Port to be associated will be filled in correctly for most cases, so we
 disregard that for now. and click "Associate".
 
-![Addresses for the instance](/imgs/guides/dsp-vm-access/dsp-instances-vm-addresses.png)
+![Addresses for the instance](imgs/dsp-vm-access/dsp-instances-vm-addresses.png)
 
 Once we've chosen, the new address will be visible in the overview tab as well
 as in the virtual machine list on the main Instances screen.
@@ -269,7 +269,7 @@ let's add all groups.
 
 Once we're done, we chose "Save" to make the changes happen.
 
-![VM security groups](/imgs/guides/dsp-vm-access/dsp-instances-vm-security-groups.png)
+![VM security groups](imgs/dsp-vm-access/dsp-instances-vm-security-groups.png)
 
 ## Connecting to the virtual machine
 
@@ -312,7 +312,7 @@ has fingerprint as below.
 Once you've checked and approved the key (the ), you will be shown a banner with a
 link.
 
-![DSP connection in progress, first step](/imgs/guides/dsp-vm-access/dsp-connection-1.png)
+![DSP connection in progress, first step](imgs/dsp-vm-access/dsp-connection-1.png)
 
 Clicking that link will prompt you to go through with authentication through
 Life Science Login. If you go through that, you should end up on a page with a
@@ -335,12 +335,12 @@ many virtual machines and reuse the floating IPs to connect to, in that case
 `ssh` will help by suggesting commands to clean up conflicting details from your
 files.
 
-![DSP connection in progress, connect to actual VM](/imgs/guides/dsp-vm-access/dsp-connection-2.png)
+![DSP connection in progress, connect to actual VM](imgs/dsp-vm-access/dsp-connection-2.png)
 
 Accepting that public key will allow us to advance. Since we've given the
 virtual machine our public key already, it can authenticate us and let us in.
 
-![DSP connection in progress, arrived on VM](/imgs/guides/dsp-vm-access/dsp-connection-3.png)
+![DSP connection in progress, arrived on VM](imgs/dsp-vm-access/dsp-connection-3.png)
 
 It is good practice to protect keys with a passphrase, but I didn't need to
 type any here. That's because I use an agent to help with the keys so that I can
