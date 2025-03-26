@@ -1,0 +1,20 @@
+site_name: AIDA datahub documentation
+theme:
+  name: material
+  logo: imgs/logos/aida-icon-logo.png
+  favicon: imgs/logos/AIDA-icon-6.png
+  features:
+    - content.code.copy
+  palette:
+    primary: white
+    accent: indigo
+  icon:
+    repo: fontawesome/brands/github
+extra:
+  social:
+    - icon: fontawesome/brands/github
+
+
+
+repo_url: https://github.com/NBISweden/aida-datahub-docs/
+repo_name: NBISweden/aida-datahub-docs
