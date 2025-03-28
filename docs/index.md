@@ -24,6 +24,7 @@
       "
     >User guides and tutorials</h2>
 </div>
+
 ## Project layout
 
     mkdocs.yml    # The configuration file.
