@@ -15,7 +15,7 @@
         line-height: 1.2;
         font-size: 42px;
       "
-    >AIDA datahub Docs</h1>
+    >AIDA Data Hub Docs</h1>
     <h2
      style="
         margin: unset;
