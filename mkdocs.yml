@@ -1,4 +1,4 @@
-site_name: AIDA datahub documentation
+site_name: AIDA Data Hub Documentation
 theme:
   name: material
   logo: imgs/logos/aida-icon-logo.png
