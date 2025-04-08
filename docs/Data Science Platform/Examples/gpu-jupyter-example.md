@@ -37,11 +37,15 @@ Add to SSH-config (eg `~/.ssh/config`):
 Host jupyter-demo
   HostName [associated IP in Horizon]
   User ubuntu
-  ProxyJump [Identity in LifeScience Login]@dsp.aida.scilifelab.se
+  ProxyJump dspgateway
   ServerAliveInterval 10
   LocalForward 8888 localhost:8888
   LocalForward 6006 localhost:6006
   LocalForward 5901 localhost:5901
+
+Host dspgateway
+  HostName dsp.aida.scilifelab.se
+  User [Identity in LifeScience Login]
 ```
 
 This sets up your computer to use the DSP SSH access gateway when making SSH
