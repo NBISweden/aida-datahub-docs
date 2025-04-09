@@ -1,9 +1,9 @@
-# Exposing https services in DSP to the outside
+# Exposing HTTPS services in DSP to the outside
 
 ## Introduction
 
 There are use cases where you might want to expose services running in DSP to
-the outside world, this can be e.g. offering an interactive data explorer or
+the outside world. This can be e.g. offering an interactive data explorer or
 accepting input data for processing and then publishing a report.
 
 This guide details services exposed via https. Other services may be possible
@@ -18,7 +18,7 @@ to expose but that will involve another, more involved process.
     `dsp.aida.scilifelab.se`, but it's also possible through other means
     (details subject to change for now, contact support)
   * DSP will need to request a certificate for the appointed name, this will be
-    done through let's encrypt
+    done through Let's Encrypt
     * for DSP to be able to do this, there can't be any restrictions denying
       that (e.g `CAA` DNS records)
 * decide on one or more floating IP addresses that will be mapped ("associated")
