@@ -25,9 +25,35 @@
     >User guides and tutorials</h2>
 </div>
 
-## Project layout
+<div style="
+  height: auto;
+  width: auto;
+  flex-direction: row;
+  display:flex;
+  flex-wrap:wrap;
+  padding:5px;
+  "
+>
 
-    mkdocs.yml    # The configuration file.
-    docs/
-        index.md  # The documentation homepage.
-        ...       # Other markdown pages, images and other files.
+<div style="
+ box-shadow: 0px 0px 2px pink;
+ height: 200px;
+ width: 250px;
+ padding:15px;
+ margin-left: 5px;
+">
+<h4>Data Science Platform</h4>
+<a href="/Data%20Science%20Platform/Getting started/dsp-first-login/"><p>First login to DSP</p></a>
+<a href="/Data%20Science%20Platform/Getting%20started/dsp-vm-access/"><p>Logging into machine</p></a>
+</div>
+<div style="
+ box-shadow: 0px 0px 2px pink;
+ height: 200px;
+ width: 250px;
+  padding:15px;
+ margin-left: 25px;
+">
+<h4>Data</h4>
+<a href="/Data/Download%20a%20dataset%20from%20AIDA%20Nextcloud%20using%20rclone/"><p>Download dataset from AIDA Nextcloud</p></a>
+</div>
+</div>
