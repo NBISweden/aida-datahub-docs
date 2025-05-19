@@ -1,0 +1,17 @@
+.home-nav{
+  height: auto;
+  width: auto;
+  flex-direction: row;
+  display:flex;
+  flex-wrap:wrap;
+  padding:5px;
+  
+}
+.home-nav-div{
+    box-shadow: 0px 0px 2px grey;
+    height: 200px;
+    width: 250px;
+    padding:15px;
+    margin-left: 15px;
+    border-radius: 3px;
+}

@@ -1,3 +1,4 @@
+# Download a dataset from AIDA Nextcloud using rclone
 ### Step 1 - Setup a remote
 
 `rclone config create drsk webdav url=https://nextcloud.aida.scilifelab.se/public.php/webdav vendor=nextcloud user=<USERNAME> pass=<PASSWORD>`

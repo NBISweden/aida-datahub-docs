@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="style.css" />
 <div style="margin-bottom: 2rem;">
     <img
       src="imgs/logos/AIDA-icon-6.png"
@@ -21,39 +22,19 @@
         margin: unset;
         line-height: 1;
         font-size: 20px;
+        font-weight: 500;
       "
-    >User guides and tutorials</h2>
+    >Documentation and user guides for services offered by <a href="https://datahub.aida.scilifelab.se/">AIDA Datahub</a></h2>
+
 </div>
-
-<div style="
-  height: auto;
-  width: auto;
-  flex-direction: row;
-  display:flex;
-  flex-wrap:wrap;
-  padding:5px;
-  "
->
-
-<div style="
- box-shadow: 0px 0px 2px pink;
- height: 200px;
- width: 250px;
- padding:15px;
- margin-left: 5px;
-">
+<div class="home-nav">
+<div class="home-nav-div">
 <h4>Data Science Platform</h4>
-<a href="/Data%20Science%20Platform/Getting started/dsp-first-login/"><p>First login to DSP</p></a>
-<a href="/Data%20Science%20Platform/Getting%20started/dsp-vm-access/"><p>Logging into machine</p></a>
+<a href="/Data-Science-Platform/Getting-started/dsp-first-login/"><p>First login to DSP</p></a>
+<a href="/Data-Science-Platform/Getting-started/dsp-vm-access/"><p>Logging into machine</p></a>
 </div>
-<div style="
- box-shadow: 0px 0px 2px pink;
- height: 200px;
- width: 250px;
-  padding:15px;
- margin-left: 25px;
-">
+<div class="home-nav-div">
 <h4>Data</h4>
-<a href="/Data/Download%20a%20dataset%20from%20AIDA%20Nextcloud%20using%20rclone/"><p>Download dataset from AIDA Nextcloud</p></a>
+<a href="/Data/download-dataset/"><p>Download dataset from AIDA Nextcloud</p></a>
 </div>
 </div>
