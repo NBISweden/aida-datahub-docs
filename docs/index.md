@@ -30,11 +30,11 @@
 <div class="home-nav">
 <div class="home-nav-div">
 <h4>Data Science Platform</h4>
-<a href="/Data-Science-Platform/Getting-started/dsp-first-login/"><p>First login to DSP</p></a>
-<a href="/Data-Science-Platform/Getting-started/dsp-vm-access/"><p>Logging into machine</p></a>
+<a href="/data-science-platform/getting-started/dsp-first-login/"><p>First login to DSP</p></a>
+<a href="/data-science-platform/getting-started/dsp-vm-access/"><p>Logging into machine</p></a>
 </div>
 <div class="home-nav-div">
 <h4>Data</h4>
-<a href="/Data/download-dataset/"><p>Download dataset from AIDA Nextcloud</p></a>
+<a href="/data/download-dataset/"><p>Download dataset from AIDA Nextcloud</p></a>
 </div>
 </div>

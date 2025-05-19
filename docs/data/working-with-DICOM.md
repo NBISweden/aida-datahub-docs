@@ -1,4 +1,4 @@
-# Working-with-DICOM
+# Working with DICOM
 
 Digital Imaging and Communications in Medicine
 ([DICOM](https://www.dicomstandard.org/))
