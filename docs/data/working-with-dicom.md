@@ -7,7 +7,7 @@ display medical imaging information. It is prevalent in
 [radiology](/datasets/search/?q=Subject:Radiology) and is gaining traction also in
 [pathology](/datasets/search/?q=Subject:Pathology).
 
-Some [datasets](/datasets) on the [AIDA Data Hub](/) are provided in DICOM format.
+Some [datasets](https://datahub.aida.scilifelab.se/datasets/) on the [AIDA Data Hub](https://datahub.aida.scilifelab.se/) are provided in DICOM format.
 In DICOM, data is provided in nested and interlinking structures, which can be
 nontrivial for newcomers to the field to navigate.
 

@@ -1,7 +1,7 @@
 # Setting up and logging into a machine in DSP
 
 This guide assumes you have access to the Horizon interface, if not, see
-[the first login guide](dsp-first-login.md).
+[the first login guide](first-login.md).
 
 ## Some terminology
 
