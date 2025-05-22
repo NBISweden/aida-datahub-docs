@@ -13,8 +13,11 @@ theme:
 extra:
   social:
     - icon: fontawesome/brands/github
-
-
-
+extra_css:
+  - style.css
 repo_url: https://github.com/NBISweden/aida-datahub-docs/
 repo_name: NBISweden/aida-datahub-docs
+
+plugins:
+   - search
+   - awesome-nav

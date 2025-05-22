@@ -1,3 +1,4 @@
+<link rel="stylesheet" href="style.css" />
 <div style="margin-bottom: 2rem;">
     <img
       src="imgs/logos/AIDA-icon-6.png"
@@ -21,13 +22,19 @@
         margin: unset;
         line-height: 1;
         font-size: 20px;
+        font-weight: 500;
       "
-    >User guides and tutorials</h2>
+    >Documentation and user guides for services offered by <a href="https://datahub.aida.scilifelab.se/">AIDA Datahub</a></h2>
+
 </div>
-
-## Project layout
-
-    mkdocs.yml    # The configuration file.
-    docs/
-        index.md  # The documentation homepage.
-        ...       # Other markdown pages, images and other files.
+<div class="home-nav">
+<div class="home-nav-div">
+<h4>Data Science Platform</h4>
+<a href="/dsp/getting-started/first-login/"><p>First login to DSP</p></a>
+<a href="/dsp/getting-started/vm-access/"><p>Logging into machine</p></a>
+</div>
+<div class="home-nav-div">
+<h4>Data</h4>
+<a href="/data/download-dataset/"><p>Download dataset from AIDA Nextcloud</p></a>
+</div>
+</div>
