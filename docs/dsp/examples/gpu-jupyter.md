@@ -1,4 +1,4 @@
-# GPU jupyter tutorial
+# GPU Sensitive Data IaaS with Jupyter
 
 Infrastructure as a Service (IaaS) provides resources that you manage yourself.
 It is a service for advanced customers that provides a lot of freedom to those
