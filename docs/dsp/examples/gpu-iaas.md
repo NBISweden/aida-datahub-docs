@@ -1,4 +1,4 @@
-# GPU jupyter tutorial
+# GPU IaaS with custom software and data
 
 Infrastructure as a Service (IaaS) provides resources that you manage yourself.
 It is a service for advanced customers that provides a lot of freedom to those
@@ -6,8 +6,9 @@ with the skills and responsibility to handle it.
 
 ## Topics
 
-In this example you, as a Customer lead, will
-
+In this example you, as a Customer lead, will go through the steps of installing software and 
+uploading data to a GPU virtual machine you create on the AIDA Data Hub Data Science Platform (DSP) 
+for sensitive data.
 
 This example assumes experience with linux, and authority to initiate expense.
 
@@ -33,7 +34,7 @@ This example assumes experience with linux, and authority to initiate expense.
 
 Add to SSH-config (eg `~/.ssh/config`):
 
-```ssh
+```ssh-config
 Host jupyter-demo
   HostName [associated IP in Horizon]
   User ubuntu
@@ -52,19 +53,25 @@ This sets up your computer to use the DSP SSH access gateway when making SSH
 connections to your VM. By default, DSP rejects SSH connections that are not
 made through the SSH access gateway.
 
-ServerAliveInterval makes it easier to maintain a connection, and to detect when
+The configuration has two `Host` sections, one for the Virtual Machine you 
+created (*jupyter-demo*) and one for the gateway (*dspgateway*) which you will use to 
+"jump" into the secure environment.
+
+The `ProxyJump` command in the *jupyter-demo* section tells SSH that it should 
+connect to the VM by jumping through the host `dspgateway`. SSH authentication to 
+this gateway is done using Life Science Login, which is the default 
+authentication method for the DSP. To log accesses and match them to
+the correct login account identity, your e-mail address should be set as the 
+`User`, replacing the placeholder *[Identity in LifeScience Login]*. 
+
+`ServerAliveInterval` makes it easier to maintain a connection, and to detect when
 it has gone stale.  
 
-The LocalForwards define SSH secured port forwards. They connect ports on your
+The `LocalForwards` define SSH secured port forwards. They connect ports on your
 computer with ports on your VM in the secure environment. They allow you to work
 with Jupyter notebooks, TensorBoard, and VNC remote desktop running on the VM in
 your secure environment as if though they were running on your computer.
 
-SSH authentication to the jump host is done using Life Science Login, which is
-the default authentication method for the DSP. To log accesses and match them to
-the correct login account identity, your e-mail address must be provided when
-connecting. The ProxyJump line should
-look something like `ProxyJump your.email@example.com@dsp.aida.scilifelab.se`.
 
 ### 3. Install software from public repositories that are trusted by the platform.
 
