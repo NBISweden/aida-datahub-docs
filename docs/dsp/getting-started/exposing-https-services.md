@@ -30,7 +30,7 @@ to expose but that will involve another, more involved process.
     * you will need to have the services exposed so that they are reachable from
       10.253.254.248/29, i.e. at least one security group allowing the desired
       traffic must be added to the instance or the corresponding port
-* contact support with the allocated name in your domain and the chosen
+* contact support with the allocated/desired domain name and the chosen
   floating IP address(es)
     * you will receive keys and certificates to use for TLS
 
