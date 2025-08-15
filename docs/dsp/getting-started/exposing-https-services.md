@@ -21,13 +21,16 @@ to expose but that will involve another, more involved process.
       be done through Let's Encrypt
         * for DSP to be able to do this, there can't be any restrictions denying
           that (e.g `CAA` DNS records)
+* we also support using namespaced names, e.g.
+  `myservice.myproject.dsp.aida.scilifelab.se`
 * decide on one or more floating IP addresses that will be mapped ("associated")
   to the VM(s) providing the service
     * any special handling beyond basic up/down detection is currently not
       supported (e.g. session handling is not provided)
     * you will need to have the services exposed so that they are reachable from
-      10.253.254.248/29
-* contact support with the allocated name in your domain and the chosen
+      10.253.254.248/29, i.e. at least one security group allowing the desired
+      traffic must be added to the instance or the corresponding port
+* contact support with the allocated/desired domain name and the chosen
   floating IP address(es)
     * you will receive keys and certificates to use for TLS
 
