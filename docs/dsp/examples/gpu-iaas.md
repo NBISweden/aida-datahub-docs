@@ -10,7 +10,7 @@ In this example you, as a Customer lead, will go through the steps of installing
 software and uploading data to a GPU virtual machine you create on the AIDA Data
 Hub Data Science Platform (DSP) for sensitive data.
 
-This example assumes experience with linux, and authority to initiate expense.
+This example assumes experience with Linux, and authority to initiate expense.
 
 ## Instructions
 
@@ -19,21 +19,21 @@ This example assumes experience with linux, and authority to initiate expense.
 1. Visit the DSP Horizon customer self-service portal at [https://dsp.aida.scilifelab.se/](https://dsp.aida.scilifelab.se/)
 2. Log in using your DSP Horizon credentials.
 3. Pick the correct secure environment from the project selector drop down menu
-  top left.
+   top left.
 4. Add your SSH public key to your project by clicking Project > Compute >
-  Key Pairs, then Import Public Key.
+   Key Pairs, then Import Public Key.
 5. Create a GPU enabled virtual machine by clicking Instances > Launch instance,
-  and
-    1. In Details, Instance name: Put a good name for a compute server,
+   and
+   1. In Details, Instance name: Put a good name for a compute server,
       like "Jupyter demo".
-    2. In Source, click the up arrow icon next to an image that has Docker,
+   2. In Source, click the up arrow icon next to an image that has Docker,
       CUDA, Miniforge, Jupyter Lab and RMD.
-    3. In Flavor, click the up arrow icon next to a flavor that has GPU.
+   3. In Flavor, click the up arrow icon next to a flavor that has GPU.
       Bigger is more expensive.
-    4. If applicable: In Security Groups, click the up arrow icon next to
-     `incoming`.
-    5. In Key Pair, verify that your key is allocated.
-    6. Click Launch instance.
+   4. If applicable: In Security Groups, click the up arrow icon next to
+      `incoming`.
+   5. In Key Pair, verify that your key is allocated.
+   6. Click Launch instance.
 6. Click Associate Floating IP > IP Address > pick one, fill in in next step.
 7. Wait for Power State to become Running.
 
@@ -61,15 +61,15 @@ connections to your VM. By default, DSP rejects SSH connections that are not
 made through the SSH access gateway.
 
 The configuration has two `Host` sections, one for the Virtual Machine you
-created (*jupyter-demo*) and one for the gateway (*dspgateway*) which you will
+created (_jupyter-demo_) and one for the gateway (_dspgateway_) which you will
 use to "jump" into the secure environment.
 
-The `ProxyJump` command in the *jupyter-demo* section tells SSH that it should
+The `ProxyJump` command in the _jupyter-demo_ section tells SSH that it should
 connect to the VM by jumping through the host `dspgateway`. SSH authentication
-to  this gateway is done using Life Science Login, which is the default
+to this gateway is done using Life Science Login, which is the default
 authentication method for the DSP. To log accesses and match them to
 the correct login account identity, your email address should be set as the
-`User`, replacing the placeholder *[Identity in LifeScience Login]*.
+`User`, replacing the placeholder _[Identity in LifeScience Login]_.
 
 `ServerAliveInterval` makes it easier to maintain a connection, and to detect
 when it has gone stale.
@@ -140,18 +140,18 @@ tar xf ~/images.tar.gz
 
 1. Start a VNC server on your VM
 
-  ```bash
-  sudo chown -R ubuntu:ubuntu ~/.vnc
-  tightvncserver -nolisten tcp -localhost :1
-  ```
+```bash
+sudo chown -R ubuntu:ubuntu ~/.vnc
+tightvncserver -nolisten tcp -localhost :1
+```
 
-  This starts a TightVNC server on the node. We also tell it to only listen to TCP
-  connections, and only those coming from localhost (this means other computers in
-  the same private network can't connect to the VNC server by default).
+This starts a TightVNC server on the node. We also tell it to only listen to TCP
+connections, and only those coming from localhost (this means other computers in
+the same private network can't connect to the VNC server by default).
 
 2. On your computer, point your VNC client of choice to `localhost:5901` to
-  connect through the SSH port forward that you set up in step 2. You can for
-  example use Remmina, which comes preinstalled on Ubuntu.
+   connect through the SSH port forward that you set up in step 2. You can for
+   example use Remmina, which comes preinstalled on Ubuntu.
 
 **Note**: In the future, AIDA Data Hub will provide ways to connect to a remote
 desktop in a secure environment which do not require the user to have server
@@ -161,29 +161,29 @@ administrator skills.
 
 1. Connect to your VM and start up the demo Jupyter notebook
 
-  ```bash
-  ssh jupyter-demo
-  cd ~/aida-transformers-workshop-code
-  source .venv/bin/activate
-  cd notebooks
-  # no pw/token, don't open a browser, only allow connections from localhost:
-  jupyter notebook --NotebookApp.token='' --NotebookApp.password='' --NotebookApp.open_browser=False --NotebookApp.ip='127.0.0.1'
-  ```
+```bash
+ssh jupyter-demo
+cd ~/aida-transformers-workshop-code
+source .venv/bin/activate
+cd notebooks
+# no pw/token, don't open a browser, only allow connections from localhost:
+jupyter notebook --NotebookApp.token='' --NotebookApp.password='' --NotebookApp.open_browser=False --NotebookApp.ip='127.0.0.1'
+```
 
-  Your Jupiter notebook is now ready to use, as long as you have this SSH
-  connection and its port forwards open.
+Your Jupiter notebook is now ready to use, as long as you have this SSH
+connection and its port forwards open.
 
 2. Using a web browser on your computer, visit
-  [http://127.0.0.1:8888](http://127.0.0.1:8888) to connect to your Jupyter
-  notebook through the SSH port forward that you set up in step 2. Without it, you
-  will not be able to connect.
+   [http://127.0.0.1:8888](http://127.0.0.1:8888) to connect to your Jupyter
+   notebook through the SSH port forward that you set up in step 2. Without it, you
+   will not be able to connect.
 3. Choose transformers_for_images.ipynb
 4. Use Shift+Enter to run the cells manually in sequence. Edit if you like. You
-  are now training AI models on GPU enabled IaaS compute resources in a secure
-  environment on the AIDA Data Hub Data Science Platform.
+   are now training AI models on GPU enabled IaaS compute resources in a secure
+   environment on the AIDA Data Hub Data Science Platform.
 5. Optional: Notebook step ~23 creates a TensorBoard interface, which can be
-  used to monitor training progress graphically. It will initially be empty, but
-  as subsequent training progresses, you can use the Refresh icon in TensorBoard
-  interface to read and visualize current state graphically. The TensorBoard
-  interface uses the second SSH port forward that you set up in step 2 and cannot
-  connect without it.
+   used to monitor training progress graphically. It will initially be empty, but
+   as subsequent training progresses, you can use the Refresh icon in TensorBoard
+   interface to read and visualize current state graphically. The TensorBoard
+   interface uses the second SSH port forward that you set up in step 2 and cannot
+   connect without it.

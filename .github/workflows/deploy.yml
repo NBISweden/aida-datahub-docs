@@ -1,5 +1,4 @@
 ---
-
 name: deploy docs
 on:
   push:

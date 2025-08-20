@@ -7,23 +7,23 @@ This guide assumes you have access to the Horizon interface, if not, see
 
 Some terms used in OpenStack may need some explanation:
 
-* an instance means an actual virtual machine (VM), it can be turned off (in
+- an instance means an actual virtual machine (VM), it can be turned off (in
   state `shutdown`) or running, spawning and so on
-* a flavor is a resource specification for a type of virtual machine, e.g.
-  say that a small machine can have 1 cpu core, 1 GByte of RAM and no disk)
-* a volume is a virtual disk
-* a security group is how OpenStack manages traffic filtering for a machine. In
+- a flavor is a resource specification for a type of virtual machine, e.g.
+  say that a small machine can have 1 CPU core, 1 GByte of RAM and no disk)
+- a volume is a virtual disk
+- a security group is how OpenStack manages traffic filtering for a machine. In
   OpenStack all traffic is disallowed unless there is a rule in a security group
   attached to the machine specifying that the specific traffic is allowed. This
   can be done with various filters (e.g. IP addresses, port, direction and so
   on)
-* ingress mean incoming
-* egress mean outgoing
-* a floating ip is a virtual IP address that can be assigned to a machine to
+- ingress mean incoming
+- egress mean outgoing
+- a floating ip is a virtual IP address that can be assigned to a machine to
   make it reachable at that address, but in contrast to "regular" addresses,
   these will typically not show up on the machine and can also be removed and
   reassigned at any time
-* server groups is a way of grouping virtual machines together for purposes of
+- server groups is a way of grouping virtual machines together for purposes of
   scheduling in openstack ("affinity"), it can be used to say that some virtual
   machines should run on the same physical host (to offer higher bandwidth and
   lower latency for things that talk to a lot) or on different physical hosts
@@ -48,7 +48,7 @@ security groups allow it.
 
 To be able to access any virtual machines you create, you will need to be
 able to authenticate to it. In practice, this means you should upload the public
-part of a ssh key pair so it can be preloaded on machines you create.
+part of a SSH key pair so it can be preloaded on machines you create.
 
 This is accessible in Horizon under Compute &#2092; Key Pairs where you can see
 your keys and import or create new ones.
@@ -85,7 +85,7 @@ have a few buttons for quick access.
 Clicking the "Launch Instance" buttons brings up the instance launcher which
 will guide you through the instance creation. While it has a guided flow, you
 jump around as you please. You can see things you must take care of being marked
-with an asterisk (*) in the left pane.
+with an asterisk (\*) in the left pane.
 
 On the first screen, you enter a name and a description for your VM.
 
@@ -278,7 +278,7 @@ we need to use the floating IP we associated with the machine earlier.
 
 In this case, it's `10.253.16.34`.
 
-Since it's the most common and versatile, we'll use the standard OpenSSH ssh
+Since it's the most common and versatile, we'll use the standard OpenSSH SSH
 client here, but similar functionality should be achievable with other clients.
 
 As quick a quick connection without doing any configuration, we can connect with
@@ -322,10 +322,10 @@ short message:
 You are now logged in as <your.email@example.com> and should be able to continue in your ssh session.
 ```
 
-(where your.email@example.com should be your actual email used for DSP).
+(where `your.email@example.com` should be your actual email used for DSP).
 
 Once you get that, you can go back to the terminal, pressing return there should
-advance and allow your ssh client to connect your actual virtual machine.
+advance and allow your SSH client to connect your actual virtual machine.
 
 But since it's a completely new machine, we don't have a way of verifying the
 public key for it, so we'll need to go by faith here.
@@ -357,7 +357,7 @@ While it works to do as above, it can be tiresome having to click links to
 connect. Fortunately, OpenSSH offers way to improve the experience.
 
 To get out of clicking the link, we can use something called `connection
-multiplexing` which allows ssh to use a single connection to many different
+multiplexing` which allows SSH to use a single connection to many different
 things. This happens after authentication, so activating it for the gateway
 means we can use it to connect multiple times.
 
@@ -366,7 +366,7 @@ consider and necessitate some precautions such as automatic locking when idle
 and so on (but such precautions should typically be in place already if you work
 with sensitive data).
 
-The configuration below asks ssh that new connections should automatically set
+The configuration below asks SSH that new connections should automatically set
 up multiplexing and hang around after use, but stop after one half hour.
 There are also other options for `ControlMaster`, allowing for requesting
 confirmation before using the multiplexing, see the manual page `ssh_config(5)`.
@@ -398,7 +398,7 @@ Host 10.253.16.*
 ```
 
 combining these, we can put it in a file (e.g. `~/.ssh/dsp_config`) and add an
-include statement for it in the main ssh configuration (`~/.ssh/config`) such as
+include statement for it in the main SSH configuration (`~/.ssh/config`) such as
 
 ```text
 Include dsp_config
