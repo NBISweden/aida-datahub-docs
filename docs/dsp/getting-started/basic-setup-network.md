@@ -2,9 +2,9 @@
 
 ## The short bit
 
-We offer a service at http://10.253.254.250/ which serves a script with
-suggested configuration. When connected to a newly deployed machine you can
-do the e.g. the below to configure it.
+We offer a service at [http://10.253.254.250/](http://10.253.254.250/) which
+serves a script with suggested configuration. When connected to a newly
+deployed machine you can do the e.g. the below to configure it.
 
 ```bash
 

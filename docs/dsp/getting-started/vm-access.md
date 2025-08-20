@@ -9,7 +9,7 @@ Some terms used in OpenStack may need some explanation:
 
 * an instance means an actual virtual machine (VM), it can be turned off (in
   state `shutdown`) or running, spawning and so on
-* a flavor is a resource specification for a type of virtual machine, e.g. 
+* a flavor is a resource specification for a type of virtual machine, e.g.
   say that a small machine can have 1 cpu core, 1 GByte of RAM and no disk)
 * a volume is a virtual disk
 * a security group is how OpenStack manages traffic filtering for a machine. In
@@ -66,13 +66,13 @@ Click the "Import Public Key" to open the key importer.
 ![Key importer](imgs/dsp-vm-access/dsp-key-pairs-import.png)
 
 Choose a name for your key, select the type (SSH Key) and either upload or copy
-paste the **public** part of your key pair (authentication depends on you 
+paste the **public** part of your key pair (authentication depends on you
 proving you have the private part which can be verified by someone that has
 the public part).
 
 ## Creating a VM
 
-Now, you can actually create a VM, go to the Instances screen (Compute &#2092; 
+Now, you can actually create a VM, go to the Instances screen (Compute &#2092;
 Instances).
 
 ![Finding Instances in the menu](imgs/dsp-vm-access/dsp-instances-in-menu.png)
@@ -290,7 +290,7 @@ ssh -o "ProxyJump your.email@example.com@dsp.aida.scilifelab.se" ubuntu@10.253.1
 where `your.email@example.com` is replaced by your actual e-mail address used
 for DSP. There will be a lot of `@` characters on that line, but it's fine.
 
-Running that command will probably ask you to about the key the first time. 
+Running that command will probably ask you to about the key the first time.
 It's a good habit to verify unknown keys, so we should do that. The key for DSP
 has fingerprint as below.
 
@@ -309,8 +309,8 @@ has fingerprint as below.
 +----[SHA256]-----+
 ```
 
-Once you've checked and approved the key (the ), you will be shown a banner with a
-link.
+Once you've checked and approved the key (the ), you will be shown a banner with
+a link.
 
 ![DSP connection in progress, first step](imgs/dsp-vm-access/dsp-connection-1.png)
 
@@ -318,7 +318,7 @@ Clicking that link will prompt you to go through with authentication through
 Life Science Login. If you go through that, you should end up on a page with a
 short message:
 
-```
+```text
 You are now logged in as <your.email@example.com> and should be able to continue in your ssh session.
 ```
 
@@ -371,7 +371,7 @@ up multiplexing and hang around after use, but stop after one half hour.
 There are also other options for `ControlMaster`, allowing for requesting
 confirmation before using the multiplexing, see the manual page `ssh_config(5)`.
 
-```
+```text
 ControlMaster auto
 ControlPersist 1800
 ControlPath ~/.ssh/socket-%r@%h-%p
@@ -379,7 +379,7 @@ ControlPath ~/.ssh/socket-%r@%h-%p
 
 OpenSSH also allows us to define things so we don't need to type it so much.
 
-```
+```text
 Host dspgateway
   Hostname dsp.aida.scilifelab.se
   User your.email@example.com
@@ -391,7 +391,7 @@ for DSP.)
 And OpenSSH also offers the `ProxyJump` feature to automatically use tunneling
 through a host, we can set this up for our VMs as such
 
-```
+```text
 Host 10.253.16.*
   ProxyJump dspgateway
   User ubuntu
@@ -400,13 +400,13 @@ Host 10.253.16.*
 combining these, we can put it in a file (e.g. `~/.ssh/dsp_config`) and add an
 include statement for it in the main ssh configuration (`~/.ssh/config`) such as
 
-```
+```text
 Include dsp_config
 ```
 
 with `dsp_config` consisting of
 
-```
+```text
 ControlMaster auto
 ControlPersist 1800
 ControlPath ~/.ssh/socket-%r@%h-%p
@@ -428,7 +428,7 @@ Last login: Wed Feb  5 11:24:49 2025 from 10.253.254.251
 To run a command as administrator (user "root"), use "sudo <command>".
 See "man sudo_root" for details.
 
-ubuntu@mytestmachine:~$ 
+ubuntu@mytestmachine:~$
 ```
 
 (notice that I get a different view here with no message-of-the-day because I'm

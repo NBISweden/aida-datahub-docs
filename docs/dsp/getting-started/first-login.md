@@ -83,7 +83,7 @@ applications as TOTP is a standard. The list of working apps include Twilio Auth
 Google Authenticator, Microsoft Authenticator, FortiToken, Duo security
 authentication, common password managers and many more.
 
-If you do not already use two-factor authentication with an app, we strongly 
+If you do not already use two-factor authentication with an app, we strongly
 recommend choosing one that supports some kind of secure network synchronisation
 to handle cases where your device stops working (this should do encryption on
 device).
@@ -170,4 +170,3 @@ Once your account has been adjusted to allow log in, the next time you return
 you will be let into Horizon.
 
 ![DSP Horizon](imgs/dsp-first-login/dsp-horizon-screen.png)
-
