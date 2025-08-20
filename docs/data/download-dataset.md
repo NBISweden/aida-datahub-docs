@@ -16,7 +16,7 @@ Your username is the last part of the share link you got from us, i.e:
 Your username could for example be something like `Y4gVyiVyyiF6fug`.
 
 Your password is the string of random characters you got from us separately.
-You will probably need to "quote" or 'quote' it on the command line, as it very
+You will probably need to "quote" or 'quote' it on the command-line, as it very
 likely contains special characters.
 
 If you'd rather answer questions interactively, do this instead, and do what it

@@ -24,13 +24,13 @@ be used for authentication (e.g. ORCID, GitHub, LinkedIn, Google, Apple), or if
 you don't want to or are able to use one of these, you can use "LifeScience
 Hostel" instead which allows signing up at LS Login directly.
 
-## Using your home organisation e-mail
+## Using your home organisation email
 
 If you use one of these other services, we recommend changing your profile
-e-mail to the one from your home organisation. This can be done on the
+email to the one from your home organisation. This can be done on the
 [LS Login User Profile site](https://profile.aai.lifescience-ri.eu/); look
 for "Preferred mail" and click the pen to update the mail (note that the new
-e-mail must be verified which may take some time).
+email must be verified which may take some time).
 
 ![LS Login User Profile site](imgs/dsp-first-login/ls-login-profile-screen.png)
 

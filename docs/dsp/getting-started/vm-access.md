@@ -287,7 +287,7 @@ As quick a quick connection without doing any configuration, we can connect with
 ssh -o "ProxyJump your.email@example.com@dsp.aida.scilifelab.se" ubuntu@10.253.16.34
 ```
 
-where `your.email@example.com` is replaced by your actual e-mail address used
+where `your.email@example.com` is replaced by your actual email address used
 for DSP. There will be a lot of `@` characters on that line, but it's fine.
 
 Running that command will probably ask you to about the key the first time.
@@ -322,7 +322,7 @@ short message:
 You are now logged in as <your.email@example.com> and should be able to continue in your ssh session.
 ```
 
-(where your.email@example.com should be your actual e-mail used for DSP).
+(where your.email@example.com should be your actual email used for DSP).
 
 Once you get that, you can go back to the terminal, pressing return there should
 advance and allow your ssh client to connect your actual virtual machine.
@@ -345,7 +345,7 @@ virtual machine our public key already, it can authenticate us and let us in.
 It is good practice to protect keys with a passphrase, but I didn't need to
 type any here. That's because I use an agent to help with the keys so that I can
 add them once at login by typing the passphrase and then don't need to type it
-anymore. This is available with the `ssh-agent` tool, but also built in to many
+anymore. This is available with the `ssh-agent` tool, but also built-in to many
 common desktop environments, you can try e.g. `ssh-add -L` to list identities
 your agent know of, and if that works (doesn't give an error message) you can
 add your identities by e.g. `ssh-add ~/.ssh/mykeyfile` to add a specific key or
@@ -385,7 +385,7 @@ Host dspgateway
   User your.email@example.com
 ```
 
-(where `your.email@example.com` should be replaced by your actual e-mail used
+(where `your.email@example.com` should be replaced by your actual email used
 for DSP.)
 
 And OpenSSH also offers the `ProxyJump` feature to automatically use tunneling

@@ -1,14 +1,13 @@
 .home-nav{
   height: auto;
   width: auto;
-  flex-direction: row;
+  flex-flow: row wrap;
   display:flex;
-  flex-wrap:wrap;
   padding:5px;
-  
-}
+  }
+
 .home-nav-div{
-    box-shadow: 0px 0px 2px grey;
+    box-shadow: 0 0 2px grey;
     height: 200px;
     width: 250px;
     padding:15px;

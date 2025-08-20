@@ -68,7 +68,7 @@ The `ProxyJump` command in the *jupyter-demo* section tells SSH that it should
 connect to the VM by jumping through the host `dspgateway`. SSH authentication
 to  this gateway is done using Life Science Login, which is the default
 authentication method for the DSP. To log accesses and match them to
-the correct login account identity, your e-mail address should be set as the
+the correct login account identity, your email address should be set as the
 `User`, replacing the placeholder *[Identity in LifeScience Login]*.
 
 `ServerAliveInterval` makes it easier to maintain a connection, and to detect
@@ -87,7 +87,7 @@ from public repositories that are trusted by AIDA Data Hub. DSP data science
 images are preconfigured to make transparent use of this proxy, as demonstrated
 in this next step.
 
-Here, we clone the Jupiter notebook GitHub repo and use apt and pip to install
+Here, we clone the Jupiter notebook GitHub repository and use apt and pip to install
 its dependencies in a Python virtual environment. We do this inside a tmux
 virtual terminal so that work is kept persistent, so that running processes are
 not killed if connection is lost.
