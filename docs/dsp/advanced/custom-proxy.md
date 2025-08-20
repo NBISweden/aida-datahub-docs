@@ -3,7 +3,9 @@
 By default, the Virtual Machines (VMs) on the Data Science Platform (DSP) can make HTTP requests to the outside world only by going through an inspecting proxy.
 To make the default configuration of DSP secure, this proxy has a strict list of allowed resources that internal machines can access. For some projects, the default is too strict, and one way of getting around it is to set up your own proxy for your VMs.
 
-In this guide, we will set up a different proxy on a VM using `privoxy` and tunnel HTTP requests through the connecting machine´s SSH connection. 
+In this guide, we will set up a different proxy on a VM using `privoxy` and tunnel HTTP requests through the connecting machine´s SSH connection.
+
+As a curiosity, this builds a lot on functionality offered by OpenSSH and the privoxy bits can in many cases be bypassed by referencing the SOCKS5 proxy OpenSSH provides directly, e.g. by `http_proxy=socsk5h://127.0.0.1:3128`. But while it has fairly wide support it's not universal, and adding privoxy to serve as a http proxy will help with some of those - but if you just need a quick apt install or similar, you can bypass that and use the socks proxy directly.
 
 **Note that this will circumvent strict filtering and essentially allow any HTTP request from your VM to be carried out (unless you explicitly add filtering on your own machine or network).**
 
