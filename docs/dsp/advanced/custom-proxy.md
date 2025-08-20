@@ -85,15 +85,6 @@ proxy pip3 install numpy   # Uses proxy
 pip3 install numpy         # Does not use proxy
 ```
 
-### Special Configuration for Conda/Mamba
-
-For some programs (e.g. conda and mamba) to work properly with SSL through the proxy, add these environment variables:
-
-```shell
-export REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
-export SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
-```
-
 ### Making Proxy Settings Persistent
 
 The above exports of environmental variables only affect the shell you run it in, and you might want your proxy to be used throughout your account. To achieve that run the following:
@@ -107,11 +98,6 @@ export https_proxy=http://127.0.0.1:8118
 export HTTP_PROXY=http://127.0.0.1:8118
 export HTTPS_PROXY=http://127.0.0.1:8118
 EOF
-```
-
-```shell
-echo 'export REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt' >> ~/.bashrc
-echo 'export SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt' >> ~/.bashrc
 ```
 
 Then reload your bash configuration:
@@ -130,14 +116,6 @@ sed -i \
     -e '/^export https_proxy=http:\/\/127\.0\.0\.1:8118$/d' \
     -e '/^export HTTP_PROXY=http:\/\/127\.0\.0\.1:8118$/d' \
     -e '/^export HTTPS_PROXY=http:\/\/127\.0\.0\.1:8118$/d' \
-    ~/.bashrc
-```
-
-```shell
-sed -i \
-    -e '/^# Proxy settings$/d' \
-    -e 'export REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt' \
-    -e 'export SSL_CERT_FILE=/etc/ssl/certs/ca-certificates.crt' \
     ~/.bashrc
 ```
 
