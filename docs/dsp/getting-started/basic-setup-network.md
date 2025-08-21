@@ -2,9 +2,9 @@
 
 ## The short bit
 
-We offer a service at http://10.253.254.250/ which serves a script with
-suggested configuration. When connected to a newly deployed machine you can
-do the e.g. the below to configure it.
+We offer a service at [http://10.253.254.250/](http://10.253.254.250/) which
+serves a script with suggested configuration. When connected to a newly
+deployed machine you can do the e.g. the below to configure it.
 
 ```bash
 
@@ -64,7 +64,7 @@ export https_proxy
 
 will do the right thing.
 
-#### Making docker use the proxy
+#### Making Docker use the proxy
 
 Docker requires some special configuration to use the proxy. Providing
 
@@ -76,7 +76,7 @@ Environment="no_proxy=192.168.0.0/16,10.0.0.0/8,172.16.0.0/12,192.168.*,10.*,172
 ```
 
 in `/etc/systemd/system/docker.service.d/http-proxy.conf`, reloading systemd
-units with `sudo systemctl daemon-reload` and *restarting* docker with
+units with `sudo systemctl daemon-reload` and _restarting_ Docker with
 `sudo systemctl restart docker`.
 
 #### Making apt use the proxy

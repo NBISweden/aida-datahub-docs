@@ -24,7 +24,8 @@
         font-size: 20px;
         font-weight: 500;
       "
-    >Documentation and user guides for services offered by <a href="https://datahub.aida.scilifelab.se/">AIDA Datahub</a></h2>
+    >Documentation and user guides for services offered by
+    <a href="https://datahub.aida.scilifelab.se/">AIDA Datahub</a></h2>
 
 </div>
 <div class="home-nav">

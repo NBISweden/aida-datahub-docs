@@ -139,7 +139,7 @@ export HTTPS_PROXY=http://127.0.0.1:8118
 EOF
 ```
 
-Then reload your bash configuration:
+Then reload your Bash configuration:
 
 ```shell
 source ~/.bashrc
@@ -259,7 +259,7 @@ EOF
 
 ### Docker Build and Run with Proxy
 
-To make your proxy available during docker build:
+To make your proxy available during Docker build:
 
 ```shell
 docker build --network=host .

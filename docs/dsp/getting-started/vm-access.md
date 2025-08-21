@@ -7,23 +7,23 @@ This guide assumes you have access to the Horizon interface, if not, see
 
 Some terms used in OpenStack may need some explanation:
 
-* an instance means an actual virtual machine (VM), it can be turned off (in
+- an instance means an actual virtual machine (VM), it can be turned off (in
   state `shutdown`) or running, spawning and so on
-* a flavor is a resource specification for a type of virtual machine, e.g. 
-  say that a small machine can have 1 cpu core, 1 GByte of RAM and no disk)
-* a volume is a virtual disk
-* a security group is how OpenStack manages traffic filtering for a machine. In
+- a flavor is a resource specification for a type of virtual machine, e.g.
+  say that a small machine can have 1 CPU core, 1 GByte of RAM and no disk)
+- a volume is a virtual disk
+- a security group is how OpenStack manages traffic filtering for a machine. In
   OpenStack all traffic is disallowed unless there is a rule in a security group
   attached to the machine specifying that the specific traffic is allowed. This
   can be done with various filters (e.g. IP addresses, port, direction and so
   on)
-* ingress mean incoming
-* egress mean outgoing
-* a floating ip is a virtual IP address that can be assigned to a machine to
+- ingress mean incoming
+- egress mean outgoing
+- a floating ip is a virtual IP address that can be assigned to a machine to
   make it reachable at that address, but in contrast to "regular" addresses,
   these will typically not show up on the machine and can also be removed and
   reassigned at any time
-* server groups is a way of grouping virtual machines together for purposes of
+- server groups is a way of grouping virtual machines together for purposes of
   scheduling in openstack ("affinity"), it can be used to say that some virtual
   machines should run on the same physical host (to offer higher bandwidth and
   lower latency for things that talk to a lot) or on different physical hosts
@@ -48,7 +48,7 @@ security groups allow it.
 
 To be able to access any virtual machines you create, you will need to be
 able to authenticate to it. In practice, this means you should upload the public
-part of a ssh key pair so it can be preloaded on machines you create.
+part of a SSH key pair so it can be preloaded on machines you create.
 
 This is accessible in Horizon under Compute &#2092; Key Pairs where you can see
 your keys and import or create new ones.
@@ -66,13 +66,13 @@ Click the "Import Public Key" to open the key importer.
 ![Key importer](imgs/dsp-vm-access/dsp-key-pairs-import.png)
 
 Choose a name for your key, select the type (SSH Key) and either upload or copy
-paste the **public** part of your key pair (authentication depends on you 
+paste the **public** part of your key pair (authentication depends on you
 proving you have the private part which can be verified by someone that has
 the public part).
 
 ## Creating a VM
 
-Now, you can actually create a VM, go to the Instances screen (Compute &#2092; 
+Now, you can actually create a VM, go to the Instances screen (Compute &#2092;
 Instances).
 
 ![Finding Instances in the menu](imgs/dsp-vm-access/dsp-instances-in-menu.png)
@@ -85,7 +85,7 @@ have a few buttons for quick access.
 Clicking the "Launch Instance" buttons brings up the instance launcher which
 will guide you through the instance creation. While it has a guided flow, you
 jump around as you please. You can see things you must take care of being marked
-with an asterisk (*) in the left pane.
+with an asterisk (\*) in the left pane.
 
 On the first screen, you enter a name and a description for your VM.
 
@@ -278,7 +278,7 @@ we need to use the floating IP we associated with the machine earlier.
 
 In this case, it's `10.253.16.34`.
 
-Since it's the most common and versatile, we'll use the standard OpenSSH ssh
+Since it's the most common and versatile, we'll use the standard OpenSSH SSH
 client here, but similar functionality should be achievable with other clients.
 
 As quick a quick connection without doing any configuration, we can connect with
@@ -287,10 +287,10 @@ As quick a quick connection without doing any configuration, we can connect with
 ssh -o "ProxyJump your.email@example.com@dsp.aida.scilifelab.se" ubuntu@10.253.16.34
 ```
 
-where `your.email@example.com` is replaced by your actual e-mail address used
+where `your.email@example.com` is replaced by your actual email address used
 for DSP. There will be a lot of `@` characters on that line, but it's fine.
 
-Running that command will probably ask you to about the key the first time. 
+Running that command will probably ask you to about the key the first time.
 It's a good habit to verify unknown keys, so we should do that. The key for DSP
 has fingerprint as below.
 
@@ -309,8 +309,8 @@ has fingerprint as below.
 +----[SHA256]-----+
 ```
 
-Once you've checked and approved the key (the ), you will be shown a banner with a
-link.
+Once you've checked and approved the key (the ), you will be shown a banner with
+a link.
 
 ![DSP connection in progress, first step](imgs/dsp-vm-access/dsp-connection-1.png)
 
@@ -318,14 +318,14 @@ Clicking that link will prompt you to go through with authentication through
 Life Science Login. If you go through that, you should end up on a page with a
 short message:
 
-```
+```text
 You are now logged in as <your.email@example.com> and should be able to continue in your ssh session.
 ```
 
-(where your.email@example.com should be your actual e-mail used for DSP).
+(where `your.email@example.com` should be your actual email used for DSP).
 
 Once you get that, you can go back to the terminal, pressing return there should
-advance and allow your ssh client to connect your actual virtual machine.
+advance and allow your SSH client to connect your actual virtual machine.
 
 But since it's a completely new machine, we don't have a way of verifying the
 public key for it, so we'll need to go by faith here.
@@ -345,7 +345,7 @@ virtual machine our public key already, it can authenticate us and let us in.
 It is good practice to protect keys with a passphrase, but I didn't need to
 type any here. That's because I use an agent to help with the keys so that I can
 add them once at login by typing the passphrase and then don't need to type it
-anymore. This is available with the `ssh-agent` tool, but also built in to many
+anymore. This is available with the `ssh-agent` tool, but also built-in to many
 common desktop environments, you can try e.g. `ssh-add -L` to list identities
 your agent know of, and if that works (doesn't give an error message) you can
 add your identities by e.g. `ssh-add ~/.ssh/mykeyfile` to add a specific key or
@@ -357,7 +357,7 @@ While it works to do as above, it can be tiresome having to click links to
 connect. Fortunately, OpenSSH offers way to improve the experience.
 
 To get out of clicking the link, we can use something called `connection
-multiplexing` which allows ssh to use a single connection to many different
+multiplexing` which allows SSH to use a single connection to many different
 things. This happens after authentication, so activating it for the gateway
 means we can use it to connect multiple times.
 
@@ -366,12 +366,12 @@ consider and necessitate some precautions such as automatic locking when idle
 and so on (but such precautions should typically be in place already if you work
 with sensitive data).
 
-The configuration below asks ssh that new connections should automatically set
+The configuration below asks SSH that new connections should automatically set
 up multiplexing and hang around after use, but stop after one half hour.
 There are also other options for `ControlMaster`, allowing for requesting
 confirmation before using the multiplexing, see the manual page `ssh_config(5)`.
 
-```
+```text
 ControlMaster auto
 ControlPersist 1800
 ControlPath ~/.ssh/socket-%r@%h-%p
@@ -379,34 +379,34 @@ ControlPath ~/.ssh/socket-%r@%h-%p
 
 OpenSSH also allows us to define things so we don't need to type it so much.
 
-```
+```text
 Host dspgateway
   Hostname dsp.aida.scilifelab.se
   User your.email@example.com
 ```
 
-(where `your.email@example.com` should be replaced by your actual e-mail used
+(where `your.email@example.com` should be replaced by your actual email used
 for DSP.)
 
 And OpenSSH also offers the `ProxyJump` feature to automatically use tunneling
 through a host, we can set this up for our VMs as such
 
-```
+```text
 Host 10.253.16.*
   ProxyJump dspgateway
   User ubuntu
 ```
 
 combining these, we can put it in a file (e.g. `~/.ssh/dsp_config`) and add an
-include statement for it in the main ssh configuration (`~/.ssh/config`) such as
+include statement for it in the main SSH configuration (`~/.ssh/config`) such as
 
-```
+```text
 Include dsp_config
 ```
 
 with `dsp_config` consisting of
 
-```
+```text
 ControlMaster auto
 ControlPersist 1800
 ControlPath ~/.ssh/socket-%r@%h-%p
@@ -428,7 +428,7 @@ Last login: Wed Feb  5 11:24:49 2025 from 10.253.254.251
 To run a command as administrator (user "root"), use "sudo <command>".
 See "man sudo_root" for details.
 
-ubuntu@mytestmachine:~$ 
+ubuntu@mytestmachine:~$
 ```
 
 (notice that I get a different view here with no message-of-the-day because I'm
