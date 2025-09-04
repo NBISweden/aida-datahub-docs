@@ -1,22 +1,22 @@
-# Sending e-mails from DSP
+# Sending emails from DSP
 
-DSP supports e-mail deliveries but to limit exfiltration possibilities, there
+DSP supports email deliveries but to limit exfiltration possibilities, there
 are additional steps that need to be done to make it work.
 
 ## How it works
 
 A list of allowed outgoing addresses can be registered for a secure
-environment. These are then possible to use as sender for outgoing e-mails.
-E-mails with a different sender will be rejected.
+environment. These are then possible to use as sender for outgoing emails.
+Emails with a different sender will be rejected.
 
 ## Requirements
 
-To support outgoing e-mails, you'll need to provide
+To support outgoing emails, you'll need to provide
 
-- a list of e-mail addresses that will be used as sender addresses
-- for each such outgoing address, the outgoing e-mail details to use:
+- a list of email addresses that will be used as sender addresses
+- for each such outgoing address, the outgoing email details to use:
   - server
-  - credentials (username and password) that are allowed to send e-mails
+  - credentials (username and password) that are allowed to send emails
     with the outgoing address
 
 We strongly encourage using separate accounts.
