@@ -1,6 +1,6 @@
 # Life Science federation login
 
-AIDA Data Hub uses the Life Science federated login, a services 
+AIDA Data Hub uses the Life Science federated login, a services
 operated by the European Life Science Research Infrastructures to greatly simplify authentication.
 
 When you select to login to our services, you will be taken to the Life Science Login federated authentication, and will be greeted by a screen where you
@@ -34,7 +34,7 @@ simplified that means just knowing a password should not be enough, typically
 something more such as having a physical object should be required).
 
 With Life Science Login, this means you will be asked to provide a second
-factor before being able to advance to our services. 
+factor before being able to advance to our services.
 
 If Life Science Login needs to do multifactor authentication by itself, you will
 be sent to the [Life Science Login MFA site](https://mfa.aai.lifescience-ri.eu/).
@@ -111,11 +111,10 @@ Once you've done that, MFA activation is complete.
 
 ![MFA success](imgs/dsp-first-login/ls-login-mfa-success.png)
 
-
 ## Attribute release
 
-To operate our services, we need some additional details about you from Life 
-Science Login. For them to be able to pass them to us, they need you to 
+To operate our services, we need some additional details about you from Life
+Science Login. For them to be able to pass them to us, they need you to
 acknowledge that:
 
 Click "Yes, continue" to let Life Science Login give us those details. If you

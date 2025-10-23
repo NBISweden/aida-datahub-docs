@@ -12,7 +12,6 @@ authenticating with [Life Science Login](https://lifescience-ri.eu/ls-login/).
 
 If you have not already registered with Life Science login, please follow [this guide to do so](life-science-login.md).
 
-
 ## Back at DSP
 
 Once you have authenticated properly, on the first time you return, you will
