@@ -1,4 +1,3 @@
-
 # Requesting access to AIDA Data Hub dataset through REMS
 
 Most datasets on the AIDA Data Hub use [REMS](https://github.com/CSCfi/rems) (Resource Entitlement Management System) to manage requests for and access to datasets. This system allows you to apply for access to datasets and for handlers to review your application. Before you request access to a dataset, you must first login at <https://rems.dsp.aida.scilifelab.se/>
@@ -29,9 +28,9 @@ Many datasets also have mandatory fields to demonstrate that the recipient resea
 
 At the top right of the application form, you will find a set of available **actions**:
 
-- **Save as draft:** Save the current state of your application without submitting it. You can continue working on it later.  
-- **Send application:** Submit the application for processing. It will appear in your list of applications.  
-- **Delete draft:** Delete the application, removing it from your list of applications.  
+- **Save as draft:** Save the current state of your application without submitting it. You can continue working on it later.
+- **Send application:** Submit the application for processing. It will appear in your list of applications.
+- **Delete draft:** Delete the application, removing it from your list of applications.
 - **Copy as new application:** Create a new application for the same dataset, with the same filled-in details.
 - **Download PDF:** Download a PDF version of the application.
 
@@ -43,11 +42,11 @@ If your application is approved, you will receive an email with instructions on 
 
 #### Rejected applications
 
-A rejection usually means that the handler could not, with *reasonable effort*, verify that the recipient researcher meets the legal requirements to receive the data (see [Legal explanation](#legal-explanation)). If your application is rejected due to insufficient information, you are welcome to submit a new one, but please ensure that:
+A rejection usually means that the handler could not, with _reasonable effort_, verify that the recipient researcher meets the legal requirements to receive the data (see [Legal explanation](#legal-explanation)). If your application is rejected due to insufficient information, you are welcome to submit a new one, but please ensure that:
 
-- The recipient researcher holds at least a PhD in a relevant field.  
-- The researcher's email address is clearly associated with the stated institution.  
-- The researcher's profile page and other supporting links clearly demonstrate competence in conducting ethical medical research in a relevant field.  
+- The recipient researcher holds at least a PhD in a relevant field.
+- The researcher's email address is clearly associated with the stated institution.
+- The researcher's profile page and other supporting links clearly demonstrate competence in conducting ethical medical research in a relevant field.
 
 The clearer the researcher’s credentials are (e.g., an institutional email address, a detailed institutional profile page, and a publication record or position relevant to the field), the easier it will be for the handler to process the application.
 
@@ -62,7 +61,7 @@ You can continue working on your saved drafts, as well as review your submitted 
 ## Legal explanation
 
 As a policy, we require the recipient researcher to hold at least a PhD in a relevant field.
-This requirement has to do with the legal framework under which the data can be shared. 
+This requirement has to do with the legal framework under which the data can be shared.
 
 This requirement is based on the legal framework governing data sharing. According to Swedish law, clinical datasets can be shared only when used for research activities conducted under the supervision of a qualified researcher, someone with the necessary scientific competence to ensure that research is carried out as described in the ethical review application and in accordance with institutional policies.
 
