@@ -63,6 +63,7 @@ You can continue working on your saved drafts, as well as review your submitted 
 As a policy, we require the recipient researcher to hold at least a PhD in a relevant field.
 This requirement has to do with the legal framework under which the data can be shared.
 
-This requirement is based on the legal framework governing data sharing. According to Swedish law, clinical datasets can be shared only when used for research activities conducted under the supervision of a qualified researcher, someone with the necessary scientific competence to ensure that research is carried out as described in the ethical review application and in accordance with institutional policies.
+This requirement is based on the legal framework governing data sharing. 
+According to Swedish law, clinical datasets can be shared only when used for research activities conducted under the supervision of a qualified researcher, someone with the necessary scientific competence to ensure that research is carried out as described in the ethical review application and in accordance with institutional policies.
 
 For a more detailed discussion of the legal framework surrounding the sharing of clinical data in Sweden, please see the [Legal Discussion](https://datahub.aida.scilifelab.se/sharing/legal/) on the AIDA Data Hub.
