@@ -1,6 +1,6 @@
 # Handling data sharing requests
 
-This is a guide of how to process data sharing requests, both as a handler and as a decider. If you are a decider, you can go directly to the [decider](#approving-applications-as-a-decider) section.
+This is a guide of how to process data sharing requests on REMS, both as a handler and as a decider. If you are a decider, once you've logged in to REMS you can go directly to the [decider](#approving-applications-as-a-decider) section.
 
 Once a request for data sharing has been sent to REMS, a handler must review it. If the application looks good, the handler then sends it to the designated decider for that dataset.
 
@@ -38,9 +38,10 @@ These lists the details the applicant has given about the recipient scientist an
 
 ### Reviewing the application
 
-Most datasets requires us to establish that the recipient scientist is trained in handling sensitive data. As a way of proving this, we have put a requirement on the recipient scientist to hold at least a PhD in a relevant field (see [Legal explanation](#legal-explanation) for more details). As a handler you need to look at the fields filled in by the applicant, follow the credentials and make a conclusion that the recipient scientist have the required credentials.
+Most datasets requires us to establish that the recipient scientist is trained in handling sensitive data. As a way of proving this, we have put a requirement on the recipient scientist to hold at least a PhD in a relevant field (see [Legal explanation](#legal-explanation) for more details).
+As a handler you need to look at the fields filled in by the applicant, follow the credentials and make a conclusion that the recipient scientist have the required credentials.
 
-- If you can't, follow the instructions under [Application is incomplete](#application-is-incomplete) below. 
+- If you can't, follow the instructions under [Application is incomplete](#application-is-incomplete) below.
 - If everything looks good, instead follow the instructions under [Application is complete](#application-is-complete).
 
 #### Application is incomplete
@@ -53,7 +54,7 @@ Thank you for your interest in this dataset. We could not establish the identity
 - Name of recipient scientist,
 - Recipient scientist e-mail for the workplace institution,
 - Name and department of recipient scientist institution,
-- Adress of institution,
+- Address of institution,
 - Details which demonstrate that the researcher has expertise in relevant field, such as ORCID, profile page at research institution
 ```
 
