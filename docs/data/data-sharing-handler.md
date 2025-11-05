@@ -84,7 +84,8 @@ Once all deciders have responded, review the application again
 
 ![View of a submitted application showing approval events from deciders](imgs/data-sharing-handler/handler-application-deciders-responded-overview.jpg)
 
-Under the _Events_, you can see what the decisions are. If the deciders don't all approve the application, they will have given a comment with the rejection detailing the reason. Answer the applicant either with a `rejection` if the deciders comment is a hard reject or `Return to applicant...` if the reason is more about unclear details. In both cases reformulate the reason for rejection from the decider for the applicant to act on.
+Under the _Events_, you can see what the decisions are. If the deciders don't all approve the application, they will have given a comment with the rejection detailing the reason.
+Answer the applicant either with a `rejection` if the deciders comment is a hard reject or `Return to applicant...` if the reason is more about unclear details. In both cases reformulate the reason for rejection from the decider for the applicant to act on.
 
 If all deciders approve the application, you should now finalize the `approval`. Before doing so, create the share link for downloading the dataset on NextCloud, then use the `Approve or reject...` action with the following text as a comment (replacing the link and password with the one created) with the approval:
 

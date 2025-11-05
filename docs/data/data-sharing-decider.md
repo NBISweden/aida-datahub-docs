@@ -15,7 +15,8 @@ REMS uses **Life Science Login** to handle authentication. If you don't already 
 As a decider, your task is to act as the formal approval of an application. Once you are logged in to REMS, you will have a section at the top called **Actions** which will show you all the open applications you are involved in.
 ![View of the Actions section as a decider, listing an applications for the decider to act on](imgs/data-sharing-handler/decider-actions.jpg)
 
-You will see a list of applications where the _Action needed_ column has the text `Waiting for your decision`. These are the ones you should decide on. By clicking _View_ you are shown the application which will display all of its details, as well as the events at the top. If the handler has left any comments, you will see them in the events list. Events have an icon which indicates whether the applicant can see them, events between the handler and you as a decider are hidden from the applicant (they can't see your decision or comments you do).
+You will see a list of applications where the _Action needed_ column has the text `Waiting for your decision`. These are the ones you should decide on. By clicking _View_ you are shown the application which will display all of its details, as well as the events at the top.
+If the handler has left any comments, you will see them in the events list. Events have an icon which indicates whether the applicant can see them, events between the handler and you as a decider are hidden from the applicant (they can't see your decision or comments you do).
 
 On the right side, you can see a menu with _Actions_ you can take for the currently displayed application.
 
