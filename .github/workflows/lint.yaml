@@ -34,3 +34,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           FILTER_REGEX_EXCLUDE: index.md
           VALIDATE_BIOME_FORMAT: false # Competes with prettier
+          JSCPD_CONFIG_FILE: .jscpd.json
