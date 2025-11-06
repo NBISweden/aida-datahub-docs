@@ -40,7 +40,7 @@ These lists the details the applicant has given about the recipient scientist an
 
 Most datasets require us to establish that the recipient scientist is trained in handling sensitive data. As a way of proving this, we have put a requirement on the recipient scientist to hold at least a PhD in a relevant field.
 As a handler you need to look at the fields filled in by the applicant, follow the given links and information and make a conclusion that the recipient scientist has the required credentials.
-We also need it to be clearly established that the recipient scientist is connected to the institution indicated in the application, meaning that their e-mail address is their institutional one and that there is some profile page or verified ORCID connection to it.
+We also need it to be clearly established that the recipient scientist is connected to the institution indicated in the application, meaning that their email address is their institutional one and that there is some profile page or verified ORCID connection to it.
 
 - If the application does not clearly show the above, follow the instructions under [Application is incomplete](#application-is-incomplete) below.
 - If everything looks good, instead follow the instructions under [Application is complete](#application-is-complete).
