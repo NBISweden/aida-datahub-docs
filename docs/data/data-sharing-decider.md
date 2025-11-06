@@ -2,7 +2,7 @@
 
 This is a guide of how to work withe REMS (Resource Entitlement Management System) as a decider.
 
-Once a request for data sharing has been sent to REMS, a handler will review it. If the application looks good, the handler then sends it to the designated decider for that dataset which is where you come in.
+Once a request for data sharing has been sent to REMS, a handler will review it. If the application looks correct, the handler then sends it to the designated decider for that dataset which is where you come in.
 
 The first thing you need to do as a decider is to login at <https://rems.dsp.aida.scilifelab.se/>
 
@@ -26,6 +26,6 @@ You make a decision on an application by using the `Decide` action. Here you can
 
 ![View of a submitted application, with the decide action in progress, showing buttons to cancel, reject or approve](imgs/data-sharing-handler/decider-application-decide.jpg)
 
-Once all you have reviewed all application waiting for your decision, the _Actions_ section will be empty. You can look at previous applications under the _show more_ button under _Processed application_
+Once you have reviewed all applications waiting for your decision, the _Actions_ section will be empty. You can look at previous applications under the _show more_ button under _Processed application_
 
 ![View of the Actions section after all applications has been decided on, listing no further applications](imgs/data-sharing-handler/decider-actions-empty.jpg)
