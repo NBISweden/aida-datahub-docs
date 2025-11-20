@@ -27,7 +27,7 @@ Containers.
 
 ### openstack client
 
-The `openstack` command line tool allows access through its `object` and
+The `openstack` command-line tool allows access through its `object` and
 `container` subcommand classes (assuming valid authentication, typically through
 application credentials).
 
@@ -40,7 +40,7 @@ user@host:~$ openstack container list
 | important     |
 | stuff         |
 +---------------+
-user@host:~$ 
+user@host:~$
 ```
 
 ```bash
@@ -52,7 +52,7 @@ user@host:~$ openstack object list test
 | something-else              |
 | some/structure              |
 +-----------------------------+
-user@host:~$ 
+user@host:~$
 
 ```
 

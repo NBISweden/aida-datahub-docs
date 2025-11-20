@@ -5,9 +5,9 @@ time) information in various forms.
 
 It's common practice to refer to different kinds of storage services:
 
-* [block storage](#block-storage)
-* [object storage](#object-storage)
-* [file storage](#file-storage)
+- [block storage](#block-storage)
+- [object storage](#object-storage)
+- [file storage](#file-storage)
 
 ## Block storage
 
