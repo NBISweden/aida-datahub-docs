@@ -6,6 +6,12 @@
 rclone config create drsk webdav url=https://nextcloud.aida.scilifelab.se/public.php/webdav vendor=nextcloud user=<USERNAME> pass=<PASSWORD>
 ```
 
+Alternatively set vendor to other, if the above command is failing when set to nextcloud.
+
+```bash
+rclone config create drsk webdav url=https://nextcloud.aida.scilifelab.se/public.php/webdav vendor=other user=<USERNAME> pass=<PASSWORD>
+```
+
 Here, we have chosen the name `drsk` for the remote. You can of course choose
 whatever name you want. Probably use something short that doesn't contain
 spaces.
