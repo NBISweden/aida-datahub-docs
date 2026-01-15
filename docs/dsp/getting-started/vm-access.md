@@ -392,7 +392,7 @@ And OpenSSH also offers the `ProxyJump` feature to automatically use tunneling
 through a host, we can set this up for our VMs as such
 
 ```text
-Host 10.253.16.*
+Host 10.253.*
   ProxyJump dspgateway
   User ubuntu
 ```
@@ -415,7 +415,7 @@ Host dspgateway
   Hostname dsp.aida.scilifelab.se
   User your.email@example.com
 
-Host 10.253.16.*
+Host 10.253.*
   ProxyJump dspgateway
   User ubuntu
 ```
