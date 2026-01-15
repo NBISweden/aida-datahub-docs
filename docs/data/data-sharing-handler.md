@@ -42,7 +42,8 @@ Most datasets require us to establish that the recipient scientist is trained in
 As a handler you need to look at the fields filled in by the applicant, follow the given links and information and make a conclusion that the recipient scientist has the required credentials.
 We also need it to be clearly established that the recipient scientist is connected to the institution indicated in the application, meaning that their email address is their institutional one and that there is some profile page or verified ORCID connection to it.
 
-- If the application does not clearly show the above, follow the instructions under [Application is incomplete and should not be ammended](#application-is-incomplete-and-should-not-be-ammended) if this application would never be approved (e.g. from a region we're not allowed to share with) or [Application is incomplete but can be ammended](#application-is-incomplete-but-can-be-ammended) if the application is just missing enough information.
+- If the application does not clearly show the above, follow the instructions under [Application is incomplete and should not be ammended](#application-is-incomplete-and-should-not-be-ammended) if this application would never be approved (e.g. from a region we're not allowed to share with)
+or [Application is incomplete but can be ammended](#application-is-incomplete-but-can-be-ammended) if the application is just missing enough information.
 - If everything looks good, instead follow the instructions under [Application is complete](#application-is-complete).
 
 Often, the application will have multiple members invited. To process an application, only the dataset recipient needs to have logged in and approved of the agreement. The status of other invited members is not a blocker for reviewing the application.
@@ -121,7 +122,7 @@ Once you've filled in the comment, approve the applications and you're done! Aft
 
 ### Automatic creating of share links
 
-The automated application managment system will create a link and password for the NextCloud repository and automatically send them via e-mail to the recipient scientist (or applicant). This link is valid for 14 days.
+The automated application managment system will create a link and password for the NextCloud repository and automatically send them via email to the recipient scientist (or applicant). This link is valid for 14 days.
 
 If you need to trigger the automated sharing system again, use the `Remark action...` and enter the string `reshare` which will trigger a new sharing of the dataset to the recipient scientist as above.
 
