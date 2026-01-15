@@ -1,0 +1,16 @@
+.home-nav {
+  height: auto;
+  width: auto;
+  flex-flow: row wrap;
+  display: flex;
+  padding: 5px;
+}
+
+.home-nav-div {
+  box-shadow: 0 0 2px grey;
+  height: 200px;
+  width: 250px;
+  padding: 15px;
+  margin-left: 15px;
+  border-radius: 3px;
+}
