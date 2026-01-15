@@ -73,7 +73,7 @@ Remove the bullet points which are clear and don't need further details.
 
 If the details of the recipient scientist look correct and suitable, the next step is to send it to the decider.
 To do this, use the `Remark...` action to add a trigger text which the automated system will pick up on.
-This gives you a text field where you can enter a remark (by default not visible to the applicant). Use the string `send to deciders` to trigger the automatic sending. **Note that the spelling must be exact, incorrect string will be silently ignored.**
+This gives you a text field where you can enter a remark (by default not visible to the applicant). Use the string `send to deciders` to trigger the automatic sending. **Note that the spelling must be exact, incorrect strings will be silently ignored.**
 
 ![View of a submitted application, in the process of adding the "send to deciders" remark](imgs/data-sharing-handler/handler-application-remark-request-decision-2.jpg)
 
