@@ -42,7 +42,7 @@ Most datasets require us to establish that the recipient scientist is trained in
 As a handler you need to look at the fields filled in by the applicant, follow the given links and information and make a conclusion that the recipient scientist has the required credentials.
 We also need it to be clearly established that the recipient scientist is connected to the institution indicated in the application, meaning that their email address is their institutional one and that there is some profile page or verified ORCID connection to it.
 
-- If the application does not clearly show the above, follow the instructions under [Application is incomplete](#application-is-incomplete) below.
+- If the application does not clearly show the above, follow the instructions under [Application is incomplete and should not be ammended](#application-is-incomplete-and-should-not-be-ammended) if this application would never be approved (e.g. from a region we're not allowed to share with) or [Application is incomplete but can be ammended](#application-is-incomplete-but-can-be-ammended) if the application is just missing enough information.
 - If everything looks good, instead follow the instructions under [Application is complete](#application-is-complete).
 
 Often, the application will have multiple members invited. To process an application, only the dataset recipient needs to have logged in and approved of the agreement. The status of other invited members is not a blocker for reviewing the application.
@@ -106,7 +106,6 @@ Under the _Events_, you can see what the decisions are. If the deciders don't al
 Answer the applicant either with a `rejection` if the deciders comment is a hard reject or `Return to applicant...` if the reason is more about unclear details. In both cases reformulate the reason for rejection from the decider for the applicant to act on.
 
 If all deciders approve the application, you should now finalize the approval. Use the `Approve or reject...` action with the text below as a comment (will be visible to the applicant). Note that for datasets where there is no recipient scientist (e.g. datasets for educational purpose) replace "Recipient Scientist" above with "Applicant".
-
 
 ```text
 Your application has now been approved. We have prepared a data export for you. An e-mail with a temporary share link and password will be sent to the Recipient Scientist. This link is valid for 14 days.
