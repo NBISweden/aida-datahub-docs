@@ -49,7 +49,7 @@ Often, the application will have multiple members invited. To process an applica
 
 #### Application is incomplete and should not be ammended
 
-In the case that the application is very incomplete or the dataset cannot be shared due to e.g.  policy, use the `reject` option under the `Approve or reject...` action with a comment detailing why the application is rejected. This comment will be visible to the applicant.
+In the case that the application is very incomplete or the dataset cannot be shared due to e.g. policy, use the `reject` option under the `Approve or reject...` action with a comment detailing why the application is rejected. This comment will be visible to the applicant.
 
 #### Application is incomplete but can be ammended
 
