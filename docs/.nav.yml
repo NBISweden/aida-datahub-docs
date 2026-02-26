@@ -1,4 +1,23 @@
 ---
 nav:
   - Data: data/
-  - Data science platform: dsp/
+  - Data science platform:
+      - Getting started:
+        - Important information: dsp/getting-started/important-to-know.md
+        - Life science login:  dsp/getting-started/life-science-login.md
+        - First login: dsp/getting-started/first-login.md
+        - VM access: dsp/getting-started/vm-access.md
+        - Basic network setup: dsp/getting-started/basic-setup-network.md
+        - Exposing https services: dsp/getting-started/exposing-https-services.md
+
+        - Storage:
+            - Introduction to storage: dsp/getting-started/storage/index.md
+            - Object storage: dsp/getting-started/storage/object-store.md
+      
+      - Advanced: 
+        - Setting up a custom HTTP Proxy: dsp/advanced/custom-proxy.md
+        - Sending emails from DSP: dsp/advanced/email.md
+        - Remote cloud access: dsp/advanced/remote-access.md
+      - Examples:
+        - GPU IaaS with custom software and data: dsp/examples/gpu-iaas.md 
+  - Contact: dsp/contact.md
