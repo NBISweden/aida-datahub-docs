@@ -5,7 +5,8 @@
 A brief intro to VM status.
 
 !!! Note
-    Charges applies to VMs that are Active, Running, Suspended, Paused, Shut off. Charges will not be applied unless VM is deleted or shelved.
+    Charges applies to VMs that are Active, Running, Suspended, Paused, Shut off. Charges will not
+    be applied unless VM is deleted or shelved.
 
 **Running**
 
@@ -28,6 +29,3 @@ Shelving a server indicates it will not be needed for some time and may be tempo
 **Deleted**
 
 The instance is permanently removed from the environment. Associated compute resources are released.
-
-
-
