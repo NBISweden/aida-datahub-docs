@@ -29,7 +29,7 @@ Some terms used in OpenStack may need some explanation:
   lower latency for things that talk to a lot) or on different physical hosts
   to add fault-tolerance
 
-## Pecularities for DSP
+## Peculiarities for DSP
 
 Since DSP aims to support research on sensitive data, there a a few things that
 differ from what you'd normally encounter in a cloud setup.

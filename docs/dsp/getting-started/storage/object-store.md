@@ -110,7 +110,7 @@ user@host:~$
 
 #### s3fs
 
-If you are on a system where it's suppored, you can mount buckets using one
+If you are on a system where it's supported, you can mount buckets using one
 of many fuse-solutions, here's one called s3fs shown (mounting the bucket
 `another` to the directory `data`).
 

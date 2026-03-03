@@ -1,6 +1,6 @@
 # Data sharing requests - Decider guide
 
-This is a guide of how to work withe REMS (Resource Entitlement Management System) as a decider.
+This is a guide of how to work with REMS (Resource Entitlement Management System) as a decider.
 
 Once a request for data sharing has been sent to REMS, a handler will review it. If the application looks correct, the handler then sends it to the designated decider for that dataset which is where you come in.
 

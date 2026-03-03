@@ -35,7 +35,7 @@ Clicking it will open the dialog to create a new set of application credentials.
 ![The application credentials creation view](imgs/new-application-credential.png)
 
 You must give your application credential a name and can optionally enter a
-descripition.
+description.
 
 Once created, the application will be protected by a secret. This can be
 provided by your or generated automatically (for many uses you do not need to
