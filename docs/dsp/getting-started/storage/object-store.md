@@ -91,6 +91,10 @@ host_bucket = s3.dsp.aida.scilifelab.se
 host_base = s3.dsp.aida.scilifelab.se
 access_key = YOURACCESSKEY
 secret_key = YOURSECRETKEY
+use_https = True
+# If inside DSP, you currently need to use the proxy
+#proxy_host = 10.253.254.250
+
 ```
 
 replacing `YOURACCESSKEY` and `YOURSECRETKEY` with those from your credentials,
@@ -118,7 +122,7 @@ of many fuse-solutions, here's one called s3fs shown (mounting the bucket
 user@host:~$ export AWS_ACCESS_KEY_ID=YOURACCESSKEY
 user@host:~$ export AWS_SECRET_ACCESS_KEY=YOURSECRETKEY
 user@host:~$ mkdir -p data
-user@host:~$ s3fs -o url=https://s3.dsp.aida.scilifelab.se/ another data
+user@host:~$ s3fs -o use_path_request_style -o url=https://s3.dsp.aida.scilifelab.se/ another data
 user@host:~$ ls data
 bin lib test.py
 user@host:~$ umount -l data
