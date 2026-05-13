@@ -131,7 +131,7 @@ sudo apt update
 sudo apt install python3-venv
 python3 -m venv .venv
 source .venv/bin/activate
-pip install jupyter
+pip install jupyterlab fire tensorboard
 ```
 
 **Note**:
@@ -185,9 +185,7 @@ administrator skills.
 ```bash
 ssh jupyter-demo
 cd tutorials
-python3 -m venv .venv
 source .venv/bin/activate
-pip install fire tensorboard
 MONAI_DATA_DIRECTORY=/home/ubuntu/tutorials/Data jupyter lab --NotebookApp.token='' --NotebookApp.password='' --NotebookApp.open_browser=False --NotebookApp.ip='127.0.0.1' --no-browser
 ```
 
