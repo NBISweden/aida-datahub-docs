@@ -183,6 +183,7 @@ administrator skills.
 1. Connect to your VM and start up the demo Jupyter notebook
 
 ```bash
+ssh jupyter-demo
 cd tutorials
 python3 -m venv .venv
 source .venv/bin/activate
@@ -192,7 +193,7 @@ MONAI_DATA_DIRECTORY=/home/ubuntu/tutorials/Data jupyter lab --NotebookApp.token
 
 Note that we are setting the MONAI_DATA_DIRECTORY to the Data directory in the tutorials repository, the location where we will store the dataset.
 
-Your Jupiter notebook is now ready to use, as long as you have this SSH
+Your Jupyter notebook is now ready to use, as long as you have this SSH
 connection and its port forwards open.
 
 To follow the [Spleen segmentation tutorial](https://github.com/Project-MONAI/tutorials/blob/main/2d_segmentation/spleen_segmentation_tutorial.ipynb), we need to first download the dataset on our local computer:
