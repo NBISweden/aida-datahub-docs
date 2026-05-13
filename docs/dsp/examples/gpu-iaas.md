@@ -26,8 +26,7 @@ This example assumes experience with Linux, and authority to initiate expense.
    and
    1. In Details, Instance name: Put a good name for a compute server,
       like "Jupyter demo".
-   2. In Source, click the up arrow icon next to an image that has Docker,
-      CUDA, Miniforge, Jupyter Lab and RMD.
+   2. In Source, click the up arrow icon next to an Ubuntu base image (such as Noble 24.04 or Resolute 26.04).
    3. In Flavor, click the up arrow icon next to a flavor that has GPU.
       Bigger is more expensive.
    4. If applicable: In Security Groups, click the up arrow icon next to
@@ -87,23 +86,46 @@ from public repositories that are trusted by AIDA Data Hub. DSP data science
 images are preconfigured to make transparent use of this proxy, as demonstrated
 in this next step.
 
-Here, we clone the Jupiter notebook GitHub repository and use apt and pip to install
-its dependencies in a Python virtual environment. We do this inside a tmux
-virtual terminal so that work is kept persistent, so that running processes are
-not killed if connection is lost.
+To configure the VM to use the DSP proxy, run the following command:
+```bash	
+curl http://10.253.254.250/ | bash
+```
+If you want to inspect the script, you can run:
+```bash
+curl http://10.253.254.250/ > dspconfigscript
+cat dspconfigscript
+```
+and then run:
+```bash
+bash dspconfigscript
+```
+
+#### 3.1 Install Nvidia GPU drivers
+In order to be able to use the GPU, you need to install the Nvidia GPU drivers, we recommend installing version 580.
+
+```bash
+sudo apt update
+sudo apt install nvidia-driver-580
+```
+
+#### 3.2 Clone the MONAI Tutorial repository and create a Python virtual environment
+
+In this tutorial we will use the MONAI Tutorial repository, which is a collection of Jupyter notebooks that 
+demonstrate how to use the MONAI framework to build AI models specifically targeting medical image tasks 
+such as segmentation, classification, and detection.
+Here, we clone the MONAI Tutorial repository and then create a Python virtual environment.
+We do this inside a tmux virtual terminal so that work is kept persistent, so that running processes are not killed if connection is lost.
 
 ```bash
 ssh jupyter-demo
 tmux
-git clone https://github.com/eryl/aida-transformers-workshop-code.git
-cd aida-transformers-workshop-code
+git clone https://github.com/Project-MONAI/tutorials.git
+cd tutorials
 sudo apt update
 sudo apt install python3-venv
 python3 -m venv .venv
 source .venv/bin/activate
-export REQUESTS_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt # Trust DSP CA
-pip install -r requirements.txt
-sudo docker pull alpine # just for show, we don't really need Alpine nor Docker for this :)
+pip install jupyter
 ```
 
 **Note**:
@@ -115,33 +137,26 @@ exploitable data exfiltration method.
 
 ### 4. Upload own data
 
-1. Download demo data to your own computer, and upload it to your VM:
+Most of the notebooks in the MONAI Tutorial have a link to a dataset which can be downloaded or they directly use Python functions to download the data.
+However, within DSP we have restricted outgoing access to the internet, so you need to download the data to your own computer and upload it to your VM.
 
-```bash
-cd ~/Downloads
-wget https://www.robots.ox.ac.uk/~vgg/data/pets/data/annotations.tar.gz
-wget https://www.robots.ox.ac.uk/~vgg/data/pets/data/images.tar.gz
-rsync --progress {annotations,images}.tar.gz jupyter-demo:
-# In case you don't have rsync locally, you can use scp:
-# scp {annotations,images}.tar.gz jupyter-demo:
-```
-
-2. Put demo data where our Jupyter notebook expects it
-
-```bash
-ssh jupyter-demo
-mkdir -p ~/aida-transformers-workshop-code/datasets/oxfordiiipet/oxford-iiit-pet
-cd ~/aida-transformers-workshop-code/datasets/oxfordiiipet/oxford-iiit-pet
-tar xf ~/annotations.tar.gz
-tar xf ~/images.tar.gz
-```
+For example, the notebook [MedNIST_tutorial.ipynb](https://github.com/Project-MONAI/tutorials/blob/main/2d_classification/mednist_tutorial.ipynb) uses the [MedNIST dataset](https://mednist.org/) which can be downloaded from [https://github.com/Project-MONAI/MONAI-extra-test-data/releases/download/0.8.1/MedNIST.tar.gz](https://github.com/Project-MONAI/MONAI-extra-test-data/releases/download/0.8.1/MedNIST.tar.gz).
 
 ### 5. Inspect data in a remote desktop
 
-1. Start a VNC server on your VM
+1. Install TightVNC and XFCE desktop environment inside the VM.
 
 ```bash
+sudo apt install tightvncserver xfce4 xfce4-goodies
+mkdir ~/.vnc
+echo -e '#!/bin/sh\nxrdb $HOME/.Xresources\nstartxfce4 &' > ~/.vnc/xstartup
+chmod +x ~/.vnc/xstartup
 sudo chown -R ubuntu:ubuntu ~/.vnc
+```
+
+2. Start a VNC server on your VM
+
+```bash
 tightvncserver -nolisten tcp -localhost :1
 ```
 
@@ -149,7 +164,7 @@ This starts a TightVNC server on the node. We also tell it to only listen to TCP
 connections, and only those coming from localhost (this means other computers in
 the same private network can't connect to the VNC server by default).
 
-2. On your computer, point your VNC client of choice to `localhost:5901` to
+3. On your computer, point your VNC client of choice to `localhost:5901` to
    connect through the SSH port forward that you set up in step 2. You can for
    example use Remmina, which comes preinstalled on Ubuntu.
 
@@ -162,28 +177,39 @@ administrator skills.
 1. Connect to your VM and start up the demo Jupyter notebook
 
 ```bash
-ssh jupyter-demo
-cd ~/aida-transformers-workshop-code
+cd tutorials
+python3 -m venv .venv
 source .venv/bin/activate
-cd notebooks
-# no pw/token, don't open a browser, only allow connections from localhost:
-jupyter notebook --NotebookApp.token='' --NotebookApp.password='' --NotebookApp.open_browser=False --NotebookApp.ip='127.0.0.1'
+pip install fire tensorboard
+MONAI_DATA_DIRECTORY=/home/ubuntu/tutorials/Data jupyter lab --NotebookApp.token='' --NotebookApp.password='' --NotebookApp.open_browser=False --NotebookApp.ip='127.0.0.1' --no-browser
 ```
+Note that we are setting the MONAI_DATA_DIRECTORY to the Data directory in the tutorials repository, the location where we will store the dataset.
 
 Your Jupiter notebook is now ready to use, as long as you have this SSH
 connection and its port forwards open.
+
+To follow the [Spleen segmentation tutorial](https://github.com/Project-MONAI/tutorials/blob/main/2d_segmentation/spleen_segmentation_tutorial.ipynb), we need to first download the dataset on our local computer:
+```bash
+wget https://msd-for-monai.s3-us-west-2.amazonaws.com/Task09_Spleen.tar
+```
+
+Then we can upload the dataset to the VM:
+```bash
+scp Task09_Spleen.tar jupyter-demo:/home/ubuntu/tutorials/Data/
+ssh jupyter-demo
+cd tutorials/Data && tar -xvf Task09_Spleen.tar && rm Task09_Spleen.tar
+```
 
 2. Using a web browser on your computer, visit
    [http://127.0.0.1:8888](http://127.0.0.1:8888) to connect to your Jupyter
    notebook through the SSH port forward that you set up in step 2. Without it, you
    will not be able to connect.
-3. Choose transformers_for_images.ipynb
+3. Choose one of the following notebooks:
+   - [spleen_segmentation_3d.ipynb](http://127.0.0.1:8888/lab/tree/3d_segmentation/spleen_segmentation_3d.ipynb)
+   - [spleen_segmentation_3d_lightning.ipynb](http://127.0.0.1:8888/lab/tree/3d_segmentation/spleen_segmentation_3d_lightning.ipynb)
+   - [spleen_segmentation_3d_visualization_basic.ipynb](http://127.0.0.1:8888/lab/tree/3d_segmentation/spleen_segmentation_3d_visualization_basic.ipynb)
 4. Use Shift+Enter to run the cells manually in sequence. Edit if you like. You
    are now training AI models on GPU enabled IaaS compute resources in a secure
    environment on the AIDA Data Hub Data Science Platform.
-5. Optional: Notebook step ~23 creates a TensorBoard interface, which can be
-   used to monitor training progress graphically. It will initially be empty, but
-   as subsequent training progresses, you can use the Refresh icon in TensorBoard
-   interface to read and visualize current state graphically. The TensorBoard
-   interface uses the second SSH port forward that you set up in step 2 and cannot
-   connect without it.
+5. Optional: Some of the notebooks create a TensorBoard interface, which can be
+   used to monitor training progress graphically. You can either visualize it in the Jupyter notebook or in a separate browser tab by visiting [http://127.0.0.1:6006](http://127.0.0.1:6006).
