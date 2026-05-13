@@ -87,20 +87,26 @@ images are preconfigured to make transparent use of this proxy, as demonstrated
 in this next step.
 
 To configure the VM to use the DSP proxy, run the following command:
-```bash	
+
+```bash
 curl http://10.253.254.250/ | bash
 ```
+
 If you want to inspect the script, you can run:
+
 ```bash
 curl http://10.253.254.250/ > dspconfigscript
 cat dspconfigscript
 ```
+
 and then run:
+
 ```bash
 bash dspconfigscript
 ```
 
 #### 3.1 Install Nvidia GPU drivers
+
 In order to be able to use the GPU, you need to install the Nvidia GPU drivers, we recommend installing version 580.
 
 ```bash
@@ -110,8 +116,8 @@ sudo apt install nvidia-driver-580
 
 #### 3.2 Clone the MONAI Tutorial repository and create a Python virtual environment
 
-In this tutorial we will use the MONAI Tutorial repository, which is a collection of Jupyter notebooks that 
-demonstrate how to use the MONAI framework to build AI models specifically targeting medical image tasks 
+In this tutorial we will use the MONAI Tutorial repository, which is a collection of Jupyter notebooks that
+demonstrate how to use the MONAI framework to build AI models specifically targeting medical image tasks
 such as segmentation, classification, and detection.
 Here, we clone the MONAI Tutorial repository and then create a Python virtual environment.
 We do this inside a tmux virtual terminal so that work is kept persistent, so that running processes are not killed if connection is lost.
@@ -183,17 +189,20 @@ source .venv/bin/activate
 pip install fire tensorboard
 MONAI_DATA_DIRECTORY=/home/ubuntu/tutorials/Data jupyter lab --NotebookApp.token='' --NotebookApp.password='' --NotebookApp.open_browser=False --NotebookApp.ip='127.0.0.1' --no-browser
 ```
+
 Note that we are setting the MONAI_DATA_DIRECTORY to the Data directory in the tutorials repository, the location where we will store the dataset.
 
 Your Jupiter notebook is now ready to use, as long as you have this SSH
 connection and its port forwards open.
 
 To follow the [Spleen segmentation tutorial](https://github.com/Project-MONAI/tutorials/blob/main/2d_segmentation/spleen_segmentation_tutorial.ipynb), we need to first download the dataset on our local computer:
+
 ```bash
 wget https://msd-for-monai.s3-us-west-2.amazonaws.com/Task09_Spleen.tar
 ```
 
 Then we can upload the dataset to the VM:
+
 ```bash
 scp Task09_Spleen.tar jupyter-demo:/home/ubuntu/tutorials/Data/
 ssh jupyter-demo
