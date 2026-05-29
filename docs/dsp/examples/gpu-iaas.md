@@ -227,14 +227,15 @@ cd tutorials/Data && tar -xvf Task09_Spleen.tar && rm Task09_Spleen.tar
 
 The current state-of-the-art in biomedical image segmentation is **nnU-Net** [1]. As a self-configuring deep learning framework, it has been widely adopted across numerous winning challenge entries and serves as the _de facto_ standard benchmark for medical image segmentation tasks.
 
-Complementing this is **MONAI**, a comprehensive medical image analysis framework. MONAI provides an extensive suite of tools for building and training AI models across various tasks—not just segmentation, but also classification, detection, and more. Crucially, it introduces the concept of the **MONAI Bundle**, which streamlines packaging models and deploying them for inference, active learning, and federated learning.
+Complementing this is **MONAI**, a comprehensive medical image analysis framework. MONAI provides an extensive suite of tools for building and training AI models across various tasks—not just segmentation, but also classification, detection, and more.
+Crucially, it introduces the concept of the **MONAI Bundle**, which streamlines packaging models and deploying them for inference, active learning, and federated learning.
 
 The **MONet Bundle** bridges these two powerful tools by expanding the MONAI Bundle concept to include nnU-Net. This integration combines the cutting-edge segmentation performance of nnU-Net with the flexibility and adaptability of MONAI, allowing users to leverage nnU-Net as a backend for both robust training and streamlined inference.
 
 **Learn More & Applications:**
 
 - **Documentation & Code:** Explore the [MONet Bundle GitHub Repository](https://github.com/minnelab/MONet-Bundle).
-- **Real-World Application:** Read about the application of the MONet Bundle for Federated Learning in PET-CT Lymphoma and Brain Tumor Segmentation [here](https://link.springer.com/chapter/10.1007/978-3-032-05663-4_10) [2].
+- **Real-World Application:** Read about the application of the [MONet Bundle for Federated Learning in PET-CT Lymphoma and Brain Tumor Segmentation](https://link.springer.com/chapter/10.1007/978-3-032-05663-4_10) [2].
 
 ---
 
@@ -256,4 +257,4 @@ Once extracted, follow along with the [06_monet_bundle.ipynb](https://github.com
 
 [1] Isensee, F., Jaeger, P. F., Kohl, S. A., Petersen, J., & Maier-Hein, K. H. (2021). nnU-Net: a self-configuring method for deep learning-based biomedical image segmentation. Nature Methods, 18(2), 203-211.
 
-[2] Bendazzoli, S. et al. (2026). MONet-FL: Extending nnU-Net with MONAI for Clinical Federated Learning. In: Zamzmi, G., et al. Bridging Regulatory Science and Medical Imaging Evaluation; and Distributed, Collaborative, and Federated Learning. MICCAI 2025. Lecture Notes in Computer Science, vol 16135. Springer, Cham. https://doi.org/10.1007/978-3-032-05663-4_10
+[2] Bendazzoli, S. et al. (2026). MONet-FL: Extending nnU-Net with MONAI for Clinical Federated Learning. In: Zamzmi, G., et al. Bridging Regulatory Science and Medical Imaging Evaluation; and Distributed, Collaborative, and Federated Learning. MICCAI 2025. Lecture Notes in Computer Science, vol 16135. Springer, Cham.
