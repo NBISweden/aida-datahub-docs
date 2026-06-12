@@ -1,0 +1,1498 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+      
+        <link rel="prev" href="../../advanced/remote-access/">
+      
+      
+        <link rel="next" href="../../contact/">
+      
+      
+      <link rel="icon" href="../../../imgs/logos/AIDA-icon-6.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.9">
+    
+    
+      
+        <title>GPU IaaS with custom software and data - AIDA Data Hub Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.4af4bdda.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../style.css">
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="white" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#gpu-iaas-with-custom-software-and-data" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="AIDA Data Hub Documentation" class="md-header__button md-logo" aria-label="AIDA Data Hub Documentation" data-md-component="logo">
+      
+  <img src="../../../imgs/logos/aida-icon-logo.png" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            AIDA Data Hub Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              GPU IaaS with custom software and data
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/NBISweden/aida-datahub-docs/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8M97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    NBISweden/aida-datahub-docs
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="AIDA Data Hub Documentation" class="md-nav__button md-logo" aria-label="AIDA Data Hub Documentation" data-md-component="logo">
+      
+  <img src="../../../imgs/logos/aida-icon-logo.png" alt="logo">
+
+    </a>
+    AIDA Data Hub Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/NBISweden/aida-datahub-docs/" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8M97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+  </div>
+  <div class="md-source__repository">
+    NBISweden/aida-datahub-docs
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_1" id="__nav_1_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Data
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_1">
+            <span class="md-nav__icon md-icon"></span>
+            Data
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../data/data-sharing-decider/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Data sharing requests - Decider guide
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../data/data-sharing-handler/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Data sharing requests - Handler guide
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../data/data-sharing-request/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Requesting access to AIDA Data Hub dataset through REMS
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../data/download-dataset/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Download a dataset from AIDA Nextcloud using rclone
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../data/working-with-dicom/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Working with DICOM
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Data science platform
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Data science platform
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_1" id="__nav_2_1_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Getting started
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_1">
+            <span class="md-nav__icon md-icon"></span>
+            Getting started
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/important-to-know/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Important information
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/life-science-login/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Life science login
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/first-login/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    First login
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/vm-access/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    VM access
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/basic-setup-network/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Basic network setup
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/exposing-https-services/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Exposing https
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_1_7" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_1_7" id="__nav_2_1_7_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Storage
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_2_1_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_1_7">
+            <span class="md-nav__icon md-icon"></span>
+            Storage
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/storage/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Introduction to storage
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../getting-started/storage/object-store/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Object storage
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Advanced
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            Advanced
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../advanced/custom-proxy/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Setting up a custom HTTP Proxy
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../advanced/email/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Sending emails from DSP
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../advanced/remote-access/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Remote cloud access
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2_3" id="__nav_2_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Examples
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            Examples
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    GPU IaaS with custom software and data
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    GPU IaaS with custom software and data
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#topics" class="md-nav__link">
+    <span class="md-ellipsis">
+      Topics
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#instructions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Instructions
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Instructions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-launch-a-gpu-enabled-virtual-machine" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Launch a GPU enabled virtual machine
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-configure-your-computer-for-easy-access" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Configure your computer for easy access
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-install-software-from-public-repositories-that-are-trusted-by-the-platform" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Install software from public repositories that are trusted by the platform
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Install software from public repositories that are trusted by the platform">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-install-nvidia-gpu-drivers" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.1 Install Nvidia GPU drivers
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-clone-the-monai-tutorial-repository-and-create-a-python-virtual-environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.2 Clone the MONAI Tutorial repository and create a Python virtual environment
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-upload-own-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Upload own data
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-inspect-data-in-a-remote-desktop" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Inspect data in a remote desktop
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-use-a-jupyter-notebook-to-train-an-ai-model-and-monitor-progress-graphically" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. Use a Jupyter notebook to train an AI model, and monitor progress graphically
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#monet-bundle-segmentation-with-monai-and-nnu-net" class="md-nav__link">
+    <span class="md-ellipsis">
+      MONet Bundle: Segmentation with MONAI and nnU-Net
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="MONet Bundle: Segmentation with MONAI and nnU-Net">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#example-spleen-segmentation-with-monet-bundle" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example: Spleen Segmentation with MONet Bundle
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#references" class="md-nav__link">
+    <span class="md-ellipsis">
+      References
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contact/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Contact
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#topics" class="md-nav__link">
+    <span class="md-ellipsis">
+      Topics
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#instructions" class="md-nav__link">
+    <span class="md-ellipsis">
+      Instructions
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Instructions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-launch-a-gpu-enabled-virtual-machine" class="md-nav__link">
+    <span class="md-ellipsis">
+      1. Launch a GPU enabled virtual machine
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-configure-your-computer-for-easy-access" class="md-nav__link">
+    <span class="md-ellipsis">
+      2. Configure your computer for easy access
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-install-software-from-public-repositories-that-are-trusted-by-the-platform" class="md-nav__link">
+    <span class="md-ellipsis">
+      3. Install software from public repositories that are trusted by the platform
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. Install software from public repositories that are trusted by the platform">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-install-nvidia-gpu-drivers" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.1 Install Nvidia GPU drivers
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-clone-the-monai-tutorial-repository-and-create-a-python-virtual-environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      3.2 Clone the MONAI Tutorial repository and create a Python virtual environment
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-upload-own-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      4. Upload own data
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-inspect-data-in-a-remote-desktop" class="md-nav__link">
+    <span class="md-ellipsis">
+      5. Inspect data in a remote desktop
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-use-a-jupyter-notebook-to-train-an-ai-model-and-monitor-progress-graphically" class="md-nav__link">
+    <span class="md-ellipsis">
+      6. Use a Jupyter notebook to train an AI model, and monitor progress graphically
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#monet-bundle-segmentation-with-monai-and-nnu-net" class="md-nav__link">
+    <span class="md-ellipsis">
+      MONet Bundle: Segmentation with MONAI and nnU-Net
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="MONet Bundle: Segmentation with MONAI and nnU-Net">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#example-spleen-segmentation-with-monet-bundle" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example: Spleen Segmentation with MONet Bundle
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#references" class="md-nav__link">
+    <span class="md-ellipsis">
+      References
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="gpu-iaas-with-custom-software-and-data">GPU IaaS with custom software and data</h1>
+<p>Infrastructure as a Service (IaaS) provides resources that you manage yourself.
+It is a service for advanced customers that provides a lot of freedom to those
+with the skills and responsibility to handle it.</p>
+<h2 id="topics">Topics</h2>
+<p>In this example you, as a Customer lead, will go through the steps of installing
+software and uploading data to a GPU virtual machine you create on the AIDA Data
+Hub Data Science Platform (DSP) for sensitive data.</p>
+<p>This example assumes experience with Linux, and authority to initiate expense.</p>
+<h2 id="instructions">Instructions</h2>
+<h3 id="1-launch-a-gpu-enabled-virtual-machine">1. Launch a GPU enabled virtual machine</h3>
+<ol>
+<li>Visit the DSP Horizon customer self-service portal at <a href="https://dsp.aida.scilifelab.se/">https://dsp.aida.scilifelab.se/</a></li>
+<li>Log in using your DSP Horizon credentials.</li>
+<li>Pick the correct secure environment from the project selector drop down menu
+   top left.</li>
+<li>Add your SSH public key to your project by clicking Project &gt; Compute &gt;
+   Key Pairs, then Import Public Key.</li>
+<li>Create a GPU enabled virtual machine by clicking Instances &gt; Launch instance,
+   and</li>
+<li>In Details, Instance name: Put a good name for a compute server,
+      like "Jupyter demo".</li>
+<li>In Source, click the up arrow icon next to an Ubuntu base image (such as Noble 24.04 or Resolute 26.04).</li>
+<li>In Flavor, click the up arrow icon next to a flavor that has GPU.
+      Bigger is more expensive.</li>
+<li>If applicable: In Security Groups, click the up arrow icon next to
+      <code>incoming</code>.</li>
+<li>In Key Pair, verify that your key is allocated.</li>
+<li>Click Launch instance.</li>
+<li>Click Associate Floating IP &gt; IP Address &gt; pick one, fill in in next step.</li>
+<li>Wait for Power State to become Running.</li>
+</ol>
+<h3 id="2-configure-your-computer-for-easy-access">2. Configure your computer for easy access</h3>
+<p>Add to SSH-config (eg <code>~/.ssh/config</code>):</p>
+<div class="highlight"><pre><span></span><code>Host jupyter-demo
+  HostName [associated IP in Horizon]
+  User ubuntu
+  ProxyJump dspgateway
+  ServerAliveInterval 10
+  LocalForward 8888 localhost:8888
+  LocalForward 6006 localhost:6006
+  LocalForward 5901 localhost:5901
+
+Host dspgateway
+  HostName dsp.aida.scilifelab.se
+  User [Identity in LifeScience Login]
+</code></pre></div>
+<p>This sets up your computer to use the DSP SSH access gateway when making SSH
+connections to your VM. By default, DSP rejects SSH connections that are not
+made through the SSH access gateway.</p>
+<p>The configuration has two <code>Host</code> sections, one for the Virtual Machine you
+created (<em>jupyter-demo</em>) and one for the gateway (<em>dspgateway</em>) which you will
+use to "jump" into the secure environment.</p>
+<p>The <code>ProxyJump</code> command in the <em>jupyter-demo</em> section tells SSH that it should
+connect to the VM by jumping through the host <code>dspgateway</code>. SSH authentication
+to this gateway is done using Life Science Login, which is the default
+authentication method for the DSP. To log accesses and match them to
+the correct login account identity, your email address should be set as the
+<code>User</code>, replacing the placeholder <em>[Identity in LifeScience Login]</em>.</p>
+<p><code>ServerAliveInterval</code> makes it easier to maintain a connection, and to detect
+when it has gone stale.</p>
+<p>The <code>LocalForwards</code> define SSH secured port forwards. They connect ports on your
+computer with ports on your VM in the secure environment. They allow you to work
+with Jupyter notebooks, TensorBoard, and VNC remote desktop running on the VM in
+your secure environment as if though they were running on your computer.</p>
+<h3 id="3-install-software-from-public-repositories-that-are-trusted-by-the-platform">3. Install software from public repositories that are trusted by the platform</h3>
+<p>DSP secure environments block connections by default. However, DSP provides an
+inspecting http proxy that enables downloading software and security updates
+from public repositories that are trusted by AIDA Data Hub. DSP data science
+images are preconfigured to make transparent use of this proxy, as demonstrated
+in this next step.</p>
+<p>To configure the VM to use the DSP proxy, run the following command:</p>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>http://10.253.254.250/<span class="w"> </span><span class="p">|</span><span class="w"> </span>bash
+</code></pre></div>
+<p>If you want to inspect the script, you can run:</p>
+<div class="highlight"><pre><span></span><code>curl<span class="w"> </span>http://10.253.254.250/<span class="w"> </span>&gt;<span class="w"> </span>dspconfigscript
+cat<span class="w"> </span>dspconfigscript
+</code></pre></div>
+<p>and then run:</p>
+<div class="highlight"><pre><span></span><code>bash<span class="w"> </span>dspconfigscript
+</code></pre></div>
+<h4 id="31-install-nvidia-gpu-drivers">3.1 Install Nvidia GPU drivers</h4>
+<p>In order to be able to use the GPU, you need to install the Nvidia GPU drivers, we recommend installing version 580.</p>
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>apt<span class="w"> </span>update
+sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>nvidia-driver-580
+</code></pre></div>
+<h4 id="32-clone-the-monai-tutorial-repository-and-create-a-python-virtual-environment">3.2 Clone the MONAI Tutorial repository and create a Python virtual environment</h4>
+<p>In this tutorial we will use the MONAI Tutorial repository, which is a collection of Jupyter notebooks that
+demonstrate how to use the MONAI framework to build AI models specifically targeting medical image tasks
+such as segmentation, classification, and detection.
+Here, we clone the MONAI Tutorial repository and then create a Python virtual environment.
+We do this inside a tmux virtual terminal so that work is kept persistent, so that running processes are not killed if connection is lost.</p>
+<div class="highlight"><pre><span></span><code>ssh<span class="w"> </span>jupyter-demo
+tmux
+git<span class="w"> </span>clone<span class="w"> </span>https://github.com/Project-MONAI/tutorials.git
+<span class="nb">cd</span><span class="w"> </span>tutorials
+sudo<span class="w"> </span>apt<span class="w"> </span>update
+sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>python3-venv
+sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>python3.14-dev
+python3<span class="w"> </span>-m<span class="w"> </span>venv<span class="w"> </span>.venv
+<span class="nb">source</span><span class="w"> </span>.venv/bin/activate
+pip<span class="w"> </span>install<span class="w"> </span>jupyterlab<span class="w"> </span>fire<span class="w"> </span>tensorboard
+</code></pre></div>
+<p><strong>Note</strong>:
+The restrictivity of the DSP inspecting http proxy is continually updated, to
+adjust to updates in public repositories that make them more or less
+appropriate for secure environments. For example, publicly accessible granular
+download counters are increasingly popular despite constituting a trivially
+exploitable data exfiltration method.</p>
+<h3 id="4-upload-own-data">4. Upload own data</h3>
+<p>Most of the notebooks in the MONAI Tutorial have a link to a dataset which can be downloaded or they directly use Python functions to download the data.
+However, within DSP we have restricted outgoing access to the internet, so you need to download the data to your own computer and upload it to your VM.</p>
+<p>For example, the notebook <a href="https://github.com/Project-MONAI/tutorials/blob/main/2d_classification/mednist_tutorial.ipynb">MedNIST_tutorial.ipynb</a> uses the <a href="https://mednist.org/">MedNIST dataset</a> which can be downloaded from <a href="https://github.com/Project-MONAI/MONAI-extra-test-data/releases/download/0.8.1/MedNIST.tar.gz">https://github.com/Project-MONAI/MONAI-extra-test-data/releases/download/0.8.1/MedNIST.tar.gz</a>.</p>
+<h3 id="5-inspect-data-in-a-remote-desktop">5. Inspect data in a remote desktop</h3>
+<ol>
+<li>Install TightVNC and XFCE desktop environment inside the VM.</li>
+</ol>
+<div class="highlight"><pre><span></span><code>sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>tightvncserver<span class="w"> </span>xfce4<span class="w"> </span>xfce4-goodies
+mkdir<span class="w"> </span>~/.vnc
+<span class="nb">echo</span><span class="w"> </span>-e<span class="w"> </span><span class="s1">&#39;#!/bin/sh\nxrdb $HOME/.Xresources\nstartxfce4 &amp;&#39;</span><span class="w"> </span>&gt;<span class="w"> </span>~/.vnc/xstartup
+chmod<span class="w"> </span>+x<span class="w"> </span>~/.vnc/xstartup
+sudo<span class="w"> </span>chown<span class="w"> </span>-R<span class="w"> </span>ubuntu:ubuntu<span class="w"> </span>~/.vnc
+</code></pre></div>
+<ol>
+<li>Start a VNC server on your VM</li>
+</ol>
+<div class="highlight"><pre><span></span><code>tightvncserver<span class="w"> </span>-nolisten<span class="w"> </span>tcp<span class="w"> </span>-localhost<span class="w"> </span>:1
+</code></pre></div>
+<p>This starts a TightVNC server on the node. We also tell it to only listen to TCP
+connections, and only those coming from localhost (this means other computers in
+the same private network can't connect to the VNC server by default).</p>
+<ol>
+<li>On your computer, point your VNC client of choice to <code>localhost:5901</code> to
+   connect through the SSH port forward that you set up in step 2. You can for
+   example use Remmina, which comes preinstalled on Ubuntu.</li>
+</ol>
+<p><strong>Note</strong>: In the future, AIDA Data Hub will provide ways to connect to a remote
+desktop in a secure environment which do not require the user to have server
+administrator skills.</p>
+<h3 id="6-use-a-jupyter-notebook-to-train-an-ai-model-and-monitor-progress-graphically">6. Use a Jupyter notebook to train an AI model, and monitor progress graphically</h3>
+<ol>
+<li>Connect to your VM and start up the demo Jupyter notebook</li>
+</ol>
+<div class="highlight"><pre><span></span><code>ssh<span class="w"> </span>jupyter-demo
+<span class="nb">cd</span><span class="w"> </span>tutorials
+<span class="nb">source</span><span class="w"> </span>.venv/bin/activate
+<span class="nv">MONAI_DATA_DIRECTORY</span><span class="o">=</span>/home/ubuntu/tutorials/Data<span class="w"> </span>jupyter<span class="w"> </span>lab<span class="w"> </span>--NotebookApp.token<span class="o">=</span><span class="s1">&#39;&#39;</span><span class="w"> </span>--NotebookApp.password<span class="o">=</span><span class="s1">&#39;&#39;</span><span class="w"> </span>--NotebookApp.open_browser<span class="o">=</span>False<span class="w"> </span>--NotebookApp.ip<span class="o">=</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="w"> </span>--no-browser
+</code></pre></div>
+<p>Note that we are setting the MONAI_DATA_DIRECTORY to the Data directory in the tutorials repository, the location where we will store the dataset.</p>
+<p>Your Jupyter notebook is now ready to use, as long as you have this SSH
+connection and its port forwards open.</p>
+<p>To follow the <a href="https://github.com/Project-MONAI/tutorials/blob/main/2d_segmentation/spleen_segmentation_tutorial.ipynb">Spleen segmentation tutorial</a>, we need to first download the dataset on our local computer:</p>
+<div class="highlight"><pre><span></span><code>wget<span class="w"> </span>https://msd-for-monai.s3-us-west-2.amazonaws.com/Task09_Spleen.tar
+</code></pre></div>
+<p>Then we can upload the dataset to the VM:</p>
+<div class="highlight"><pre><span></span><code>scp<span class="w"> </span>Task09_Spleen.tar<span class="w"> </span>jupyter-demo:/home/ubuntu/tutorials/Data/
+ssh<span class="w"> </span>jupyter-demo
+<span class="nb">cd</span><span class="w"> </span>tutorials/Data<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>tar<span class="w"> </span>-xvf<span class="w"> </span>Task09_Spleen.tar<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>rm<span class="w"> </span>Task09_Spleen.tar
+</code></pre></div>
+<ol>
+<li>Using a web browser on your computer, visit
+   <a href="http://127.0.0.1:8888">http://127.0.0.1:8888</a> to connect to your Jupyter
+   notebook through the SSH port forward that you set up in step 2. Without it, you
+   will not be able to connect.</li>
+<li>Choose one of the following notebooks:</li>
+<li><a href="http://127.0.0.1:8888/lab/tree/3d_segmentation/spleen_segmentation_3d.ipynb">spleen_segmentation_3d.ipynb</a></li>
+<li><a href="http://127.0.0.1:8888/lab/tree/3d_segmentation/spleen_segmentation_3d_lightning.ipynb">spleen_segmentation_3d_lightning.ipynb</a></li>
+<li><a href="http://127.0.0.1:8888/lab/tree/3d_segmentation/spleen_segmentation_3d_visualization_basic.ipynb">spleen_segmentation_3d_visualization_basic.ipynb</a></li>
+<li>Use Shift+Enter to run the cells manually in sequence. Edit if you like. You
+   are now training AI models on GPU enabled IaaS compute resources in a secure
+   environment on the AIDA Data Hub Data Science Platform.</li>
+<li>Optional: Some of the notebooks create a TensorBoard interface, which can be
+   used to monitor training progress graphically. You can either visualize it in the Jupyter notebook or in a separate browser tab by visiting <a href="http://127.0.0.1:6006">http://127.0.0.1:6006</a>.</li>
+</ol>
+<h2 id="monet-bundle-segmentation-with-monai-and-nnu-net">MONet Bundle: Segmentation with MONAI and nnU-Net</h2>
+<p>The current state-of-the-art in biomedical image segmentation is <strong>nnU-Net</strong> [1]. As a self-configuring deep learning framework, it has been widely adopted across numerous winning challenge entries and serves as the <em>de facto</em> standard benchmark for medical image segmentation tasks.</p>
+<p>Complementing this is <strong>MONAI</strong>, a comprehensive medical image analysis framework. MONAI provides an extensive suite of tools for building and training AI models across various tasks—not just segmentation, but also classification, detection, and more.
+Crucially, it introduces the concept of the <strong>MONAI Bundle</strong>, which streamlines packaging models and deploying them for inference, active learning, and federated learning.</p>
+<p>The <strong>MONet Bundle</strong> bridges these two powerful tools by expanding the MONAI Bundle concept to include nnU-Net. This integration combines the cutting-edge segmentation performance of nnU-Net with the flexibility and adaptability of MONAI, allowing users to leverage nnU-Net as a backend for both robust training and streamlined inference.</p>
+<p><strong>Learn More &amp; Applications:</strong></p>
+<ul>
+<li><strong>Documentation &amp; Code:</strong> Explore the <a href="https://github.com/minnelab/MONet-Bundle">MONet Bundle GitHub Repository</a>.</li>
+<li><strong>Real-World Application:</strong> Read about the application of the <a href="https://link.springer.com/chapter/10.1007/978-3-032-05663-4_10">MONet Bundle for Federated Learning in PET-CT Lymphoma and Brain Tumor Segmentation</a> [2].</li>
+</ul>
+<hr />
+<h3 id="example-spleen-segmentation-with-monet-bundle">Example: Spleen Segmentation with MONet Bundle</h3>
+<p>To get started with an example using the MONet Bundle, download and extract the bundle using the following terminal commands:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Download the MONet Bundle</span>
+wget<span class="w"> </span>https://raw.githubusercontent.com/minnelab/MONet-Bundle/main/MONetBundle.zip
+
+<span class="c1"># Unzip the downloaded bundle</span>
+unzip<span class="w"> </span>MONetBundle.zip
+</code></pre></div>
+<p>Once extracted, follow along with the <a href="https://github.com/minnelab/MONet-Bundle/blob/main/06_monet_bundle.ipynb">06_monet_bundle.ipynb</a> tutorial notebook.</p>
+<h2 id="references">References</h2>
+<p>[1] Isensee, F., Jaeger, P. F., Kohl, S. A., Petersen, J., &amp; Maier-Hein, K. H. (2021). nnU-Net: a self-configuring method for deep learning-based biomedical image segmentation. Nature Methods, 18(2), 203-211.</p>
+<p>[2] Bendazzoli, S. et al. (2026). MONet-FL: Extending nnU-Net with MONAI for Clinical Federated Learning. In: Zamzmi, G., et al. Bridging Regulatory Science and Medical Imaging Evaluation; and Distributed, Collaborative, and Federated Learning. MICCAI 2025. Lecture Notes in Computer Science, vol 16135. Springer, Cham.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        <div class="md-social">
+  
+    
+    
+    
+    
+    <a href="" target="_blank" rel="noopener" title="" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8M97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../../..", "features": ["content.code.copy"], "search": "../../../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.c8b220af.min.js"></script>
+      
+    
+  </body>
+</html>
