@@ -112,7 +112,10 @@ In order to be able to use the GPU, you need to install the Nvidia GPU drivers, 
 ```bash
 sudo apt update
 sudo apt install nvidia-driver-580
+sudo modprobe nvidia
 ```
+
+Run `sudo modprobe nvidia` to load the kernel module and ensure the drivers are active. You may need to reboot after installation; if `modprobe` fails, reboot and run the command again.
 
 #### 3.2 Clone the MONAI Tutorial repository and create a Python virtual environment
 
@@ -147,7 +150,52 @@ exploitable data exfiltration method.
 Most of the notebooks in the MONAI Tutorial have a link to a dataset which can be downloaded or they directly use Python functions to download the data.
 However, within DSP we have restricted outgoing access to the internet, so you need to download the data to your own computer and upload it to your VM.
 
+Create the data directory on the VM before uploading:
+
+```bash
+ssh jupyter-demo
+mkdir -p /home/ubuntu/tutorials/Data
+```
+
+Later steps set `MONAI_DATA_DIRECTORY` to this path, so datasets must be placed here.
+
 For example, the notebook [MedNIST_tutorial.ipynb](https://github.com/Project-MONAI/tutorials/blob/main/2d_classification/mednist_tutorial.ipynb) uses the [MedNIST dataset](https://mednist.org/) which can be downloaded from [https://github.com/Project-MONAI/MONAI-extra-test-data/releases/download/0.8.1/MedNIST.tar.gz](https://github.com/Project-MONAI/MONAI-extra-test-data/releases/download/0.8.1/MedNIST.tar.gz).
+
+#### Transfer data with SFTP
+
+If you configured SSH as in step 2, you can use SFTP through the same `jupyter-demo` host entry (including the `ProxyJump` via `dspgateway`):
+
+```bash
+sftp jupyter-demo
+```
+
+At the `sftp>` prompt, upload a file or directory:
+
+```text
+cd /home/ubuntu/tutorials/Data
+put MedNIST.tar.gz
+bye
+```
+
+To upload a whole folder, use `put -r` from your local machine:
+
+```bash
+sftp jupyter-demo
+```
+
+```text
+cd /home/ubuntu/tutorials/Data
+put -r ./Task09_Spleen
+bye
+```
+
+After uploading archives, extract them on the VM:
+
+```bash
+ssh jupyter-demo
+cd /home/ubuntu/tutorials/Data
+tar -xvf MedNIST.tar.gz
+```
 
 ### 5. Inspect data in a remote desktop
 
