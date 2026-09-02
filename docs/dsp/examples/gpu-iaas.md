@@ -26,7 +26,8 @@ This example assumes experience with Linux, and authority to initiate expense.
    and
    1. In Details, Instance name: Put a good name for a compute server,
       like "Jupyter demo".
-   2. In Source, click the up arrow icon next to an Ubuntu base image (such as Noble 24.04 or Resolute 26.04).
+   2. In Source, click the up arrow icon next to an Ubuntu base image (can be
+      either Ubuntu 24.04 or Ubuntu 26.04).
    3. In Flavor, click the up arrow icon next to a flavor that has GPU.
       Bigger is more expensive.
    4. If applicable: In Security Groups, click the up arrow icon next to
