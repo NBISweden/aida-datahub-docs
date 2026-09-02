@@ -101,7 +101,7 @@ virtual disk) or "Volume Snapshot".
 Typically you will be using Image unless you have a special use case.
 
 To choose what to start from, click the up arrow button to the right in the
-list of available resources. We'll use the "Ubuntu Noble server" image for this
+list of available resources. We'll use the latest "Ubuntu 24.04" image for this
 demonstration.
 
 Once done, advance by clicking the "Next" button to the lower right.
