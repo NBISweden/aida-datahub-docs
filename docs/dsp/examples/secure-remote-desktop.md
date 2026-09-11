@@ -46,18 +46,27 @@ Browser  →  Guacamole (/remote-desktops)  →  RDP  →  Remote Desktop (VM)
    through the Guacamole UI (files land under `/home/ubuntu` via SSH/SFTP on
    the desktop container).
 
-| Service                      | Function                                                                                                                                                                                                                                           |
-| ---------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **keycloak**                 | Identity provider. Hosts the `maia` realm and OpenID client used by Guacamole.                                                                                                                                                                     |
-| **keycloak-init**            | One-shot setup: creates realm `maia`, confidential client, groups mapper, and the demo admin user.                                                                                                                                                 |
-| **postgres-init**            | One-shot schema seed: copies Guacamole JDBC SQL and injects `MAIA_USER_EMAIL` into the RDP seed.                                                                                                                                                   |
-| **postgresql**               | Guacamole database: users, permissions, and the **Remote Desktop** RDP connection.                                                                                                                                                                 |
-| **guacd**                    | Guacamole daemon: speaks RDP (and related protocols); Guacamole proxies the browser session through it.                                                                                                                                            |
-| **guacamole**                | Web UI and gateway at `/remote-desktops`. Prefer OpenID (`EXTENSION_PRIORITY=openid,*`).                                                                                                                                                           |
-| **remote-desktop-home-init** | One-shot: owns `remote-desktop-home` as uid/gid `1000` with mode `700` on `/home/ubuntu`.                                                                                                                                                          |
-| **remote-desktop**           | Ubuntu desktop over RDP (`maiacloudai/ubuntu-xrdp`). Currently packaged with preinstalled **3D Slicer** and **LibreOffice**. Receives RDP from guacd; MinIO credentials and URLs as env vars; SSH/SFTP on port `2022` for Guacamole file transfer. |
-| **minio**                    | S3-compatible object store (API + console) for shared files.                                                                                                                                                                                       |
-| **minio-init**               | One-shot: creates a console user with `consoleAdmin` (root stays for server admin).                                                                                                                                                                |
+- **keycloak**: Identity provider. Hosts the `maia` realm and OpenID client
+  used by Guacamole.
+- **keycloak-init**: One-shot setup: creates realm `maia`, confidential client,
+  groups mapper, and the demo admin user.
+- **postgres-init**: One-shot schema seed: copies Guacamole JDBC SQL and injects
+  `MAIA_USER_EMAIL` into the RDP seed.
+- **postgresql**: Guacamole database: users, permissions, and the
+  **Remote Desktop** RDP connection.
+- **guacd**: Guacamole daemon: speaks RDP (and related protocols); Guacamole
+  proxies the browser session through it.
+- **guacamole**: Web UI and gateway at `/remote-desktops`. Prefer OpenID
+  (`EXTENSION_PRIORITY=openid,*`).
+- **remote-desktop-home-init**: One-shot: owns `remote-desktop-home` as uid/gid
+  `1000` with mode `700` on `/home/ubuntu`.
+- **remote-desktop**: Ubuntu desktop over RDP (`maiacloudai/ubuntu-xrdp`).
+  Currently packaged with preinstalled **3D Slicer** and **LibreOffice**.
+  Receives RDP from guacd; MinIO credentials and URLs as env vars; SSH/SFTP on
+  port `2022` for Guacamole file transfer.
+- **minio**: S3-compatible object store (API + console) for shared files.
+- **minio-init**: One-shot: creates a console user with `consoleAdmin` (root
+  stays for server admin).
 
 **Startup order (simplified):** Keycloak healthy → keycloak-init → postgres-init
 → PostgreSQL → guacd + guacamole → remote-desktop-home-init → MinIO →
@@ -91,33 +100,39 @@ cp .env .env.local
 
 #### Full variable reference
 
-| Variable                                        | Purpose                                                                             |
-| ----------------------------------------------- | ----------------------------------------------------------------------------------- |
-| `KEYCLOAK_ADMIN`                                | Bootstrap admin for Keycloak **master** realm (`/admin`)                            |
-| `KEYCLOAK_ADMIN_PASSWORD`                       | Password for that bootstrap admin                                                   |
-| `KEYCLOAK_HTTP_PORT`                            | Host port for Keycloak (default `8080`)                                             |
-| `POSTGRES_DB`                                   | Guacamole JDBC database name                                                        |
-| `POSTGRES_USER`                                 | DB user Guacamole connects as                                                       |
-| `POSTGRES_PASSWORD`                             | DB password                                                                         |
-| `POSTGRES_PORT`                                 | Host port for PostgreSQL                                                            |
-| `GUACD_PORT`                                    | Host port for guacd (default `4822`)                                                |
-| `GUACAMOLE_HTTP_PORT`                           | Host port for Guacamole (default `8081`)                                            |
-| `OPENID_AUTHORIZATION_ENDPOINT`                 | Browser-facing Keycloak auth URL                                                    |
-| `OPENID_JWKS_ENDPOINT`                          | JWKS URL Guacamole uses to verify tokens (often the Docker service name `keycloak`) |
-| `OPENID_ISSUER`                                 | Issuer claim Guacamole expects (must match Keycloak)                                |
-| `OPENID_CLIENT_ID`                              | OIDC client id (default `maia`)                                                     |
-| `OPENID_CLIENT_SECRET`                          | Confidential client secret for Guacamole / Keycloak                                 |
-| `OPENID_USERNAME_CLAIM_TYPE`                    | Claim used as Guacamole username (default `email`)                                  |
-| `OPENID_REDIRECT_URI`                           | Post-login return URL (Guacamole public URL + `/remote-desktops/`)                  |
-| `MAIA_USER_EMAIL`                               | Demo user in realm `maia`; also Guacamole admin entity name                         |
-| `MAIA_USER_PASSWORD`                            | Password for that demo user                                                         |
-| `REMOTE_DESKTOP_RDP_PORT`                       | Host port for direct RDP (default `3389`)                                           |
-| `REMOTE_DESKTOP_SSH_PORT`                       | Host port for SSH/SFTP used by Guacamole file transfer (default `2022`)             |
-| `REMOTE_DESKTOP_TZ`                             | Timezone inside the remote desktop (default `Etc/UTC`)                              |
-| `MINIO_ROOT_USER` / `MINIO_ROOT_PASSWORD`       | MinIO server root (API admin); used by `minio-init`                                 |
-| `MINIO_CONSOLE_USER` / `MINIO_CONSOLE_PASSWORD` | Console login; also injected into **remote-desktop**                                |
-| `MINIO_API_PORT` / `MINIO_CONSOLE_PORT`         | Host ports for S3 API and console                                                   |
-| `MINIO_ENDPOINT` / `MINIO_CONSOLE_URL`          | URLs passed into the remote desktop for MinIO access                                |
+- `KEYCLOAK_ADMIN`: Bootstrap admin for Keycloak **master** realm (`/admin`)
+- `KEYCLOAK_ADMIN_PASSWORD`: Password for that bootstrap admin
+- `KEYCLOAK_HTTP_PORT`: Host port for Keycloak (default `8080`)
+- `POSTGRES_DB`: Guacamole JDBC database name
+- `POSTGRES_USER`: DB user Guacamole connects as
+- `POSTGRES_PASSWORD`: DB password
+- `POSTGRES_PORT`: Host port for PostgreSQL
+- `GUACD_PORT`: Host port for guacd (default `4822`)
+- `GUACAMOLE_HTTP_PORT`: Host port for Guacamole (default `8081`)
+- `OPENID_AUTHORIZATION_ENDPOINT`: Browser-facing Keycloak auth URL
+- `OPENID_JWKS_ENDPOINT`: JWKS URL Guacamole uses to verify tokens (often the
+  Docker service name `keycloak`)
+- `OPENID_ISSUER`: Issuer claim Guacamole expects (must match Keycloak)
+- `OPENID_CLIENT_ID`: OIDC client id (default `maia`)
+- `OPENID_CLIENT_SECRET`: Confidential client secret for Guacamole / Keycloak
+- `OPENID_USERNAME_CLAIM_TYPE`: Claim used as Guacamole username (default
+  `email`)
+- `OPENID_REDIRECT_URI`: Post-login return URL (Guacamole public URL +
+  `/remote-desktops/`)
+- `MAIA_USER_EMAIL`: Demo user in realm `maia`; also Guacamole admin entity
+  name
+- `MAIA_USER_PASSWORD`: Password for that demo user
+- `REMOTE_DESKTOP_RDP_PORT`: Host port for direct RDP (default `3389`)
+- `REMOTE_DESKTOP_SSH_PORT`: Host port for SSH/SFTP used by Guacamole file
+  transfer (default `2022`)
+- `REMOTE_DESKTOP_TZ`: Timezone inside the remote desktop (default `Etc/UTC`)
+- `MINIO_ROOT_USER` / `MINIO_ROOT_PASSWORD`: MinIO server root (API admin);
+  used by `minio-init`
+- `MINIO_CONSOLE_USER` / `MINIO_CONSOLE_PASSWORD`: Console login; also injected
+  into **remote-desktop**
+- `MINIO_API_PORT` / `MINIO_CONSOLE_PORT`: Host ports for S3 API and console
+- `MINIO_ENDPOINT` / `MINIO_CONSOLE_URL`: URLs passed into the remote desktop
+  for MinIO access
 
 #### Default public URLs (`localhost`)
 
@@ -152,20 +167,25 @@ docker compose logs -f keycloak-init postgres-init remote-desktop-home-init mini
 
 When the stack is up:
 
-| What           | URL / address                          | Default login                                           |
-| -------------- | -------------------------------------- | ------------------------------------------------------- |
-| Guacamole      | http://localhost:8081/remote-desktops/ | Sign in via Keycloak                                    |
-| Keycloak admin | http://localhost:8080/admin            | `KEYCLOAK_ADMIN` / `KEYCLOAK_ADMIN_PASSWORD`            |
-| MinIO console  | http://localhost:9001                  | `MINIO_CONSOLE_USER` / `MINIO_CONSOLE_PASSWORD`         |
-| MinIO API      | http://localhost:9000                  | Root: `MINIO_ROOT_USER` / `MINIO_ROOT_PASSWORD`         |
-| Postgres       | `localhost:5432`                       | `POSTGRES_USER` / `POSTGRES_PASSWORD`, DB `POSTGRES_DB` |
-| Direct RDP     | `localhost:3389`                       | OS user `ubuntu` / `ubuntu` (not the Keycloak account)  |
-| SSH/SFTP       | `localhost:2022`                       | `ubuntu` / `ubuntu` (used by Guacamole SFTP)            |
+- **Guacamole**: <http://localhost:8081/remote-desktops/>
+  Sign in via Keycloak
+- **Keycloak admin**: <http://localhost:8080/admin>
+  `KEYCLOAK_ADMIN` / `KEYCLOAK_ADMIN_PASSWORD`
+- **MinIO console**: <http://localhost:9001>
+  `MINIO_CONSOLE_USER` / `MINIO_CONSOLE_PASSWORD`
+- **MinIO API**: <http://localhost:9000>
+  Root: `MINIO_ROOT_USER` / `MINIO_ROOT_PASSWORD`
+- **Postgres**: `localhost:5432`
+  `POSTGRES_USER` / `POSTGRES_PASSWORD`, DB `POSTGRES_DB`
+- **Direct RDP**: `localhost:3389`
+  OS user `ubuntu` / `ubuntu` (not the Keycloak account)
+- **SSH/SFTP**: `localhost:2022`
+  `ubuntu` / `ubuntu` (used by Guacamole SFTP)
 
 ### 5. First login: Keycloak → Guacamole → Remote Desktop
 
-1. Open Guacamole: http://localhost:8081/remote-desktops/ (adjust the port if
-   you changed `GUACAMOLE_HTTP_PORT` in `.env`).
+1. Open Guacamole at <http://localhost:8081/remote-desktops/> (adjust the port
+   if you changed `GUACAMOLE_HTTP_PORT` in `.env`).
 2. You are redirected to Keycloak (`maia` realm).
 3. Sign in with `MAIA_USER_EMAIL` / `MAIA_USER_PASSWORD` (defaults:
    `admin@maia.dsp.se` / `admin`).
@@ -231,7 +251,8 @@ authToken=$(curl -kX POST $GUACAMOLE_URL/api/tokens \
 -H "Content-Type: application/x-www-form-urlencoded" \
 -d "username=$GUACAMOLE_USERNAME&password=$GUACAMOLE_PASSWORD" | jq -r '.authToken')
 
-curl -kX POST $GUACAMOLE_URL/api/session/data/$GUACAMOLE_DATA_SOURCE/connections?token=${authToken} \
+curl -kX POST \
+$GUACAMOLE_URL/api/session/data/$GUACAMOLE_DATA_SOURCE/connections?token=${authToken}\
      -H "Content-Type: application/json" \
      -d '{
            "parentIdentifier": "ROOT",
@@ -300,7 +321,8 @@ USER_PAYLOAD=$(jq -n \
 )
 
 # Create the user
-curl -skX POST "$GUACAMOLE_URL/api/session/data/$GUACAMOLE_DATA_SOURCE/users?token=${authToken}" \
+curl -skX POST \
+"$GUACAMOLE_URL/api/session/data/$GUACAMOLE_DATA_SOURCE/users?token=${authToken}"\
   -H "Content-Type: application/json" \
   -d "$USER_PAYLOAD"
 
@@ -308,9 +330,9 @@ echo "User $EMAIL created (if not already present)."
 
 
 
-
 # Get Keycloak admin access token
-KC_TOKEN=$(curl -sk -X POST "${KEYCLOAK_URL}/realms/master/protocol/openid-connect/token" \
+KC_TOKEN=$(curl -sk -X POST \
+  "${KEYCLOAK_URL}/realms/master/protocol/openid-connect/token" \
   -d "client_id=admin-cli" \
   -d "username=${KEYCLOAK_ADMIN}" \
   -d "password=${KEYCLOAK_ADMIN_PASSWORD}" \
@@ -322,7 +344,8 @@ if [ -z "$KC_TOKEN" ] || [ "$KC_TOKEN" == "null" ]; then
 fi
 
 # Create user in Keycloak
-CREATE_USER_RESPONSE=$(curl -sk -o /dev/null -w "%{http_code}" -X POST "${KEYCLOAK_URL}/admin/realms/${KEYCLOAK_REALM}/users" \
+CREATE_USER_RESPONSE=$(curl -sk -o /dev/null -w "%{http_code}" -X POST \
+  "${KEYCLOAK_URL}/admin/realms/${KEYCLOAK_REALM}/users" \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $KC_TOKEN" \
   -d "{
@@ -333,7 +356,8 @@ CREATE_USER_RESPONSE=$(curl -sk -o /dev/null -w "%{http_code}" -X POST "${KEYCLO
   }"
 )
 
-if [ "$CREATE_USER_RESPONSE" == "201" ] || [ "$CREATE_USER_RESPONSE" == "409" ]; then
+if [ "$CREATE_USER_RESPONSE" == "201" ] ||
+   [ "$CREATE_USER_RESPONSE" == "409" ]; then
   echo "User $EMAIL exists or was created in Keycloak."
 else
   echo "Failed to create user in Keycloak. HTTP status: $CREATE_USER_RESPONSE"
@@ -341,7 +365,8 @@ else
 fi
 
 # Get user ID from Keycloak
-USER_ID=$(curl -sk -X GET "${KEYCLOAK_URL}/admin/realms/${KEYCLOAK_REALM}/users?username=${EMAIL}" \
+USER_ID=$(curl -sk -X GET \
+  "${KEYCLOAK_URL}/admin/realms/${KEYCLOAK_REALM}/users?username=${EMAIL}" \
   -H "Authorization: Bearer $KC_TOKEN" | jq -r '.[0].id')
 
 if [ -z "$USER_ID" ] || [ "$USER_ID" == "null" ]; then
@@ -351,7 +376,8 @@ fi
 
 # Set Keycloak user password
 PASSWORD_PAYLOAD="{\"type\":\"password\",\"value\":\"$PASSWORD\",\"temporary\":false}"
-curl -sk -X PUT "${KEYCLOAK_URL}/admin/realms/${KEYCLOAK_REALM}/users/${USER_ID}/reset-password" \
+curl -sk -X PUT \
+  "${KEYCLOAK_URL}/admin/realms/${KEYCLOAK_REALM}/users/${USER_ID}/reset-password"\
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer $KC_TOKEN" \
   -d "$PASSWORD_PAYLOAD"
@@ -387,13 +413,16 @@ authToken=$(curl -kX POST $GUACAMOLE_URL/api/tokens \
 -H "Content-Type: application/x-www-form-urlencoded" \
 -d "username=$GUACAMOLE_USERNAME&password=$GUACAMOLE_PASSWORD" | jq -r '.authToken')
 
-USER_IDENTIFIER=$(curl -s -kX GET "$GUACAMOLE_URL/api/session/data/$GUACAMOLE_DATA_SOURCE/users?token=${authToken}" \
+USER_IDENTIFIER=$(curl -s -kX GET \
+"$GUACAMOLE_URL/api/session/data/$GUACAMOLE_DATA_SOURCE/users?token=${authToken}"\
   | jq -r --arg USERNAME "$USERNAME" '.[$USERNAME].username')
 
 echo "USER_IDENTIFIER: $USER_IDENTIFIER"
-CONNECTION_IDENTIFIER=$(curl -s -kX GET "$GUACAMOLE_URL/api/session/data/$GUACAMOLE_DATA_SOURCE/connections?token=${authToken}" \
+CONNECTION_IDENTIFIER=$(curl -s -kX GET \
+"$GUACAMOLE_URL/api/session/data/$GUACAMOLE_DATA_SOURCE/connections?token=${authToken}"\
   | jq -r --arg NAME "$CONNECTION_NAME" '.[] | select(.name == $NAME) | .identifier')
-curl -kX PATCH "$GUACAMOLE_URL/api/session/data/postgresql/users/$USER_IDENTIFIER/permissions?token=${authToken}" \
+curl -kX PATCH \
+"$GUACAMOLE_URL/api/session/data/postgresql/users/$USER_IDENTIFIER/permissions?token=${authToken}"\
      -H "Content-Type: application/json" \
      -d '[
            {
@@ -428,13 +457,16 @@ authToken=$(curl -kX POST $GUACAMOLE_URL/api/tokens \
 -H "Content-Type: application/x-www-form-urlencoded" \
 -d "username=$GUACAMOLE_USERNAME&password=$GUACAMOLE_PASSWORD" | jq -r '.authToken')
 
-USER_IDENTIFIER=$(curl -s -kX GET "$GUACAMOLE_URL/api/session/data/$GUACAMOLE_DATA_SOURCE/users?token=${authToken}" \
+USER_IDENTIFIER=$(curl -s -kX GET \
+"$GUACAMOLE_URL/api/session/data/$GUACAMOLE_DATA_SOURCE/users?token=${authToken}"\
   | jq -r --arg USERNAME "$USERNAME" '.[$USERNAME].username')
 
 echo "USER_IDENTIFIER: $USER_IDENTIFIER"
-CONNECTION_IDENTIFIER=$(curl -s -kX GET "$GUACAMOLE_URL/api/session/data/$GUACAMOLE_DATA_SOURCE/connections?token=${authToken}" \
+CONNECTION_IDENTIFIER=$(curl -s -kX GET \
+"$GUACAMOLE_URL/api/session/data/$GUACAMOLE_DATA_SOURCE/connections?token=${authToken}"\
   | jq -r --arg NAME "$CONNECTION_NAME" '.[] | select(.name == $NAME) | .identifier')
-curl -kX PATCH "$GUACAMOLE_URL/api/session/data/postgresql/users/$USER_IDENTIFIER/permissions?token=${authToken}" \
+curl -kX PATCH \
+"$GUACAMOLE_URL/api/session/data/postgresql/users/$USER_IDENTIFIER/permissions?token=${authToken}"\
      -H "Content-Type: application/json" \
      -d '[
            {
@@ -514,7 +546,3 @@ link_connection_to_user.sh
 ```
 
 For a shorter operational overview, see [README.md](README.md).
-
-```
-
-```
