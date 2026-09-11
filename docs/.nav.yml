@@ -20,5 +20,6 @@ nav:
           - Remote cloud access: dsp/advanced/remote-access.md
       - Examples:
           - GPU IaaS with custom software and data: dsp/examples/gpu-iaas.md
+          - Remote Desktop Access: dsp/examples/secure-remote-desktop.md
   - Contact: dsp/contact.md
   - Service status: https://status.aida.scilifelab.se/
