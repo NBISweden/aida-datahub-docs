@@ -12,7 +12,8 @@ In this example you will:
 2. Configure `.env` and start the stack.
 3. Sign in through Keycloak, open a Guacamole remote desktop, and move files
    with MinIO and Guacamole SFTP (drag and drop).
-4. Add Guacamole connections and users with the helper scripts in the repo root.
+4. Add Guacamole connections and users with the helper scripts in the
+   `secure-remote-desktop/` directory.
 
 This example assumes Docker Engine with Compose v2 and basic familiarity with
 browsers, RDP, and environment variables.
@@ -52,7 +53,7 @@ Browser  →  Guacamole (/remote-desktops)  →  RDP  →  Remote Desktop (VM)
   groups mapper, and the demo admin user.
 - **postgres-init**: One-shot schema seed: copies Guacamole JDBC SQL and injects
   `USER_EMAIL` into the RDP seed.
-- **postgresql**: Guacamole database: users, permissions, and the
+- **PostgreSQL**: Guacamole database: users, permissions, and the
   **Remote Desktop** RDP connection.
 - **guacd**: Guacamole daemon: speaks RDP (and related protocols); Guacamole
   proxies the browser session through it.
@@ -114,7 +115,7 @@ cp test.env .env
 - `OPENID_JWKS_ENDPOINT`: JWKS URL Guacamole uses to verify tokens (often the
   Docker service name `keycloak`)
 - `OPENID_ISSUER`: Issuer claim Guacamole expects (must match Keycloak)
-- `OPENID_CLIENT_ID`: OIDC client id (default `srd`)
+- `OPENID_CLIENT_ID`: OIDC client ID (default `srd`)
 - `OPENID_CLIENT_SECRET`: Confidential client secret for Guacamole / Keycloak
 - `OPENID_USERNAME_CLAIM_TYPE`: Claim used as Guacamole username (default
   `email`)
@@ -205,7 +206,7 @@ From the host or inside the remote desktop, open the MinIO console
 `MINIO_CONSOLE_PASSWORD`. Create buckets and upload or download objects over the
 S3 API (`MINIO_ENDPOINT`). The remote-desktop container receives these
 credentials and URLs as environment variables so tools inside the session can
-talk to MinIO without hard-coding secrets in the image.
+talk to MinIO without hardcoding secrets in the image.
 
 Prefer the console user for day-to-day UI login; keep the root user for
 bootstrap and `mc` admin work.
@@ -224,11 +225,11 @@ storage.
 
 ### 7. Add connections and users with helper scripts
 
-The repo root includes shell helpers that talk to the Guacamole REST API (and,
-for users, Keycloak). They default to Guacamole’s database admin
-`guacadmin` / `guacadmin` and URLs for a local Compose stack. Adjust
-`GUACAMOLE_URL`, credentials, emails, and connection names as needed. Requires
-`curl` and `jq`.
+The `secure-remote-desktop/` directory includes shell helpers that talk to the
+Guacamole REST API (and, for users, Keycloak). They default to Guacamole’s
+database admin `guacadmin` / `guacadmin` and URLs for a local Compose stack.
+Adjust `GUACAMOLE_URL`, credentials, emails, and connection names as needed.
+Requires `curl` and `jq`.
 
 Run them from a machine that can reach Guacamole (and Keycloak for
 `add_user.sh`), typically after `docker compose up -d`.
@@ -394,95 +395,34 @@ EMAIL=user@srd.dsp.se PASSWORD=secret ./add_user.sh
 OpenID username claim is email, so the Guacamole username must match the
 Keycloak email.
 
-#### Link a connection to an admin (READ + ADMINISTER)
+#### Link a connection to a user
 
-Script: [`link_connection_to_admin.sh`](../link_connection_to_admin.sh)
+Shared script: [`link_connection.sh`](secure-remote-desktop/link_connection.sh)
 
-```bash
-#!/bin/bash
+Grants `READ` on `CONNECTION_NAME` (default `Remote-Desktop`). Set
+`GRANT_ADMIN=true` to also grant `ADMINISTER`.
 
-GUACAMOLE_URL="http://localhost:8081/remote-desktops"
-GUACAMOLE_DATA_SOURCE="postgresql"
-GUACAMOLE_USERNAME="guacadmin"
-GUACAMOLE_PASSWORD="guacadmin"
-EMAIL="admin@srd.dsp.se"
-USERNAME="admin@srd.dsp.se"
-CONNECTION_NAME="Remote-Desktop"
+Convenience wrappers:
 
-authToken=$(curl -kX POST $GUACAMOLE_URL/api/tokens \
--H "Content-Type: application/x-www-form-urlencoded" \
--d "username=$GUACAMOLE_USERNAME&password=$GUACAMOLE_PASSWORD" | jq -r '.authToken')
-
-USER_IDENTIFIER=$(curl -s -kX GET \
-"$GUACAMOLE_URL/api/session/data/$GUACAMOLE_DATA_SOURCE/users?token=${authToken}"\
-  | jq -r --arg USERNAME "$USERNAME" '.[$USERNAME].username')
-
-echo "USER_IDENTIFIER: $USER_IDENTIFIER"
-CONNECTION_IDENTIFIER=$(curl -s -kX GET \
-"$GUACAMOLE_URL/api/session/data/$GUACAMOLE_DATA_SOURCE/connections?token=${authToken}"\
-  | jq -r --arg NAME "$CONNECTION_NAME" '.[] | select(.name == $NAME) | .identifier')
-curl -kX PATCH \
-"$GUACAMOLE_URL/api/session/data/postgresql/users/$USER_IDENTIFIER/permissions?token=${authToken}"\
-     -H "Content-Type: application/json" \
-     -d '[
-           {
-             "op": "add",
-             "path": "/connectionPermissions/'"$CONNECTION_IDENTIFIER"'",
-             "value": "READ"
-           },
-           {
-             "op": "add",
-             "path": "/systemPermissions",
-             "value": "ADMINISTER"
-           }
-         ]'
-```
-
-#### Link a connection to a regular user (READ only)
-
-Script: [`link_connection_to_user.sh`](../link_connection_to_user.sh)
+- [`link_connection_to_admin.sh`](secure-remote-desktop/link_connection_to_admin.sh)
+  — demo admin (`admin@srd.dsp.se`) with `GRANT_ADMIN=true`
+- [`link_connection_to_user.sh`](secure-remote-desktop/link_connection_to_user.sh)
+  — demo user (`user@srd.dsp.se`) with `READ` only
 
 ```bash
-#!/bin/bash
+USERNAME=admin@srd.dsp.se GRANT_ADMIN=true ./link_connection.sh
+USERNAME=user@srd.dsp.se ./link_connection.sh
 
-GUACAMOLE_URL="http://localhost:8081/remote-desktops"
-GUACAMOLE_DATA_SOURCE="postgresql"
-GUACAMOLE_USERNAME="guacadmin"
-GUACAMOLE_PASSWORD="guacadmin"
-EMAIL="user@srd.dsp.se"
-USERNAME="user@srd.dsp.se"
-CONNECTION_NAME="Remote-Desktop"
-
-authToken=$(curl -kX POST $GUACAMOLE_URL/api/tokens \
--H "Content-Type: application/x-www-form-urlencoded" \
--d "username=$GUACAMOLE_USERNAME&password=$GUACAMOLE_PASSWORD" | jq -r '.authToken')
-
-USER_IDENTIFIER=$(curl -s -kX GET \
-"$GUACAMOLE_URL/api/session/data/$GUACAMOLE_DATA_SOURCE/users?token=${authToken}"\
-  | jq -r --arg USERNAME "$USERNAME" '.[$USERNAME].username')
-
-echo "USER_IDENTIFIER: $USER_IDENTIFIER"
-CONNECTION_IDENTIFIER=$(curl -s -kX GET \
-"$GUACAMOLE_URL/api/session/data/$GUACAMOLE_DATA_SOURCE/connections?token=${authToken}"\
-  | jq -r --arg NAME "$CONNECTION_NAME" '.[] | select(.name == $NAME) | .identifier')
-curl -kX PATCH \
-"$GUACAMOLE_URL/api/session/data/postgresql/users/$USER_IDENTIFIER/permissions?token=${authToken}"\
-     -H "Content-Type: application/json" \
-     -d '[
-           {
-             "op": "add",
-             "path": "/connectionPermissions/'"$CONNECTION_IDENTIFIER"'",
-             "value": "READ"
-           }
-         ]'
+# or
+./link_connection_to_admin.sh
+./link_connection_to_user.sh
 ```
 
 Typical sequence for a new colleague:
 
 ```bash
 EMAIL=user@srd.dsp.se PASSWORD=secret ./add_user.sh
-# edit USERNAME/EMAIL in link_connection_to_user.sh if needed, then:
-./link_connection_to_user.sh
+USERNAME=user@srd.dsp.se ./link_connection.sh
 ```
 
 ### 8. Useful Compose commands and troubleshooting
@@ -536,9 +476,10 @@ secure-remote-desktop/
   keycloak/
     init-srd-realm.sh    # Realm, client, demo user
 
-# Repo root helpers
+# Helper scripts (same directory)
 add_connection.sh
 add_user.sh
+link_connection.sh
 link_connection_to_admin.sh
 link_connection_to_user.sh
 ```
