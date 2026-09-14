@@ -4,7 +4,6 @@ GUACAMOLE_URL="http://localhost:8081/remote-desktops"
 GUACAMOLE_DATA_SOURCE="postgresql"
 GUACAMOLE_USERNAME="guacadmin"
 GUACAMOLE_PASSWORD="guacadmin"
-EMAIL="user@srd.dsp.se"
 USERNAME="user@srd.dsp.se"
 CONNECTION_NAME="Remote-Desktop"
 
