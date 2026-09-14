@@ -46,12 +46,12 @@ Browser  →  Guacamole (/remote-desktops)  →  RDP  →  Remote Desktop (VM)
    through the Guacamole UI (files land under `/home/ubuntu` via SSH/SFTP on
    the desktop container).
 
-- **keycloak**: Identity provider. Hosts the `maia` realm and OpenID client
+- **keycloak**: Identity provider. Hosts the `srd` realm and OpenID client
   used by Guacamole.
-- **keycloak-init**: One-shot setup: creates realm `maia`, confidential client,
+- **keycloak-init**: One-shot setup: creates realm `srd`, confidential client,
   groups mapper, and the demo admin user.
 - **postgres-init**: One-shot schema seed: copies Guacamole JDBC SQL and injects
-  `MAIA_USER_EMAIL` into the RDP seed.
+  `USER_EMAIL` into the RDP seed.
 - **postgresql**: Guacamole database: users, permissions, and the
   **Remote Desktop** RDP connection.
 - **guacd**: Guacamole daemon: speaks RDP (and related protocols); Guacamole
@@ -113,15 +113,15 @@ cp .env .env.local
 - `OPENID_JWKS_ENDPOINT`: JWKS URL Guacamole uses to verify tokens (often the
   Docker service name `keycloak`)
 - `OPENID_ISSUER`: Issuer claim Guacamole expects (must match Keycloak)
-- `OPENID_CLIENT_ID`: OIDC client id (default `maia`)
+- `OPENID_CLIENT_ID`: OIDC client id (default `srd`)
 - `OPENID_CLIENT_SECRET`: Confidential client secret for Guacamole / Keycloak
 - `OPENID_USERNAME_CLAIM_TYPE`: Claim used as Guacamole username (default
   `email`)
 - `OPENID_REDIRECT_URI`: Post-login return URL (Guacamole public URL +
   `/remote-desktops/`)
-- `MAIA_USER_EMAIL`: Demo user in realm `maia`; also Guacamole admin entity
+- `USER_EMAIL`: Demo user in realm `srd`; also Guacamole admin entity
   name
-- `MAIA_USER_PASSWORD`: Password for that demo user
+- `USER_PASSWORD`: Password for that demo user
 - `REMOTE_DESKTOP_RDP_PORT`: Host port for direct RDP (default `3389`)
 - `REMOTE_DESKTOP_SSH_PORT`: Host port for SSH/SFTP used by Guacamole file
   transfer (default `2022`)
@@ -137,9 +137,9 @@ cp .env .env.local
 #### Default public URLs (`localhost`)
 
 ```env
-OPENID_AUTHORIZATION_ENDPOINT=http://localhost:8080/realms/maia/protocol/openid-connect/auth
-OPENID_JWKS_ENDPOINT=http://localhost:8080/realms/maia/protocol/openid-connect/certs
-OPENID_ISSUER=http://localhost:8080/realms/maia
+OPENID_AUTHORIZATION_ENDPOINT=http://localhost:8080/realms/srd/protocol/openid-connect/auth
+OPENID_JWKS_ENDPOINT=http://localhost:8080/realms/srd/protocol/openid-connect/certs
+OPENID_ISSUER=http://localhost:8080/realms/srd
 OPENID_REDIRECT_URI=http://localhost:8081/remote-desktops/
 MINIO_ENDPOINT=http://localhost:9000
 MINIO_CONSOLE_URL=http://localhost:9001
@@ -186,9 +186,9 @@ When the stack is up:
 
 1. Open Guacamole at <http://localhost:8081/remote-desktops/> (adjust the port
    if you changed `GUACAMOLE_HTTP_PORT` in `.env`).
-2. You are redirected to Keycloak (`maia` realm).
-3. Sign in with `MAIA_USER_EMAIL` / `MAIA_USER_PASSWORD` (defaults:
-   `admin@maia.dsp.se` / `admin`).
+2. You are redirected to Keycloak (`srd` realm).
+3. Sign in with `USER_EMAIL` / `USER_PASSWORD` (defaults:
+   `admin@srd.dsp.se` / `admin`).
 4. After redirect back, open the **Remote Desktop** connection. Guacamole uses
    guacd → RDP → remote-desktop. When the desktop prompts for a local login,
    use **`ubuntu` / `ubuntu`**.
@@ -296,12 +296,12 @@ GUACAMOLE_PASSWORD="guacadmin"
 
 # Create user in Keycloak
 KEYCLOAK_URL="${KEYCLOAK_URL:-http://localhost:8080}"
-KEYCLOAK_REALM="${KEYCLOAK_REALM:-maia}"
+KEYCLOAK_REALM="${KEYCLOAK_REALM:-srd}"
 KEYCLOAK_ADMIN="${KEYCLOAK_ADMIN:-admin}"
 KEYCLOAK_ADMIN_PASSWORD="${KEYCLOAK_ADMIN_PASSWORD:-admin}"
 
 # You can override these by passing them as environment variables or inline:
-EMAIL="${EMAIL:-admin@maia.dsp.se}"
+EMAIL="${EMAIL:-admin@srd.dsp.se}"
 PASSWORD="${PASSWORD:-changeme}"
 
 # Request Guacamole auth token
@@ -388,7 +388,7 @@ echo "User $EMAIL password set in Keycloak."
 Example:
 
 ```bash
-EMAIL=user@maia.dsp.se PASSWORD=secret ./add_user.sh
+EMAIL=user@srd.dsp.se PASSWORD=secret ./add_user.sh
 ```
 
 OpenID username claim is email, so the Guacamole username must match the
@@ -405,8 +405,8 @@ GUACAMOLE_URL="http://localhost:8081/remote-desktops"
 GUACAMOLE_DATA_SOURCE="postgresql"
 GUACAMOLE_USERNAME="guacadmin"
 GUACAMOLE_PASSWORD="guacadmin"
-EMAIL="admin@maia.dsp.se"
-USERNAME="admin@maia.dsp.se"
+EMAIL="admin@srd.dsp.se"
+USERNAME="admin@srd.dsp.se"
 CONNECTION_NAME="Remote-Desktop"
 
 authToken=$(curl -kX POST $GUACAMOLE_URL/api/tokens \
@@ -449,8 +449,8 @@ GUACAMOLE_URL="http://localhost:8081/remote-desktops"
 GUACAMOLE_DATA_SOURCE="postgresql"
 GUACAMOLE_USERNAME="guacadmin"
 GUACAMOLE_PASSWORD="guacadmin"
-EMAIL="user@maia.dsp.se"
-USERNAME="user@maia.dsp.se"
+EMAIL="user@srd.dsp.se"
+USERNAME="user@srd.dsp.se"
 CONNECTION_NAME="Remote-Desktop"
 
 authToken=$(curl -kX POST $GUACAMOLE_URL/api/tokens \
@@ -480,7 +480,7 @@ curl -kX PATCH \
 Typical sequence for a new colleague:
 
 ```bash
-EMAIL=user@maia.dsp.se PASSWORD=secret ./add_user.sh
+EMAIL=user@srd.dsp.se PASSWORD=secret ./add_user.sh
 # edit USERNAME/EMAIL in link_connection_to_user.sh if needed, then:
 ./link_connection_to_user.sh
 ```
@@ -514,7 +514,7 @@ Checklist:
   `OPENID_REDIRECT_URI` must agree; re-run `keycloak-init` so client redirect
   URIs match.
 - **No Remote Desktop connection** — Postgres seed runs only on empty data
-  volumes; `MAIA_USER_EMAIL` must match the OpenID email claim.
+  volumes; `USER_EMAIL` must match the OpenID email claim.
 - **Cannot reach Keycloak from Guacamole login** — Check `KEYCLOAK_HTTP_PORT`
   and that the browser can open `http://localhost:8080`.
 - **MinIO login fails in remote desktop** — Confirm `minio-init` succeeded and
@@ -534,7 +534,7 @@ compose/
   Stack.png               # Architecture diagram
   secure-remote-desktop.md  # This tutorial
   keycloak/
-    init-maia-realm.sh    # Realm, client, demo user
+    init-srd-realm.sh    # Realm, client, demo user
   initdb/
     003-rdp-remote-desktop.sql    # Guacamole admin user + Remote Desktop RDP connection
 
