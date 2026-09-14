@@ -94,8 +94,9 @@ init.
 Copy a personal file if you like:
 
 ```bash
-cd compose
-cp .env .env.local
+gic clone https://github.com/NBISweden/aida-datahub-docs.git
+cd aida-datahub-docs/docs/dsp/examples/secure-remote-desktop
+cp test.env .env
 ```
 
 #### Full variable reference
@@ -152,10 +153,9 @@ include the `/remote-desktops/` path (and trailing slash) in
 
 ### 4. Start the stack
 
-From the `compose` directory:
+From the `secure-remote-desktop` directory:
 
 ```bash
-cd compose
 docker compose up -d
 ```
 
@@ -528,9 +528,9 @@ Checklist:
 ### 9. File map
 
 ```text
-compose/
+secure-remote-desktop/
   docker-compose.yml      # Service definitions and wiring
-  .env                    # Ports, URLs, admin credentials
+  test.env                    # Ports, URLs, admin credentials
   Stack.png               # Architecture diagram
   secure-remote-desktop.md  # This tutorial
   keycloak/
