@@ -15,17 +15,17 @@ CONNECTION_NAME="${CONNECTION_NAME:-Remote-Desktop}"
 GRANT_ADMIN="${GRANT_ADMIN:-false}"
 
 authToken=$(curl -skX POST "$GUACAMOLE_URL/api/tokens" \
-  -H "Content-Type: application/x-www-form-urlencoded" \
-  -d "username=$GUACAMOLE_USERNAME&password=$GUACAMOLE_PASSWORD" | jq -r '.authToken')
+	-H "Content-Type: application/x-www-form-urlencoded" \
+	-d "username=$GUACAMOLE_USERNAME&password=$GUACAMOLE_PASSWORD" | jq -r '.authToken')
 
 USER_IDENTIFIER=$(curl -s -kX GET \
-  "$GUACAMOLE_URL/api/session/data/$GUACAMOLE_DATA_SOURCE/users?token=${authToken}" \
-  | jq -r --arg USERNAME "$USERNAME" '.[$USERNAME].username')
+	"$GUACAMOLE_URL/api/session/data/$GUACAMOLE_DATA_SOURCE/users?token=${authToken}" |
+	jq -r --arg USERNAME "$USERNAME" '.[$USERNAME].username')
 
 echo "USER_IDENTIFIER: $USER_IDENTIFIER"
 CONNECTION_IDENTIFIER=$(curl -s -kX GET \
-  "$GUACAMOLE_URL/api/session/data/$GUACAMOLE_DATA_SOURCE/connections?token=${authToken}" \
-  | jq -r --arg NAME "$CONNECTION_NAME" '.[] | select(.name == $NAME) | .identifier')
+	"$GUACAMOLE_URL/api/session/data/$GUACAMOLE_DATA_SOURCE/connections?token=${authToken}" |
+	jq -r --arg NAME "$CONNECTION_NAME" '.[] | select(.name == $NAME) | .identifier')
 
 PERMISSIONS='[
   {
@@ -36,7 +36,7 @@ PERMISSIONS='[
 ]'
 
 if [ "$GRANT_ADMIN" = "true" ] || [ "$GRANT_ADMIN" = "1" ]; then
-  PERMISSIONS=$(jq -c '. + [{
+	PERMISSIONS=$(jq -c '. + [{
     "op": "add",
     "path": "/systemPermissions",
     "value": "ADMINISTER"
@@ -44,6 +44,6 @@ if [ "$GRANT_ADMIN" = "true" ] || [ "$GRANT_ADMIN" = "1" ]; then
 fi
 
 curl -kX PATCH \
-  "$GUACAMOLE_URL/api/session/data/$GUACAMOLE_DATA_SOURCE/users/$USER_IDENTIFIER/permissions?token=${authToken}" \
-  -H "Content-Type: application/json" \
-  -d "$PERMISSIONS"
+	"$GUACAMOLE_URL/api/session/data/$GUACAMOLE_DATA_SOURCE/users/$USER_IDENTIFIER/permissions?token=${authToken}" \
+	-H "Content-Type: application/json" \
+	-d "$PERMISSIONS"

@@ -8,12 +8,12 @@ CONNECTION_NAME="Remote-Desktop"
 SSH_PORT="2022"
 
 authToken=$(curl -kX POST $GUACAMOLE_URL/api/tokens \
--H "Content-Type: application/x-www-form-urlencoded" \
--d "username=$GUACAMOLE_USERNAME&password=$GUACAMOLE_PASSWORD" | jq -r '.authToken')
+	-H "Content-Type: application/x-www-form-urlencoded" \
+	-d "username=$GUACAMOLE_USERNAME&password=$GUACAMOLE_PASSWORD" | jq -r '.authToken')
 
 curl -kX POST "$GUACAMOLE_URL/api/session/data/$GUACAMOLE_DATA_SOURCE/connections?token=${authToken}" \
-     -H "Content-Type: application/json" \
-     -d '{
+	-H "Content-Type: application/json" \
+	-d '{
            "parentIdentifier": "ROOT",
            "name": "'$CONNECTION_NAME'",
            "protocol": "rdp",
