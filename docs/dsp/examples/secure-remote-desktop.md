@@ -535,8 +535,6 @@ compose/
   secure-remote-desktop.md  # This tutorial
   keycloak/
     init-srd-realm.sh    # Realm, client, demo user
-  initdb/
-    003-rdp-remote-desktop.sql    # Guacamole admin user + Remote Desktop RDP connection
 
 # Repo root helpers
 add_connection.sh

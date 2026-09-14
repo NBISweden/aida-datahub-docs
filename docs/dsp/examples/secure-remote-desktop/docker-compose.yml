@@ -1,0 +1,219 @@
+services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.3
+    container_name: keycloak
+    command: start-dev
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: ${KEYCLOAK_ADMIN:-admin}
+      KC_BOOTSTRAP_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:-admin}
+      KC_HTTP_PORT: 8080
+      KC_HTTP_ENABLED: "true"
+      KC_HOSTNAME_STRICT: "false"
+      KC_HEALTH_ENABLED: "true"
+    ports:
+      - "0.0.0.0:${KEYCLOAK_HTTP_PORT:-8080}:8080"
+    volumes:
+      - keycloak-data:/opt/keycloak/data
+    healthcheck:
+      test: ["CMD-SHELL", "exec 3<>/dev/tcp/127.0.0.1/9000 && echo -e 'GET /health/ready HTTP/1.1\\r\\nHost: localhost\\r\\nConnection: close\\r\\n\\r\\n' >&3 && cat <&3 | grep -q '200'"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 60s
+    restart: unless-stopped
+
+  keycloak-init:
+    image: quay.io/keycloak/keycloak:26.3
+    container_name: keycloak-init
+    depends_on:
+      keycloak:
+        condition: service_healthy
+    entrypoint: ["/bin/bash", "/scripts/init-srd-realm.sh"]
+    volumes:
+      - ./keycloak/init-srd-realm.sh:/scripts/init-srd-realm.sh:ro
+    environment:
+      KEYCLOAK_URL: http://keycloak:8080
+      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN:-admin}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:-admin}
+      KEYCLOAK_REALM: srd
+      OPENID_CLIENT_ID: ${OPENID_CLIENT_ID:-srd}
+      OPENID_CLIENT_SECRET: ${OPENID_CLIENT_SECRET}
+      OPENID_REDIRECT_URI: ${OPENID_REDIRECT_URI:-http://localhost:8081/remote-desktops/}
+      USER_EMAIL: ${USER_EMAIL:-admin@srd.dsp.se}
+      USER_PASSWORD: ${USER_PASSWORD:-admin}
+    restart: "no"
+
+  # Copies Guacamole JDBC schema into the Postgres init directory (same as srd-stack init-schema).
+  postgres-init:
+    image: guacamole/guacamole:latest
+    container_name: postgres-init
+    user: "0"
+    entrypoint:
+      - /bin/sh
+      - -c
+      - |
+        cp /opt/guacamole/extensions/guacamole-auth-jdbc/postgresql/schema/*.sql /initdb/
+        for f in /seed/*.sql; do
+          # Compose turns $$ into $. Single-quoted pattern stays literal; replacement expands.
+          sed 's|$${USER_EMAIL}|'"$${USER_EMAIL}"'|g' "$$f" > "/initdb/$$(basename "$$f")"
+        done
+        chmod 644 /initdb/*.sql
+    environment:
+      USER_EMAIL: ${USER_EMAIL:-admin@srd.dsp.se}
+    volumes:
+      - postgres-initdb:/initdb
+      - ./initdb:/seed:ro
+
+  postgresql:
+    image: postgres:16
+    container_name: postgresql
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-guacamole_db}
+      POSTGRES_USER: ${POSTGRES_USER:-guacamole_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-guacamole_password}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - postgres-initdb:/docker-entrypoint-initdb.d:ro
+    depends_on:
+      postgres-init:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-guacamole_user} -d ${POSTGRES_DB:-guacamole_db}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+    restart: unless-stopped
+
+  guacd:
+    image: guacamole/guacd:latest
+    container_name: guacd
+    ports:
+      - "${GUACD_PORT:-4822}:4822"
+    restart: unless-stopped
+
+  guacamole:
+    image: guacamole/guacamole:latest
+    container_name: guacamole
+    environment:
+      GUACD_HOSTNAME: guacd
+      GUACD_PORT: "4822"
+      POSTGRESQL_ENABLED: "true"
+      POSTGRESQL_HOSTNAME: postgresql
+      POSTGRESQL_PORT: "5432"
+      POSTGRESQL_DATABASE: ${POSTGRES_DB:-guacamole_db}
+      POSTGRESQL_USERNAME: ${POSTGRES_USER:-guacamole_user}
+      POSTGRESQL_PASSWORD: ${POSTGRES_PASSWORD:-guacamole_password}
+      OPENID_ENABLED: "true"
+      OPENID_AUTHORIZATION_ENDPOINT: ${OPENID_AUTHORIZATION_ENDPOINT:-http://localhost:8080/realms/srd/protocol/openid-connect/auth}
+      OPENID_JWKS_ENDPOINT: ${OPENID_JWKS_ENDPOINT:-http://keycloak:8080/realms/srd/protocol/openid-connect/certs}
+      OPENID_ISSUER: ${OPENID_ISSUER:-http://localhost:8080/realms/srd}
+      OPENID_CLIENT_ID: ${OPENID_CLIENT_ID:-srd}
+      OPENID_USERNAME_CLAIM_TYPE: ${OPENID_USERNAME_CLAIM_TYPE:-email}
+      OPENID_REDIRECT_URI: ${OPENID_REDIRECT_URI:-http://localhost:8081/remote-desktops/}
+      EXTENSION_PRIORITY: "openid,*"
+      OPENID_GROUPS_CLAIM_TYPE: "groups"
+      WEBAPP_CONTEXT: /remote-desktops
+    ports:
+      - "0.0.0.0:${GUACAMOLE_HTTP_PORT:-8081}:8080"
+    depends_on:
+      postgresql:
+        condition: service_healthy
+      guacd:
+        condition: service_started
+      keycloak:
+        condition: service_started
+      keycloak-init:
+        condition: service_completed_successfully
+    restart: unless-stopped
+
+  # Ensure the home volume is owned by ubuntu (uid/gid 1000) with mode 700.
+  remote-desktop-home-init:
+    image: alpine:latest
+    container_name: remote-desktop-home-init
+    user: "0"
+    volumes:
+      - remote-desktop-home:/home/ubuntu
+    entrypoint:
+      - /bin/sh
+      - -c
+      - |
+        chown -R 1000:1000 /home/ubuntu
+        chmod 700 /home/ubuntu
+    restart: "no"
+
+  remote-desktop:
+    image: maiacloudai/ubuntu-xrdp:1.0-tools
+    container_name: remote-desktop
+    hostname: remote-desktop
+    shm_size: 1g
+    environment:
+      PUID: "1000"
+      PGID: "1000"
+      TZ: ${REMOTE_DESKTOP_TZ:-Etc/UTC}
+      MINIO_CONSOLE_USER: ${MINIO_CONSOLE_USER}
+      MINIO_CONSOLE_PASSWORD: ${MINIO_CONSOLE_PASSWORD}
+      MINIO_ENDPOINT: ${MINIO_ENDPOINT:-http://minio:9000}
+      MINIO_CONSOLE_URL: ${MINIO_CONSOLE_URL:-http://minio:9001}
+    ports:
+      - "${REMOTE_DESKTOP_RDP_PORT:-3389}:3389"
+      - "${REMOTE_DESKTOP_SSH_PORT:-2022}:2022"
+    volumes:
+      - remote-desktop-home:/home/ubuntu
+    depends_on:
+      remote-desktop-home-init:
+        condition: service_completed_successfully
+      minio:
+        condition: service_healthy
+    restart: unless-stopped
+
+  minio:
+    image: quay.io/minio/minio:latest
+    container_name: minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    ports:
+      - "0.0.0.0:${MINIO_API_PORT:-9000}:9000"
+      - "0.0.0.0:${MINIO_CONSOLE_PORT:-9001}:9001"
+    volumes:
+      - minio-data:/data
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+    restart: unless-stopped
+
+  # Creates a separate console login user (root credentials stay server-only).
+  minio-init:
+    image: quay.io/minio/mc:latest
+    container_name: minio-init
+    depends_on:
+      minio:
+        condition: service_healthy
+    entrypoint:
+      - /bin/sh
+      - |
+        set -e
+        mc alias set local http://minio:9000 "$${MINIO_ROOT_USER}" "$${MINIO_ROOT_PASSWORD}"
+        mc admin user add local "$${MINIO_CONSOLE_USER}" "$${MINIO_CONSOLE_PASSWORD}"
+        mc admin policy attach local consoleAdmin --user "$${MINIO_CONSOLE_USER}" || true
+        echo "MinIO console user ready: $${MINIO_CONSOLE_USER}"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+      MINIO_ACCESS_KEY: ${MINIO_CONSOLE_USER}
+      MINIO_SECRET_KEY: ${MINIO_CONSOLE_PASSWORD}
+    restart: "no"
+
+volumes:
+  keycloak-data:
+  postgres-data:
+  postgres-initdb:
+  remote-desktop-home:
+  minio-data:
