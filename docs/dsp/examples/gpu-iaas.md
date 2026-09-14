@@ -112,6 +112,7 @@ In order to be able to use the GPU, you need to install the Nvidia GPU drivers, 
 ```bash
 sudo apt update
 sudo apt install nvidia-driver-580
+sudo depmod -a
 sudo modprobe nvidia
 ```
 
