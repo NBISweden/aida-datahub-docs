@@ -32,6 +32,7 @@
 <div class="home-nav-div">
 <h4>Data Science Platform</h4>
 <a href="/dsp/getting-started/first-login/"><p>First login to DSP</p></a>
+<a href="/dsp/getting-started/important-to-know/"><p>Important information regarding what's charged</p></a>
 <a href="/dsp/getting-started/vm-access/"><p>Logging into machine</p></a>
 </div>
 <div class="home-nav-div">

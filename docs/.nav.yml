@@ -21,3 +21,4 @@ nav:
       - Examples:
           - GPU IaaS with custom software and data: dsp/examples/gpu-iaas.md
   - Contact: dsp/contact.md
+  - Service status: https://status.aida.scilifelab.se/

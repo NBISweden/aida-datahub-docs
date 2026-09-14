@@ -8,9 +8,9 @@
 
 .home-nav-div {
   box-shadow: 0 0 2px grey;
-  height: 200px;
-  width: 250px;
+  height: auto;
+  width: 280px;
   padding: 15px;
   margin-left: 15px;
-  border-radius: 3px;
+  border-radius: 10px;
 }
