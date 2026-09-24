@@ -1,7 +1,7 @@
-# Secure Remote Desktop 
+# Secure Remote Desktop
 
-This tutorial walks through the deployment of a local **Secure Remote Desktop (SRD)** stack
-using Docker Compose. The stack is defined under `secure-remote-desktop/`.
+This tutorial walks through the deployment of a local **Secure Remote Desktop (SRD)**
+stack using Docker Compose. The stack is defined under `secure-remote-desktop/`.
 
 ## Topics
 
@@ -19,13 +19,14 @@ In this example you will:
 This example assumes Docker Engine with Compose v2 and basic familiarity with
 browsers, RDP, and environment variables.
 
-To install Docker Engine, including Compose, follow the instructions available at [https://docs.docker.com/engine/install/](https://docs.docker.com/engine/install/).
+To install Docker Engine, including Compose, follow the instructions available at
+[Docker Engine installation](https://docs.docker.com/engine/install/).
 
-Additionally, DSP secure environments block connections by default. However, DSP provides an
-inspecting http proxy that enables downloading software and security updates
-from public repositories that are trusted by AIDA Data Hub. DSP data science
-images are preconfigured to make transparent use of this proxy, as demonstrated
-in this next step.
+Additionally, DSP secure environments block connections by default.
+However, DSP provides an inspecting http proxy that enables downloading software
+and security updates from public repositories that are trusted by AIDA Data Hub.
+DSP data science images are preconfigured to make transparent use of this proxy,
+as demonstrated in this next step.
 
 To configure the VM to use the DSP proxy, run the following command:
 
@@ -57,7 +58,8 @@ bash dspconfigscript
 - **keycloak**: Identity provider. Hosts the `srd` realm and OpenID client
   used by Guacamole.
 - **keycloak-init**: One-shot setup: creates realm `srd`, confidential client,
-  groups mapper, and the demo admin user (with default credentials `admin@srd.dsp.se` / `admin`).
+  groups mapper, and the demo admin user
+  (with default credentials `admin@srd.dsp.se` / `admin`).
 - **PostgreSQL**: Guacamole database: users, permissions, and the
   **Remote Desktop** RDP connection.
 - **guacd**: Guacamole daemon: speaks RDP (and related protocols); Guacamole
@@ -84,7 +86,6 @@ bash dspconfigscript
    through the Guacamole UI (files land under `/home/ubuntu` via SSH/SFTP on
    the desktop container).
 
-
 ### 2. Variables configuration
 
 Credentials and URLs live in `.env`. Change them **before the first
@@ -98,7 +99,8 @@ To start from it, download it to your local machine and rename it to `.env`:
 wget https://raw.githubusercontent.com/NBISweden/aida-datahub-docs/main/docs/dsp/examples/secure-remote-desktop/test.env -O .env
 ```
 
-Then, through SFTP, copy it to the VM in the same directory as the `docker-compose.yml` file and edit it the `.env` file to your needs.
+Then, through SFTP, copy it to the VM in the same directory as
+the `docker-compose.yml` file and edit it the `.env` file to your needs.
 
 #### Full variable reference
 
@@ -129,7 +131,6 @@ Then, through SFTP, copy it to the VM in the same directory as the `docker-compo
   transfer (default `2022`)
 - `REMOTE_DESKTOP_TZ`: Timezone inside the remote desktop (default `Etc/UTC`)
 
-
 #### Default public URLs (`localhost`)
 
 ```env
@@ -144,7 +145,6 @@ From the `secure-remote-desktop` directory:
 ```bash
 docker compose up -d
 ```
-
 
 When the stack is up:
 
@@ -170,7 +170,6 @@ When the stack is up:
    guacd → RDP → remote-desktop. If the desktop prompts for a local login,
    use **`ubuntu` / `ubuntu`**.
 
-
 ### 6. File sharing: Guacamole SFTP drag and drop
 
 #### Guacamole SFTP (drag and drop into the desktop)
@@ -191,7 +190,7 @@ database admin `guacadmin` / `guacadmin` and URLs for a local Compose stack.
 Adjust `GUACAMOLE_URL`, credentials, emails, and connection names as needed.
 Requires `curl` and `jq`:
 
-```bash	
+```bash
 sudo apt-get install curl jq
 ```
 
