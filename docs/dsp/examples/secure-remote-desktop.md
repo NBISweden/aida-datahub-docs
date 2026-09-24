@@ -1,8 +1,7 @@
-# Secure Remote Desktop with Guacamole, Keycloak, and MinIO
+# Secure Remote Desktop 
 
-This tutorial walks through the local **Secure Remote Desktop (SRD)** stack
-defined under `compose/`. Docker Compose brings up browser login, remote
-desktop over RDP, and object storage for file sharing on your machine.
+This tutorial walks through the deployment of a local **Secure Remote Desktop (SRD)** stack
+using Docker Compose. The stack is defined under `secure-remote-desktop/`.
 
 ## Topics
 
@@ -11,48 +10,54 @@ In this example you will:
 1. Understand each Compose service and how they connect.
 2. Configure `.env` and start the stack.
 3. Sign in through Keycloak, open a Guacamole remote desktop, and move files
-   with MinIO and Guacamole SFTP (drag and drop).
+   with Guacamole SFTP (drag and drop).
 4. Add Guacamole connections and users with the helper scripts in the
    `secure-remote-desktop/` directory.
 
+## Prerequisites
+
 This example assumes Docker Engine with Compose v2 and basic familiarity with
 browsers, RDP, and environment variables.
+
+To install Docker Engine, including Compose, follow the instructions available at [https://docs.docker.com/engine/install/](https://docs.docker.com/engine/install/).
+
+Additionally, DSP secure environments block connections by default. However, DSP provides an
+inspecting http proxy that enables downloading software and security updates
+from public repositories that are trusted by AIDA Data Hub. DSP data science
+images are preconfigured to make transparent use of this proxy, as demonstrated
+in this next step.
+
+To configure the VM to use the DSP proxy, run the following command:
+
+```remote
+curl http://10.253.254.250/ | bash
+```
+
+If you want to inspect the script, you can run:
+
+```remote
+curl http://10.253.254.250/ > dspconfigscript
+cat dspconfigscript
+```
+
+and then run:
+
+```remote
+bash dspconfigscript
+```
 
 ## Instructions
 
 ### 1. Architecture: components and how Remote Desktop works
 
-```text
-Browser  →  Guacamole (/remote-desktops)  →  RDP  →  Remote Desktop (VM)
-              ↑ Auth (OpenID)                    ↑ S3 / console
-           Keycloak                           MinIO
-              ↑
-           PostgreSQL (Guacamole config & sessions)
-```
+![SRD stack](Stack.jpeg)
 
-![SRD stack: browser → Guacamole → VM, with Keycloak, PostgreSQL, and MinIO](Stack.png)
-
-**End-to-end flow:**
-
-1. You open Guacamole in a browser at `/remote-desktops/`.
-2. Guacamole redirects you to **Keycloak** (OpenID Connect) to authenticate.
-3. After login, Guacamole loads your allowed connections from **PostgreSQL** and
-   asks **guacd** to open an **RDP** session to the **remote-desktop** container
-   (Ubuntu XRDP). The image is currently packaged with preinstalled **3D Slicer**
-   and **LibreOffice**.
-4. Inside the desktop (and from your host), **MinIO** provides S3-compatible
-   storage and a web console for upload and download.
-5. **SFTP is enabled by default** on the Guacamole RDP connection, so you can
-   also drag and drop files from your local machine into the remote desktop
-   through the Guacamole UI (files land under `/home/ubuntu` via SSH/SFTP on
-   the desktop container).
+**Components:**
 
 - **keycloak**: Identity provider. Hosts the `srd` realm and OpenID client
   used by Guacamole.
 - **keycloak-init**: One-shot setup: creates realm `srd`, confidential client,
-  groups mapper, and the demo admin user.
-- **postgres-init**: One-shot schema seed: copies Guacamole JDBC SQL and injects
-  `USER_EMAIL` into the RDP seed.
+  groups mapper, and the demo admin user (with default credentials `admin@srd.dsp.se` / `admin`).
 - **PostgreSQL**: Guacamole database: users, permissions, and the
   **Remote Desktop** RDP connection.
 - **guacd**: Guacamole daemon: speaks RDP (and related protocols); Guacamole
@@ -63,52 +68,47 @@ Browser  →  Guacamole (/remote-desktops)  →  RDP  →  Remote Desktop (VM)
   `1000` with mode `700` on `/home/ubuntu`.
 - **remote-desktop**: Ubuntu desktop over RDP (`maiacloudai/ubuntu-xrdp`).
   Currently packaged with preinstalled **3D Slicer** and **LibreOffice**.
-  Receives RDP from guacd; MinIO credentials and URLs as env vars; SSH/SFTP on
+  Receives RDP from guacd; SSH/SFTP on
   port `2022` for Guacamole file transfer.
-- **minio**: S3-compatible object store (API + console) for shared files.
-- **minio-init**: One-shot: creates a console user with `consoleAdmin` (root
-  stays for server admin).
 
-**Startup order (simplified):** Keycloak healthy → keycloak-init → postgres-init
-→ PostgreSQL → guacd + guacamole → remote-desktop-home-init → MinIO →
-minio-init → remote-desktop.
+**End-to-end flow:**
 
-Persistent data lives in Docker volumes: `keycloak-data`, `postgres-data`,
-`remote-desktop-home`, `minio-data`.
+1. You open Guacamole in a browser at `http://localhost:8081/remote-desktops/`.
+2. Guacamole redirects you to **Keycloak** (OpenID Connect) to authenticate.
+3. After login, Guacamole loads your allowed connections from **PostgreSQL** and
+   asks **guacd** to open an **RDP** session to the **remote-desktop** container
+   (Ubuntu XRDP). The image is currently packaged with preinstalled **3D Slicer**
+   and **LibreOffice**.
+4. **SFTP is enabled by default** on the Guacamole RDP connection, so you can
+   drag and drop files from your local machine into the remote desktop
+   through the Guacamole UI (files land under `/home/ubuntu` via SSH/SFTP on
+   the desktop container).
 
-### 2. Prerequisites
 
-- Docker Engine with Compose v2
-- Free host ports (defaults): `8080` (Keycloak), `8081` (Guacamole), `5432`
-  (Postgres), `9000`/`9001` (MinIO), `3389` (RDP), `2022` (SSH/SFTP), `4822`
-  (guacd)
+### 2. Variables configuration
 
-The default `.env` uses **`localhost`** for all browser-facing OpenID and MinIO
-URLs, so no custom DNS or `/etc/hosts` entry is required.
+Credentials and URLs live in `.env`. Change them **before the first
+`docker compose up`** when possible.
 
-### 3. Configure all `.env` variables
+One `test.env` example is available at [https://github.com/NBISweden/aida-datahub-docs/blob/main/docs/dsp/examples/secure-remote-desktop/test.env](https://github.com/NBISweden/aida-datahub-docs/blob/main/docs/dsp/examples/secure-remote-desktop/test.env).
 
-Credentials and URLs live in `compose/.env`. Change them **before the first
-`docker compose up`** when possible; some values are baked into volumes on first
-init.
-
-Copy a personal file if you like:
+To start from it, download it to your local machine and rename it to `.env`:
 
 ```bash
-gic clone https://github.com/NBISweden/aida-datahub-docs.git
-cd aida-datahub-docs/docs/dsp/examples/secure-remote-desktop
-cp test.env .env
+wget https://raw.githubusercontent.com/NBISweden/aida-datahub-docs/main/docs/dsp/examples/secure-remote-desktop/test.env -O .env
 ```
+
+Then, through SFTP, copy it to the VM in the same directory as the `docker-compose.yml` file and edit it the `.env` file to your needs.
 
 #### Full variable reference
 
-- `KEYCLOAK_ADMIN`: Bootstrap admin for Keycloak **master** realm (`/admin`)
-- `KEYCLOAK_ADMIN_PASSWORD`: Password for that bootstrap admin
+- `KEYCLOAK_ADMIN`: Bootstrap admin for Keycloak **master** realm (default: `admin`)
+- `KEYCLOAK_ADMIN_PASSWORD`: Password for that bootstrap admin (default: `admin`)
 - `KEYCLOAK_HTTP_PORT`: Host port for Keycloak (default `8080`)
-- `POSTGRES_DB`: Guacamole JDBC database name
-- `POSTGRES_USER`: DB user Guacamole connects as
-- `POSTGRES_PASSWORD`: DB password
-- `POSTGRES_PORT`: Host port for PostgreSQL
+- `POSTGRES_DB`: Guacamole JDBC database name (default: `guacamole_db`)
+- `POSTGRES_USER`: DB user Guacamole connects as (default: `guacamole_user`)
+- `POSTGRES_PASSWORD`: DB password (default: `guacamole_password`)
+- `POSTGRES_PORT`: Host port for PostgreSQL (default `5432`)
 - `GUACD_PORT`: Host port for guacd (default `4822`)
 - `GUACAMOLE_HTTP_PORT`: Host port for Guacamole (default `8081`)
 - `OPENID_AUTHORIZATION_ENDPOINT`: Browser-facing Keycloak auth URL
@@ -128,29 +128,14 @@ cp test.env .env
 - `REMOTE_DESKTOP_SSH_PORT`: Host port for SSH/SFTP used by Guacamole file
   transfer (default `2022`)
 - `REMOTE_DESKTOP_TZ`: Timezone inside the remote desktop (default `Etc/UTC`)
-- `MINIO_ROOT_USER` / `MINIO_ROOT_PASSWORD`: MinIO server root (API admin);
-  used by `minio-init`
-- `MINIO_CONSOLE_USER` / `MINIO_CONSOLE_PASSWORD`: Console login; also injected
-  into **remote-desktop**
-- `MINIO_API_PORT` / `MINIO_CONSOLE_PORT`: Host ports for S3 API and console
-- `MINIO_ENDPOINT` / `MINIO_CONSOLE_URL`: URLs passed into the remote desktop
-  for MinIO access
+
 
 #### Default public URLs (`localhost`)
 
 ```env
-OPENID_AUTHORIZATION_ENDPOINT=http://localhost:8080/realms/srd/protocol/openid-connect/auth
-OPENID_JWKS_ENDPOINT=http://localhost:8080/realms/srd/protocol/openid-connect/certs
-OPENID_ISSUER=http://localhost:8080/realms/srd
-OPENID_REDIRECT_URI=http://localhost:8081/remote-desktops/
-MINIO_ENDPOINT=http://localhost:9000
-MINIO_CONSOLE_URL=http://localhost:9001
+REMOTE_DESKTOP_URL=http://localhost:8081/remote-desktops/
+KEYCLOAK_URL=http://localhost:8080
 ```
-
-Keep **issuer**, **authorization**, and **redirect** URLs consistent with what
-the **browser** uses (`localhost` and the ports above by default). Always
-include the `/remote-desktops/` path (and trailing slash) in
-`OPENID_REDIRECT_URI`.
 
 ### 4. Start the stack
 
@@ -160,11 +145,6 @@ From the `secure-remote-desktop` directory:
 docker compose up -d
 ```
 
-Watch first-boot init:
-
-```bash
-docker compose logs -f keycloak-init postgres-init remote-desktop-home-init minio-init
-```
 
 When the stack is up:
 
@@ -172,10 +152,6 @@ When the stack is up:
   Sign in via Keycloak
 - **Keycloak admin**: <http://localhost:8080/admin>
   `KEYCLOAK_ADMIN` / `KEYCLOAK_ADMIN_PASSWORD`
-- **MinIO console**: <http://localhost:9001>
-  `MINIO_CONSOLE_USER` / `MINIO_CONSOLE_PASSWORD`
-- **MinIO API**: <http://localhost:9000>
-  Root: `MINIO_ROOT_USER` / `MINIO_ROOT_PASSWORD`
 - **Postgres**: `localhost:5432`
   `POSTGRES_USER` / `POSTGRES_PASSWORD`, DB `POSTGRES_DB`
 - **Direct RDP**: `localhost:3389`
@@ -191,25 +167,11 @@ When the stack is up:
 3. Sign in with `USER_EMAIL` / `USER_PASSWORD` (defaults:
    `admin@srd.dsp.se` / `admin`).
 4. After redirect back, open the **Remote Desktop** connection. Guacamole uses
-   guacd → RDP → remote-desktop. When the desktop prompts for a local login,
+   guacd → RDP → remote-desktop. If the desktop prompts for a local login,
    use **`ubuntu` / `ubuntu`**.
 
-That Keycloak user is also seeded in Postgres as a Guacamole administrator with
-rights on the Remote Desktop connection.
 
-### 6. File sharing: MinIO and Guacamole SFTP drag and drop
-
-#### MinIO (object storage)
-
-From the host or inside the remote desktop, open the MinIO console
-(`MINIO_CONSOLE_URL`) and sign in with `MINIO_CONSOLE_USER` /
-`MINIO_CONSOLE_PASSWORD`. Create buckets and upload or download objects over the
-S3 API (`MINIO_ENDPOINT`). The remote-desktop container receives these
-credentials and URLs as environment variables so tools inside the session can
-talk to MinIO without hardcoding secrets in the image.
-
-Prefer the console user for day-to-day UI login; keep the root user for
-bootstrap and `mc` admin work.
+### 6. File sharing: Guacamole SFTP drag and drop
 
 #### Guacamole SFTP (drag and drop into the desktop)
 
@@ -219,9 +181,7 @@ a parallel SFTP channel to the remote desktop (`sftp-hostname` /
 
 In the Guacamole session you can drag and drop files from your local machine
 into the remote desktop; they appear under the user’s home directory without a
-separate SFTP client. This is complementary to MinIO: SFTP is for files that
-should land directly on the desktop filesystem; MinIO is for shared object
-storage.
+separate SFTP client.
 
 ### 7. Add connections and users with helper scripts
 
@@ -229,14 +189,18 @@ The `secure-remote-desktop/` directory includes shell helpers that talk to the
 Guacamole REST API (and, for users, Keycloak). They default to Guacamole’s
 database admin `guacadmin` / `guacadmin` and URLs for a local Compose stack.
 Adjust `GUACAMOLE_URL`, credentials, emails, and connection names as needed.
-Requires `curl` and `jq`.
+Requires `curl` and `jq`:
+
+```bash	
+sudo apt-get install curl jq
+```
 
 Run them from a machine that can reach Guacamole (and Keycloak for
 `add_user.sh`), typically after `docker compose up -d`.
 
 #### Add an RDP connection (SFTP enabled)
 
-Script: [`add_connection.sh`](../add_connection.sh)
+Script: [`add_connection.sh`](secure-remote-desktop/add_connection.sh)
 
 ```bash
 #!/bin/bash
@@ -284,7 +248,7 @@ browser drag-and-drop file transfer into the remote desktop.
 
 #### Add a user (Guacamole + Keycloak)
 
-Script: [`add_user.sh`](../add_user.sh)
+Script: [`add_user.sh`](secure-remote-desktop/add_user.sh)
 
 ```bash
 #!/bin/bash
@@ -457,8 +421,6 @@ Checklist:
   volumes; `USER_EMAIL` must match the OpenID email claim.
 - **Cannot reach Keycloak from Guacamole login** — Check `KEYCLOAK_HTTP_PORT`
   and that the browser can open `http://localhost:8080`.
-- **MinIO login fails in remote desktop** — Confirm `minio-init` succeeded and
-  recreate `remote-desktop` after credential changes.
 - **Home permission errors** — Confirm `remote-desktop-home-init` completed
   (`chown 1000:1000`, mode `700` on `/home/ubuntu`).
 - **SFTP drag and drop fails** — Confirm the connection has `enable-sftp`,
@@ -468,11 +430,11 @@ Checklist:
 ### 9. File map
 
 ```text
+secure-remote-desktop.md  # This tutorial
 secure-remote-desktop/
   docker-compose.yml      # Service definitions and wiring
   test.env                    # Ports, URLs, admin credentials
   Stack.png               # Architecture diagram
-  secure-remote-desktop.md  # This tutorial
   keycloak/
     init-srd-realm.sh    # Realm, client, demo user
 
@@ -483,5 +445,3 @@ link_connection.sh
 link_connection_to_admin.sh
 link_connection_to_user.sh
 ```
-
-For a shorter operational overview, see [README.md](README.md).
