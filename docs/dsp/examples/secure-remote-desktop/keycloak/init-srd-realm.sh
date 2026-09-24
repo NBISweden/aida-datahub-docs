@@ -40,7 +40,7 @@ else
 		-s sslRequired=none \
 		-s loginWithEmailAllowed=true \
 		-s registrationEmailAsUsername=false \
-		-s displayName="SRD"
+		-s displayName="$(tr '[:lower:]' '[:upper:]' <<< "${REALM:0:1}")${REALM:1}"
 fi
 
 existing_client=""
