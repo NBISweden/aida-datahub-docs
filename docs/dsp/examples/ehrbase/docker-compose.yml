@@ -2,7 +2,6 @@
 # Minimal setup for a running EHRbase. Contains the server component as well as the required postgres instance.
 #
 services:
-
   #
   # EHRBase container. see `.env.ehrbase` for configuration details.
   #
@@ -42,7 +41,7 @@ services:
       EHRBASE_USER: ehrbase_restricted
       EHRBASE_PASSWORD: ehrbase_restricted
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 5s
       timeout: 5s
       retries: 12
@@ -69,4 +68,4 @@ services:
       - ehrbase-net
 
 networks:
-  ehrbase-net: { }
+  ehrbase-net: {}
