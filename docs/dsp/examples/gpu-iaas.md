@@ -89,20 +89,20 @@ in this next step.
 
 To configure the VM to use the DSP proxy, run the following command:
 
-```bash
+```remote
 curl http://10.253.254.250/ | bash
 ```
 
 If you want to inspect the script, you can run:
 
-```bash
+```remote
 curl http://10.253.254.250/ > dspconfigscript
 cat dspconfigscript
 ```
 
 and then run:
 
-```bash
+```remote
 bash dspconfigscript
 ```
 
@@ -110,7 +110,7 @@ bash dspconfigscript
 
 In order to be able to use the GPU, you need to install the Nvidia GPU drivers, we recommend installing version 580.
 
-```bash
+```remote
 sudo apt update
 sudo apt install nvidia-driver-580
 sudo depmod -a
@@ -125,17 +125,14 @@ In this tutorial we will use the MONAI Tutorial repository, which is a collectio
 demonstrate how to use the MONAI framework to build AI models specifically targeting medical image tasks
 such as segmentation, classification, and detection.
 Here, we clone the MONAI Tutorial repository and then create a Python virtual environment.
-We do this inside a tmux virtual terminal so that work is kept persistent, so that running processes are not killed if connection is lost.
 
-```bash
-ssh jupyter-demo
-tmux
+```remote
 git clone https://github.com/Project-MONAI/tutorials.git
 cd tutorials
 sudo apt update
 sudo apt install python3-venv
-sudo apt install python3.14-dev
-python3 -m venv .venv
+sudo apt install python3.12-dev
+python3.12 -m venv .venv
 source .venv/bin/activate
 pip install jupyterlab fire tensorboard
 ```
@@ -154,8 +151,7 @@ However, within DSP we have restricted outgoing access to the internet, so you n
 
 Create the data directory on the VM before uploading:
 
-```bash
-ssh jupyter-demo
+```remote
 mkdir -p /home/ubuntu/tutorials/Data
 ```
 
@@ -167,13 +163,13 @@ For example, the notebook [MedNIST_tutorial.ipynb](https://github.com/Project-MO
 
 If you configured SSH as in step 2, you can use SFTP through the same `jupyter-demo` host entry (including the `ProxyJump` via `dspgateway`):
 
-```bash
+```local
 sftp jupyter-demo
 ```
 
 At the `sftp>` prompt, upload a file or directory:
 
-```text
+```local
 cd /home/ubuntu/tutorials/Data
 put MedNIST.tar.gz
 bye
@@ -181,11 +177,11 @@ bye
 
 To upload a whole folder, use `put -r` from your local machine:
 
-```bash
+```local
 sftp jupyter-demo
 ```
 
-```text
+```local
 cd /home/ubuntu/tutorials/Data
 put -r ./Task09_Spleen
 bye
@@ -193,8 +189,7 @@ bye
 
 After uploading archives, extract them on the VM:
 
-```bash
-ssh jupyter-demo
+```remote
 cd /home/ubuntu/tutorials/Data
 tar -xvf MedNIST.tar.gz
 ```
@@ -203,7 +198,7 @@ tar -xvf MedNIST.tar.gz
 
 1. Install TightVNC and XFCE desktop environment inside the VM.
 
-```bash
+```remote
 sudo apt install tightvncserver xfce4 xfce4-goodies
 mkdir ~/.vnc
 echo -e '#!/bin/sh\nxrdb $HOME/.Xresources\nstartxfce4 &' > ~/.vnc/xstartup
@@ -213,7 +208,7 @@ sudo chown -R ubuntu:ubuntu ~/.vnc
 
 2. Start a VNC server on your VM
 
-```bash
+```remote
 tightvncserver -nolisten tcp -localhost :1
 ```
 
@@ -233,8 +228,7 @@ administrator skills.
 
 1. Connect to your VM and start up the demo Jupyter notebook
 
-```bash
-ssh jupyter-demo
+```remote
 cd tutorials
 source .venv/bin/activate
 MONAI_DATA_DIRECTORY=/home/ubuntu/tutorials/Data jupyter lab --NotebookApp.token='' --NotebookApp.password='' --NotebookApp.open_browser=False --NotebookApp.ip='127.0.0.1' --no-browser
@@ -247,15 +241,19 @@ connection and its port forwards open.
 
 To follow the [Spleen segmentation tutorial](https://github.com/Project-MONAI/tutorials/blob/main/2d_segmentation/spleen_segmentation_tutorial.ipynb), we need to first download the dataset on our local computer:
 
-```bash
+```local
 wget https://msd-for-monai.s3-us-west-2.amazonaws.com/Task09_Spleen.tar
 ```
 
 Then we can upload the dataset to the VM:
 
-```bash
+```local
 scp Task09_Spleen.tar jupyter-demo:/home/ubuntu/tutorials/Data/
-ssh jupyter-demo
+```
+
+And extract it on the VM:
+
+```remote
 cd tutorials/Data && tar -xvf Task09_Spleen.tar && rm Task09_Spleen.tar
 ```
 
@@ -293,7 +291,7 @@ The **MONet Bundle** bridges these two powerful tools by expanding the MONAI Bun
 
 To get started with an example using the MONet Bundle, download and extract the bundle using the following terminal commands:
 
-```bash
+```remote
 # Download the MONet Bundle
 wget https://raw.githubusercontent.com/minnelab/MONet-Bundle/main/MONetBundle.zip
 
