@@ -128,7 +128,7 @@ Authentication is **off** unless you set `SECURITY_AUTHTYPE`. Typical choices:
 Database and Keycloak passwords are still the upstream defaults in
 `docker-compose.yml`. Change them for any shared or long-lived VM.
 
-### 3. Provide the Keycloak realm import
+### 3. Provide the Keycloak realm import [Optional]
 
 Compose mounts `./tests/keycloak/import`. Fetch that directory from the
 upstream repository (same source as the Compose file):
