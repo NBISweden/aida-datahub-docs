@@ -207,42 +207,6 @@ cd /home/ubuntu/tutorials/Data
 tar -xvf MedNIST.tar.gz
 ```
 
-#### Transfer data with SFTP
-
-If you configured SSH as in step 2, you can use SFTP through the same `jupyter-demo` host entry (including the `ProxyJump` via `dspgateway`):
-
-```bash
-sftp jupyter-demo
-```
-
-At the `sftp>` prompt, upload a file or directory:
-
-```text
-cd /home/ubuntu/tutorials/Data
-put MedNIST.tar.gz
-bye
-```
-
-To upload a whole folder, use `put -r` from your local machine:
-
-```bash
-sftp jupyter-demo
-```
-
-```text
-cd /home/ubuntu/tutorials/Data
-put -r ./Task09_Spleen
-bye
-```
-
-After uploading archives, extract them on the VM:
-
-```bash
-ssh jupyter-demo
-cd /home/ubuntu/tutorials/Data
-tar -xvf MedNIST.tar.gz
-```
-
 ### 5. Inspect data in a remote desktop
 
 1. Install TightVNC and XFCE desktop environment inside the VM.
