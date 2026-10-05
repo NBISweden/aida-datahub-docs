@@ -1,3 +1,55 @@
+/* ── Code block execution context labels ─────────────────────────────────── */
+
+/* Remote: run on the VM / server */
+.remote-block {
+  position: relative;
+  margin: 1em 0;
+  border-left: 4px solid #E65100;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.remote-block::before {
+  content: "🖥  Remote — run on the VM";
+  display: block;
+  background-color: #E65100;
+  color: #fff;
+  font-size: 0.72em;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  padding: 3px 10px;
+}
+
+.remote-block .highlight {
+  margin: 0;
+}
+
+/* Local: run on your own computer */
+.local-block {
+  position: relative;
+  margin: 1em 0;
+  border-left: 4px solid #1565C0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.local-block::before {
+  content: "💻  Local — run on your computer";
+  display: block;
+  background-color: #1565C0;
+  color: #fff;
+  font-size: 0.72em;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  padding: 3px 10px;
+}
+
+.local-block .highlight {
+  margin: 0;
+}
+
+/* ── Navigation cards ────────────────────────────────────────────────────── */
+
 .home-nav {
   height: auto;
   width: auto;
