@@ -48,7 +48,6 @@ EHRbase v2. On first start it creates the `ehrbase` database and the admin /
 restricted users that the server expects. A health check (`pg_isready`) gates
 EHRbase startup.
 
-
 Do not publish `5432` beyond the VM unless you have a specific reason. Other
 containers reach Postgres on the internal network as hostname `ehrdb`.
 
@@ -78,7 +77,7 @@ Clone this repository and enter the directory:
 cd docs/dsp/examples/ehrbase
 ```
 
-All following commands are run from `compose/`.
+All following commands are run from `ehrbase/`.
 
 ### 2. Review credentials and settings
 
