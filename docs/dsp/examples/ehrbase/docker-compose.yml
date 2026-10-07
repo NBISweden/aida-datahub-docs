@@ -1,0 +1,82 @@
+#
+# Minimal setup for a running EHRbase. Contains the server component as well as the required postgres instance.
+#
+services:
+  #
+  # EHRBase container. see `.env.ehrbase` for configuration details.
+  #
+  ehrbase:
+    image: ${EHRBASE_IMAGE:-ehrbase/ehrbase:next}
+    env_file:
+      - .env.ehrbase
+    environment:
+      DB_URL: jdbc:postgresql://ehrdb:5432/ehrbase
+      DB_USER_ADMIN: ehrbase
+      DB_PASS_ADMIN: ehrbase
+      DB_USER: ehrbase_restricted
+      DB_PASS: ehrbase_restricted
+    links:
+      - ehrdb
+    depends_on:
+      ehrdb:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    networks:
+      - ehrbase-net
+
+  #
+  # TLS reverse proxy. Start with: docker compose --profile tls up -d
+  # Place fullchain.pem and privkey.pem in ./certs/
+  #
+  proxy:
+    image: nginx:1.27-alpine
+    profiles: ["tls"]
+    depends_on:
+      - ehrbase
+    env_file:
+      - .env.ehrbase
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf.template:ro
+      - ./certs:/etc/nginx/certs:ro
+    entrypoint:
+      - /bin/sh
+      - -c
+      - |
+        envsubst '$$SERVER_NODENAME' < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf
+        exec nginx -g 'daemon off;'
+    networks:
+      - ehrbase-net
+
+  #
+  # Pre-configured ehrbase postgres.
+  #
+  ehrdb:
+    image: ${EHRBASE_POSTGRES_IMAGE:-ehrbase/ehrbase-v2-postgres:16.2}
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      EHRBASE_USER_ADMIN: ehrbase
+      EHRBASE_PASSWORD_ADMIN: ehrbase
+      EHRBASE_USER: ehrbase_restricted
+      EHRBASE_PASSWORD: ehrbase_restricted
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+    ports:
+      - "5432:5432"
+    networks:
+      - ehrbase-net
+    volumes:
+      - ehrdb-data:/var/lib/postgresql/data
+
+networks:
+  ehrbase-net: {}
+
+volumes:
+  ehrdb-data: {}
