@@ -26,8 +26,6 @@ PostgreSQL is healthy and Keycloak has started before it comes up.
   Repository (REST API, AQL, Swagger UI)
 - **ehrdb** (`ehrbase/ehrbase-v2-postgres:16.2`, host port `5432`): PostgreSQL
   16, preconfigured with EHRbase roles and schema
-- **keycloak** (`quay.io/keycloak/keycloak:24.0.3`, host port `8081`): Identity
-  provider (OAuth2 / OpenID Connect), started in `start-dev` with realm import
 
 ### EHRbase (`ehrbase`)
 
@@ -50,31 +48,9 @@ EHRbase v2. On first start it creates the `ehrbase` database and the admin /
 restricted users that the server expects. A health check (`pg_isready`) gates
 EHRbase startup.
 
-This service is **not** given a named volume in the upstream Compose file.
-Removing the container (for example `docker compose down -v`) **deletes
-clinical data**. Add a volume under `ehrdb` if you need persistence (see
-[Persist database data](#persist-database-data)).
 
 Do not publish `5432` beyond the VM unless you have a specific reason. Other
 containers reach Postgres on the internal network as hostname `ehrdb`.
-
-### Keycloak (`keycloak`)
-
-Keycloak provides the OAuth2 realm that EHRbase can use when
-`SECURITY_AUTHTYPE=OAUTH`. It listens on container port `8080` under path
-`/auth`, mapped to host **8081**.
-
-- Admin console: `http://<vm-host>:8081/auth`
-- Default admin: `admin` / `admin`
-- Default issuer URI used by EHRbase OAuth:
-  `http://localhost:8081/auth/realms/ehrbase`
-
-Keycloak is started with `start-dev --import-realm` and mounts
-`./tests/keycloak/import` (realm JSON from the EHRbase test fixtures). That
-path is relative to this `compose/` directory; you must copy the upstream
-import files before the first start (step 3 below).
-
-`start-dev` is for evaluation and development, not a hardened production IdP.
 
 ---
 
@@ -128,28 +104,7 @@ Authentication is **off** unless you set `SECURITY_AUTHTYPE`. Typical choices:
 Database and Keycloak passwords are still the upstream defaults in
 `docker-compose.yml`. Change them for any shared or long-lived VM.
 
-### 3. Provide the Keycloak realm import [Optional]
-
-Compose mounts `./tests/keycloak/import`. Fetch that directory from the
-upstream repository (same source as the Compose file):
-
-```bash
-mkdir -p tests/keycloak
-curl -fsSL -o /tmp/ehrbase-develop.tar.gz \
-  https://github.com/ehrbase/ehrbase/archive/refs/heads/develop.tar.gz
-tar -xzf /tmp/ehrbase-develop.tar.gz \
-  --strip-components=3 \
-  -C tests/keycloak \
-  --wildcards 'ehrbase-develop/tests/keycloak/import/*'
-rm /tmp/ehrbase-develop.tar.gz
-ls tests/keycloak/import
-```
-
-Alternatively, clone [ehrbase/ehrbase](https://github.com/ehrbase/ehrbase) and
-copy `tests/keycloak/import` into this folder so the path is
-`compose/tests/keycloak/import`.
-
-### 4. Start the stack
+### 3. Start the stack
 
 ```bash
 docker compose pull
@@ -162,7 +117,7 @@ Wait until EHRbase logs show that the application has started (Spring Boot
 “Started …” line). First start can take a few minutes while images are pulled
 and the database is initialized.
 
-### 5. Check that it is up
+### 4. Check that EHRbase is up
 
 From the VM:
 
@@ -180,12 +135,11 @@ hostname/IP from your laptop if ports are reachable):
   `http://<vm-host>:8080/ehrbase/swagger-ui/index.html`
 - **Actuator health**:
   `http://<vm-host>:8080/ehrbase/management/health`
-- **Keycloak**: `http://<vm-host>:8081/auth`
 
 If Basic Auth is enabled, use `ehrbase-user` / `SuperSecretPassword` (or the
 values you set).
 
-### 6. Stop, restart, or tear down
+### 5. Stop, restart, or tear down
 
 ```bash
 docker compose stop          # keep containers and data
@@ -229,3 +183,58 @@ docker compose up -d
 
 `ehrbase:next` tracks upstream development and may change without notice.
 Prefer a release tag on a VM you intend to keep.
+
+---
+
+## Serve EHRbase on a domain with TLS
+
+EHRbase itself speaks HTTP on port `8080`. To serve it as
+`https://your.domain/...`, terminate TLS in front of the stack with the
+included nginx proxy and the certificate you already have.
+
+On AIDA DSP, follow
+[Exposing HTTPS services](../../getting-started/exposing-https-services.md)
+first (domain, CNAME or namespaced name, floating IP, security group from
+`10.253.254.248/29`, then the cert and key from support). This recipe uses
+those files on the VM.
+
+### 1. Place the certificate files
+
+Copy the certificate chain and private key into `certs/` in this folder,
+using these names:
+
+```bash
+cp /path/to/fullchain.pem certs/fullchain.pem
+cp /path/to/privkey.pem   certs/privkey.pem
+chmod 600 certs/privkey.pem
+```
+
+If your files have other names (for example `cert.crt` and `cert.key`), copy
+or symlink them to `fullchain.pem` and `privkey.pem`. `fullchain.pem` must
+include the leaf certificate and any intermediates.
+
+### 2. Point EHRbase at the public hostname
+
+In `.env.ehrbase`, set `SERVER_NODENAME` to the FQDN (not `local.ehrbase.org`).
+
+### 3. Start the stack with the TLS proxy
+
+```bash
+docker compose --profile tls up -d
+```
+
+nginx listens on **443** (HTTPS) and redirects **80** to HTTPS. It proxies:
+
+- `/ehrbase` → EHRbase (`8080`)
+
+Public URLs:
+
+- openEHR REST: `https://your.domain.example/ehrbase`
+- Swagger UI: `https://your.domain.example/ehrbase/swagger-ui/index.html`
+- Health: `https://your.domain.example/ehrbase/management/health`
+
+On DSP, allow HTTPS (443) from `10.253.254.248/29` in the VM security group.
+Do not publish Postgres (`5432`) on the floating IP.
+
+Without `--profile tls`, the stack still runs on HTTP `8080` as in the
+recipe above.

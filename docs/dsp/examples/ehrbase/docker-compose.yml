@@ -17,14 +17,37 @@ services:
       DB_PASS: ehrbase_restricted
     links:
       - ehrdb
-      - keycloak
     depends_on:
       ehrdb:
         condition: service_healthy
-      keycloak:
-        condition: service_started
     ports:
       - "8080:8080"
+    networks:
+      - ehrbase-net
+
+  #
+  # TLS reverse proxy. Start with: docker compose --profile tls up -d
+  # Place fullchain.pem and privkey.pem in ./certs/
+  #
+  proxy:
+    image: nginx:1.27-alpine
+    profiles: ["tls"]
+    depends_on:
+      - ehrbase
+    env_file:
+      - .env.ehrbase
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf.template:ro
+      - ./certs:/etc/nginx/certs:ro
+    entrypoint:
+      - /bin/sh
+      - -c
+      - |
+        envsubst '$$SERVER_NODENAME' < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf
+        exec nginx -g 'daemon off;'
     networks:
       - ehrbase-net
 
@@ -49,23 +72,11 @@ services:
       - "5432:5432"
     networks:
       - ehrbase-net
-
-  keycloak:
-    image: quay.io/keycloak/keycloak:24.0.3
-    #image: registry.vitasystems.dev/docker-registry/keycloak-x:0.9.9
-    container_name: keycloak
-    command: "start-dev --import-realm"
-    ports:
-      - "8081:8080"
-    environment:
-      KEYCLOAK_ADMIN: admin
-      KEYCLOAK_ADMIN_PASSWORD: admin
-      KC_HTTP_RELATIVE_PATH: /auth
-      KC_HTTP_PORT: 8080
     volumes:
-      - ./tests/keycloak/import:/opt/keycloak/data/import
-    networks:
-      - ehrbase-net
+      - ehrdb-data:/var/lib/postgresql/data
 
 networks:
   ehrbase-net: {}
+
+volumes:
+  ehrdb-data: {}
