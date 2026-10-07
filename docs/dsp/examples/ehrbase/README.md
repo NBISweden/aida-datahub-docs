@@ -9,7 +9,7 @@ The Compose file in this directory is taken from the upstream EHRbase project:
 
 Specifically, `docker-compose.yml` follows the
 [upstream `docker-compose.yml`](https://github.com/ehrbase/ehrbase/blob/develop/docker-compose.yml)
-(EHRbase server, PostgreSQL, and Keycloak). Application settings live in
+(EHRbase server and PostgreSQL). Application settings live in
 `.env.ehrbase`, also based on the
 [upstream `.env.ehrbase`](https://github.com/ehrbase/ehrbase/blob/develop/.env.ehrbase).
 
@@ -20,7 +20,7 @@ Official product documentation: [https://docs.ehrbase.org](https://docs.ehrbase.
 ## Components in the stack
 
 Three containers share the Docker network `ehrbase-net`. EHRbase waits until
-PostgreSQL is healthy and Keycloak has started before it comes up.
+PostgreSQL is healthy before it comes up.
 
 - **ehrbase** (`ehrbase/ehrbase:next`, host port `8080`): openEHR Clinical Data
   Repository (REST API, AQL, Swagger UI)
@@ -62,7 +62,7 @@ On your AIDA DSP VM:
 2. [Docker Engine](https://docs.docker.com/engine/install/) and the
    [Compose plugin](https://docs.docker.com/compose/install/)
    (`docker compose version` should work).
-3. Free host ports **8080** (EHRbase), **8081** (Keycloak), and **5432**
+3. Free host ports **8080** (EHRbase), and **5432**
    (Postgres) unless you change the mappings.
 
 ---
@@ -100,7 +100,7 @@ Authentication is **off** unless you set `SECURITY_AUTHTYPE`. Typical choices:
   `http://localhost:8081/auth/realms/ehrbase`
   (use the VM hostname or a reverse-proxy URL if clients are not on the VM)
 
-Database and Keycloak passwords are still the upstream defaults in
+Database passwords are still the upstream defaults in
 `docker-compose.yml`. Change them for any shared or long-lived VM.
 
 ### 3. Start the stack
