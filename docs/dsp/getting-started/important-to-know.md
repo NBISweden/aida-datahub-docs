@@ -6,7 +6,7 @@ A brief intro to VM status.
 
 !!! Note
 Charges applies to VMs that are Active, Running, Suspended, Paused, Shut off. Charges will not
-be applied unless VM is deleted or shelved.
+be applied if VM is deleted or shelved.
 
 **Running**
 
