@@ -5,11 +5,15 @@
 # Usage:
 #   USERNAME=user@srd.dsp.se ./link_connection.sh
 #   USERNAME=admin@srd.dsp.se GRANT_ADMIN=true ./link_connection.sh
+#
+# On DSP, clear proxies so curl reaches local Guacamole (not the inspecting proxy):
+#   http_proxy= https_proxy= HTTP_PROXY= HTTPS_PROXY= all_proxy= ALL_PROXY= \
+#     USERNAME=user@example.com ./link_connection.sh
 
 GUACAMOLE_URL="${GUACAMOLE_URL:-http://localhost:8081/remote-desktops}"
 GUACAMOLE_DATA_SOURCE="${GUACAMOLE_DATA_SOURCE:-postgresql}"
-GUACAMOLE_USERNAME="${GUACAMOLE_USERNAME:-guacadmin}"
-GUACAMOLE_PASSWORD="${GUACAMOLE_PASSWORD:-guacadmin}"
+GUACAMOLE_USERNAME="${GUACAMOLE_USERNAME:-${GUACAMOLE_ADMIN_USERNAME:-guacadmin}}"
+GUACAMOLE_PASSWORD="${GUACAMOLE_PASSWORD:-${GUACAMOLE_ADMIN_PASSWORD:-guacadmin}}"
 USERNAME="${USERNAME:?Set USERNAME to the Guacamole user (usually the email claim)}"
 CONNECTION_NAME="${CONNECTION_NAME:-Remote-Desktop}"
 GRANT_ADMIN="${GRANT_ADMIN:-false}"
