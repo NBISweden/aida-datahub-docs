@@ -214,7 +214,7 @@ services:
     restart: "no"
 
   remote-desktop:
-    image: ${REMOTE_DESKTOP_IMAGE:-maiacloudai/ubuntu-srd-desktop:1.0}
+    image: ${REMOTE_DESKTOP_IMAGE:-maiacloudai/ubuntu-rdp:1.0}
     container_name: remote-desktop
     hostname: remote-desktop
     shm_size: 1g

@@ -1,7 +1,7 @@
 # Secure Remote Desktop
 
 This tutorial walks through the deployment of a local **Secure Remote Desktop (SRD)**
-stack using Docker Compose. The stack is defined under `secure-remote-desktop/`.
+stack using Docker Compose. The stack is defined under `https://github.com/NBISweden/aida-datahub-docs/tree/main/docs/dsp/examples/secure-remote-desktop/`.
 
 By default the stack uses **Guacamole database authentication**. Admin
 credentials are set in `.env` as `GUACAMOLE_ADMIN_USERNAME` /
@@ -74,7 +74,7 @@ bash dspconfigscript
 - **remote-desktop-home-init**: One-shot: owns `remote-desktop-home` as uid/gid
   `1000` with mode `700` on `/home/ubuntu`.
 - **remote-desktop**: Desktop container reached over RDP (default image
-  `maiacloudai/ubuntu-srd-desktop:1.0`). Receives RDP from guacd; SSH/SFTP on
+  `maiacloudai/ubuntu-rdp:1.0`). Receives RDP from guacd; SSH/SFTP on
   port `2022` for Guacamole file transfer. See
   [Remote desktop image](#2-remote-desktop-image).
 
@@ -147,32 +147,29 @@ Credentials and URLs live in `.env`. Change them **before the first
 
 One `test.env` example is available at [https://github.com/NBISweden/aida-datahub-docs/blob/main/docs/dsp/examples/secure-remote-desktop/test.env](https://github.com/NBISweden/aida-datahub-docs/blob/main/docs/dsp/examples/secure-remote-desktop/test.env).
 
-To start from it, download it to your local machine and rename it to `.env`:
+To start from it, download it to your VM and rename it to `.env`:
 
 ```bash
 wget https://raw.githubusercontent.com/NBISweden/aida-datahub-docs/main/docs/dsp/examples/secure-remote-desktop/test.env -O .env
 ```
 
-Then, through SFTP, copy it to the VM in the same directory as
-the `docker-compose.yml` file and edit the `.env` file to your needs.
-
 #### Full variable reference (default stack)
+Variables that should be changed by users:
+- `POSTGRES_DB`: Should be changed by users to set the Guacamole JDBC database name (default: `guacamole_db`)
+- `POSTGRES_USER`: Should be changed by users to specify the database user Guacamole connects as (default: `guacamole_user`)
+- `POSTGRES_PASSWORD`: Should be changed by users to specify the database password (default: `guacamole_password`)
+- `GUACAMOLE_ADMIN_USERNAME`: Should be changed by users to set the Guacamole database admin username (default: `guacadmin`)
+- `GUACAMOLE_ADMIN_PASSWORD`: Should be changed by users to set the Guacamole database admin password (default: `guacadmin`)
 
-- `POSTGRES_DB`: Guacamole JDBC database name (default: `guacamole_db`)
-- `POSTGRES_USER`: DB user Guacamole connects as (default: `guacamole_user`)
-- `POSTGRES_PASSWORD`: DB password (default: `guacamole_password`)
+Other variables:
 - `POSTGRES_PORT`: Host port for PostgreSQL (default `5432`)
 - `GUACD_PORT`: Host port for guacd (default `4822`)
 - `GUACAMOLE_HTTP_PORT`: Host port for Guacamole (default `8081`)
-- `GUACAMOLE_ADMIN_USERNAME`: Guacamole database admin username (default
-  `guacadmin`)
-- `GUACAMOLE_ADMIN_PASSWORD`: Guacamole database admin password (default
-  `guacadmin`)
 - `OPENID_ENABLED`: Enable Guacamole OpenID (`false` by default)
 - `EXTENSION_PRIORITY`: Guacamole auth extension order (default `*`; use
   `openid,*` when OpenID is enabled)
 - `REMOTE_DESKTOP_IMAGE`: Desktop container image (default
-  `maiacloudai/ubuntu-srd-desktop:1.0`)
+  `maiacloudai/ubuntu-rdp:1.0`)
 - `REMOTE_DESKTOP_RDP_PORT`: Host port for direct RDP (default `3389`)
 - `REMOTE_DESKTOP_SSH_PORT`: Host port for SSH/SFTP used by Guacamole file
   transfer (default `2022`)
