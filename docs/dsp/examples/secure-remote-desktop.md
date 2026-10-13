@@ -3,15 +3,23 @@
 This tutorial walks through the deployment of a local **Secure Remote Desktop (SRD)**
 stack using Docker Compose. The stack is defined under `secure-remote-desktop/`.
 
+By default the stack uses **Guacamole database authentication**. Admin
+credentials are set in `.env` as `GUACAMOLE_ADMIN_USERNAME` /
+`GUACAMOLE_ADMIN_PASSWORD` (defaults `guacadmin` / `guacadmin`). OpenID Connect
+(any OIDC provider) and a local **Keycloak** Compose profile are optional.
+
 ## Topics
 
 In this example you will:
 
 1. Understand each Compose service and how they connect.
-2. Configure `.env` and start the stack.
-3. Sign in through Keycloak, open a Guacamole remote desktop, and move files
-   with Guacamole SFTP (drag and drop).
-4. Add Guacamole connections and users with the helper scripts in the
+2. Choose (or swap) the remote desktop container image.
+3. Configure `.env` and start the stack.
+4. Sign in to Guacamole, open a remote desktop, and move files with Guacamole
+   SFTP (drag and drop).
+5. Optionally connect a generic OIDC provider (or the optional Keycloak
+   profile).
+6. Add Guacamole connections and users with the helper scripts in the
    `secure-remote-desktop/` directory.
 
 ## Prerequisites
@@ -53,40 +61,86 @@ bash dspconfigscript
 
 ![SRD stack](Stack.jpeg)
 
-**Components:**
+**Components (default stack):**
 
-- **keycloak**: Identity provider. Hosts the `srd` realm and OpenID client
-  used by Guacamole.
-- **keycloak-init**: One-shot setup: creates realm `srd`, confidential client,
-  groups mapper, and the demo admin user
-  (with default credentials `admin@srd.dsp.se` / `admin`).
-- **PostgreSQL**: Guacamole database: users, permissions, and the
-  **Remote Desktop** RDP connection.
+- **PostgreSQL**: Guacamole database: users, permissions, and connections.
+- **guacamole-schema** / **guacamole-db-init**: One-shot: extracts and applies
+  the Guacamole JDBC schema, then sets the admin user from
+  `GUACAMOLE_ADMIN_USERNAME` / `GUACAMOLE_ADMIN_PASSWORD`.
 - **guacd**: Guacamole daemon: speaks RDP (and related protocols); Guacamole
   proxies the browser session through it.
-- **guacamole**: Web UI and gateway at `/remote-desktops`. Prefer OpenID
-  (`EXTENSION_PRIORITY=openid,*`).
+- **guacamole**: Web UI and gateway at `/remote-desktops`. By default uses
+  database authentication (`EXTENSION_PRIORITY=*`).
 - **remote-desktop-home-init**: One-shot: owns `remote-desktop-home` as uid/gid
   `1000` with mode `700` on `/home/ubuntu`.
-- **remote-desktop**: Ubuntu desktop over RDP (`maiacloudai/ubuntu-xrdp`).
-  Currently packaged with preinstalled **3D Slicer** and **LibreOffice**.
-  Receives RDP from guacd; SSH/SFTP on
-  port `2022` for Guacamole file transfer.
+- **remote-desktop**: Desktop container reached over RDP (default image
+  `maiacloudai/ubuntu-srd-desktop:1.0`). Receives RDP from guacd; SSH/SFTP on
+  port `2022` for Guacamole file transfer. See
+  [Remote desktop image](#2-remote-desktop-image).
 
-**End-to-end flow:**
+**Optional (Compose profile `keycloak`):**
+
+- **keycloak**: Sample identity provider. Hosts the `srd` realm and OpenID
+  client used when you enable Guacamole OpenID against this Keycloak.
+- **keycloak-init**: One-shot setup: creates realm `srd`, confidential client,
+  groups mapper, and a demo user
+  (defaults `admin@srd.dsp.se` / `admin`).
+
+**End-to-end flow (default):**
 
 1. You open Guacamole in a browser at `http://localhost:8081/remote-desktops/`.
-2. Guacamole redirects you to **Keycloak** (OpenID Connect) to authenticate.
-3. After login, Guacamole loads your allowed connections from **PostgreSQL** and
-   asks **guacd** to open an **RDP** session to the **remote-desktop** container
-   (Ubuntu XRDP). The image is currently packaged with preinstalled **3D Slicer**
-   and **LibreOffice**.
+2. You sign in with Guacamole database credentials
+   (`GUACAMOLE_ADMIN_USERNAME` / `GUACAMOLE_ADMIN_PASSWORD`).
+3. Guacamole loads your allowed connections from **PostgreSQL** and asks
+   **guacd** to open an **RDP** session to the **remote-desktop** container.
 4. **SFTP is enabled by default** on the Guacamole RDP connection, so you can
    drag and drop files from your local machine into the remote desktop
    through the Guacamole UI (files land under `/home/ubuntu` via SSH/SFTP on
    the desktop container).
 
-### 2. Variables configuration
+### 2. Remote desktop image
+
+The Compose service `remote-desktop` runs the GUI workspace that Guacamole
+opens over RDP. This example uses:
+
+```text
+maiacloudai/ubuntu-rdp:1.0
+```
+
+That image is an Ubuntu desktop with XRDP, SSH/SFTP, and tools such as
+**3D Slicer** and **LibreOffice**. Set it in `.env` as
+`REMOTE_DESKTOP_IMAGE` (see `test.env`).
+
+Any other container image can be used instead, as long as it exposes:
+
+| Protocol | Container port | Role |
+| --- | --- | --- |
+| **RDP** | `3389` | Desktop session via guacd / Guacamole |
+| **SSH** | `2022` | SFTP for Guacamole drag-and-drop file transfer |
+
+The Guacamole connection created by `add_connection.sh` expects those ports
+on the Compose service hostname `remote-desktop`, with desktop login
+`ubuntu` / `ubuntu` and home directory `/home/ubuntu` (adjust the script or
+connection parameters if your image uses different credentials or paths).
+
+To swap the image:
+
+```env
+REMOTE_DESKTOP_IMAGE=maiacloudai/ubuntu-rdp:1.0
+# or e.g. myregistry.example.com/my-rdp-desktop:tag
+```
+
+Then recreate the service:
+
+```bash
+docker compose up -d --force-recreate remote-desktop
+```
+
+If you change RDP/SSH credentials or the SFTP root path, update the Guacamole
+connection (or re-run `add_connection.sh` with matching parameters) so
+Guacamole and SFTP still reach the desktop.
+
+### 3. Variables configuration
 
 Credentials and URLs live in `.env`. Change them **before the first
 `docker compose up`** when possible.
@@ -100,42 +154,34 @@ wget https://raw.githubusercontent.com/NBISweden/aida-datahub-docs/main/docs/dsp
 ```
 
 Then, through SFTP, copy it to the VM in the same directory as
-the `docker-compose.yml` file and edit it the `.env` file to your needs.
+the `docker-compose.yml` file and edit the `.env` file to your needs.
 
-#### Full variable reference
+#### Full variable reference (default stack)
 
-- `KEYCLOAK_ADMIN`: Bootstrap admin for Keycloak **master** realm (default: `admin`)
-- `KEYCLOAK_ADMIN_PASSWORD`: Password for that bootstrap admin (default: `admin`)
-- `KEYCLOAK_HTTP_PORT`: Host port for Keycloak (default `8080`)
 - `POSTGRES_DB`: Guacamole JDBC database name (default: `guacamole_db`)
 - `POSTGRES_USER`: DB user Guacamole connects as (default: `guacamole_user`)
 - `POSTGRES_PASSWORD`: DB password (default: `guacamole_password`)
 - `POSTGRES_PORT`: Host port for PostgreSQL (default `5432`)
 - `GUACD_PORT`: Host port for guacd (default `4822`)
 - `GUACAMOLE_HTTP_PORT`: Host port for Guacamole (default `8081`)
-- `OPENID_AUTHORIZATION_ENDPOINT`: Browser-facing Keycloak auth URL
-- `OPENID_JWKS_ENDPOINT`: JWKS URL Guacamole uses to verify tokens (often the
-  Docker service name `keycloak`)
-- `OPENID_ISSUER`: Issuer claim Guacamole expects (must match Keycloak)
-- `OPENID_CLIENT_ID`: OIDC client ID (default `srd`)
-- `OPENID_CLIENT_SECRET`: Confidential client secret for Guacamole / Keycloak
-- `OPENID_USERNAME_CLAIM_TYPE`: Claim used as Guacamole username (default
-  `email`)
-- `OPENID_REDIRECT_URI`: Post-login return URL (Guacamole public URL +
-  `/remote-desktops/`)
-- `USER_EMAIL`: Demo user in realm `srd`; also Guacamole admin entity
-  name
-- `USER_PASSWORD`: Password for that demo user
+- `GUACAMOLE_ADMIN_USERNAME`: Guacamole database admin username (default
+  `guacadmin`)
+- `GUACAMOLE_ADMIN_PASSWORD`: Guacamole database admin password (default
+  `guacadmin`)
+- `OPENID_ENABLED`: Enable Guacamole OpenID (`false` by default)
+- `EXTENSION_PRIORITY`: Guacamole auth extension order (default `*`; use
+  `openid,*` when OpenID is enabled)
+- `REMOTE_DESKTOP_IMAGE`: Desktop container image (default
+  `maiacloudai/ubuntu-srd-desktop:1.0`)
 - `REMOTE_DESKTOP_RDP_PORT`: Host port for direct RDP (default `3389`)
 - `REMOTE_DESKTOP_SSH_PORT`: Host port for SSH/SFTP used by Guacamole file
   transfer (default `2022`)
 - `REMOTE_DESKTOP_TZ`: Timezone inside the remote desktop (default `Etc/UTC`)
 
-#### Default public URLs (`localhost`)
+#### Default public URL (`localhost`)
 
 ```env
 REMOTE_DESKTOP_URL=http://localhost:8081/remote-desktops/
-KEYCLOAK_URL=http://localhost:8080
 ```
 
 ### 4. Start the stack
@@ -146,31 +192,152 @@ From the `secure-remote-desktop` directory:
 docker compose up -d
 ```
 
+This starts PostgreSQL, guacd, Guacamole, and the remote desktop. Keycloak is
+**not** started.
+
 When the stack is up:
 
 - **Guacamole**: <http://localhost:8081/remote-desktops/>
-  Sign in via Keycloak
-- **Keycloak admin**: <http://localhost:8080/admin>
-  `KEYCLOAK_ADMIN` / `KEYCLOAK_ADMIN_PASSWORD`
+  Sign in with `GUACAMOLE_ADMIN_USERNAME` / `GUACAMOLE_ADMIN_PASSWORD`
 - **Postgres**: `localhost:5432`
   `POSTGRES_USER` / `POSTGRES_PASSWORD`, DB `POSTGRES_DB`
 - **Direct RDP**: `localhost:3389`
-  OS user `ubuntu` / `ubuntu` (not the Keycloak account)
+  OS user `ubuntu` / `ubuntu` (not the Guacamole account)
 - **SSH/SFTP**: `localhost:2022`
   `ubuntu` / `ubuntu` (used by Guacamole SFTP)
 
-### 5. First login: Keycloak → Guacamole → Remote Desktop
+### 5. First login: Guacamole → Remote Desktop
 
 1. Open Guacamole at <http://localhost:8081/remote-desktops/> (adjust the port
    if you changed `GUACAMOLE_HTTP_PORT` in `.env`).
-2. You are redirected to Keycloak (`srd` realm).
-3. Sign in with `USER_EMAIL` / `USER_PASSWORD` (defaults:
-   `admin@srd.dsp.se` / `admin`).
-4. After redirect back, open the **Remote Desktop** connection. Guacamole uses
+2. Sign in with **`GUACAMOLE_ADMIN_USERNAME` / `GUACAMOLE_ADMIN_PASSWORD`**
+   (set by `guacamole-db-init` from `.env`).
+3. Open the **Remote Desktop** connection (create one with
+   `add_connection.sh` if none exists yet). Guacamole uses
    guacd → RDP → remote-desktop. If the desktop prompts for a local login,
    use **`ubuntu` / `ubuntu`**.
 
-### 6. File sharing: Guacamole SFTP drag and drop
+### 6. Optional: connect a generic OIDC provider
+
+Guacamole’s OpenID extension works with any standards-compliant OIDC provider
+(Keycloak, Azure AD / Entra ID, Google, Okta, Auth0, etc.). Database users must
+still exist in Guacamole; the OIDC claim
+(`OPENID_USERNAME_CLAIM_TYPE`, default `email`) must match the Guacamole
+username.
+
+#### In your IdP
+
+1. Create a **confidential** OIDC client for Guacamole.
+2. Set the redirect / callback URI to your Guacamole public URL, for example:
+   `http://localhost:8081/remote-desktops/`
+3. Note the **issuer**, **authorization**, and **JWKS** endpoints from the
+   discovery document at
+   `{issuer}/.well-known/openid-configuration`.
+4. Note the client ID and client secret.
+
+#### In `.env`
+
+```env
+OPENID_ENABLED=true
+EXTENSION_PRIORITY=openid,*
+OPENID_AUTHORIZATION_ENDPOINT=https://idp.example.com/.../protocol/openid-connect/auth
+OPENID_JWKS_ENDPOINT=https://idp.example.com/.../protocol/openid-connect/certs
+OPENID_ISSUER=https://idp.example.com/...
+OPENID_CLIENT_ID=guacamole
+OPENID_CLIENT_SECRET=change-me
+OPENID_USERNAME_CLAIM_TYPE=email
+OPENID_REDIRECT_URI=http://localhost:8081/remote-desktops/
+OPENID_GROUPS_CLAIM_TYPE=groups
+```
+
+`OPENID_JWKS_ENDPOINT` is fetched by the Guacamole container, so use a URL
+reachable from Docker (public HTTPS IdP, or a Compose service hostname).
+`OPENID_AUTHORIZATION_ENDPOINT`, `OPENID_ISSUER`, and `OPENID_REDIRECT_URI`
+must match what the **browser** sees.
+
+Apply and recreate Guacamole:
+
+```bash
+docker compose up -d --force-recreate guacamole
+```
+
+Create a Guacamole user whose username equals the IdP claim (usually email),
+then link connections. On DSP, clear proxy variables so `curl` reaches local
+containers (see [helper scripts](#9-add-connections-and-users-with-helper-scripts)):
+
+```bash
+http_proxy= https_proxy= HTTP_PROXY= HTTPS_PROXY= all_proxy= ALL_PROXY= \
+  EMAIL=user@example.com PASSWORD=secret ./add_user.sh
+http_proxy= https_proxy= HTTP_PROXY= HTTPS_PROXY= all_proxy= ALL_PROXY= \
+  USERNAME=user@example.com ./link_connection.sh
+```
+
+You can still fall back to database login (`guacadmin`) because
+`EXTENSION_PRIORITY=openid,*` keeps other auth methods available.
+
+#### OpenID variable reference
+
+- `OPENID_AUTHORIZATION_ENDPOINT`: Browser-facing authorization URL
+- `OPENID_JWKS_ENDPOINT`: JWKS URL Guacamole uses to verify tokens
+- `OPENID_ISSUER`: Issuer claim Guacamole expects (must match the IdP)
+- `OPENID_CLIENT_ID`: OIDC client ID
+- `OPENID_CLIENT_SECRET`: Confidential client secret
+- `OPENID_USERNAME_CLAIM_TYPE`: Claim used as Guacamole username (default
+  `email`)
+- `OPENID_REDIRECT_URI`: Post-login return URL (Guacamole public URL +
+  `/remote-desktops/`)
+- `OPENID_GROUPS_CLAIM_TYPE`: Groups claim (default `groups`)
+
+### 7. Optional: local Keycloak profile
+
+To run the bundled Keycloak as a sample IdP:
+
+```bash
+# Uncomment / set the Keycloak + OPENID_* block in .env (see test.env), then:
+docker compose --profile keycloak up -d
+docker compose up -d --force-recreate guacamole
+```
+
+Keycloak-related variables:
+
+- `KEYCLOAK_ADMIN`: Bootstrap admin for Keycloak **master** realm (default: `admin`)
+- `KEYCLOAK_ADMIN_PASSWORD`: Password for that bootstrap admin (default: `admin`)
+- `KEYCLOAK_HTTP_PORT`: Host port for Keycloak (default `8080`)
+- `USER_EMAIL`: Demo user created by `keycloak-init`; also used as Guacamole
+  username when matching the email claim
+- `USER_PASSWORD`: Password for that demo user
+
+When the profile is up:
+
+- **Keycloak admin**: <http://localhost:8080/admin>
+  `KEYCLOAK_ADMIN` / `KEYCLOAK_ADMIN_PASSWORD`
+- Guacamole redirects to Keycloak (`srd` realm) when OpenID is enabled
+- Demo IdP user defaults: `admin@srd.dsp.se` / `admin`
+
+Example OpenID settings for the bundled Keycloak:
+
+```env
+OPENID_ENABLED=true
+EXTENSION_PRIORITY=openid,*
+OPENID_CLIENT_ID=srd
+OPENID_CLIENT_SECRET=a7941129f1f1818072258721
+OPENID_AUTHORIZATION_ENDPOINT=http://localhost:8080/realms/srd/protocol/openid-connect/auth
+OPENID_JWKS_ENDPOINT=http://keycloak:8080/realms/srd/protocol/openid-connect/certs
+OPENID_ISSUER=http://localhost:8080/realms/srd
+OPENID_REDIRECT_URI=http://localhost:8081/remote-desktops/
+OPENID_USERNAME_CLAIM_TYPE=email
+USER_EMAIL=admin@srd.dsp.se
+USER_PASSWORD=admin
+```
+
+Also create / link the matching Guacamole user:
+
+```bash
+EMAIL=admin@srd.dsp.se PASSWORD=admin USE_KEYCLOAK=true ./add_user.sh
+USERNAME=admin@srd.dsp.se GRANT_ADMIN=true ./link_connection.sh
+```
+
+### 8. File sharing: Guacamole SFTP drag and drop
 
 #### Guacamole SFTP (drag and drop into the desktop)
 
@@ -182,20 +349,37 @@ In the Guacamole session you can drag and drop files from your local machine
 into the remote desktop; they appear under the user’s home directory without a
 separate SFTP client.
 
-### 7. Add connections and users with helper scripts
+### 9. Add connections and users with helper scripts
 
 The `secure-remote-desktop/` directory includes shell helpers that talk to the
-Guacamole REST API (and, for users, Keycloak). They default to Guacamole’s
-database admin `guacadmin` / `guacadmin` and URLs for a local Compose stack.
-Adjust `GUACAMOLE_URL`, credentials, emails, and connection names as needed.
+Guacamole REST API. They default to `GUACAMOLE_ADMIN_USERNAME` /
+`GUACAMOLE_ADMIN_PASSWORD` (or `guacadmin` / `guacadmin`) and URLs for a local
+Compose stack. Adjust `GUACAMOLE_URL`, credentials, emails, and connection
+names as needed.
 Requires `curl` and `jq`:
 
 ```bash
 sudo apt-get install curl jq
 ```
 
-Run them from a machine that can reach Guacamole (and Keycloak for
-`add_user.sh`), typically after `docker compose up -d`.
+Run them from a machine that can reach Guacamole, typically after
+`docker compose up -d`.
+
+On DSP VMs the inspecting HTTP proxy is usually set in the environment. Clear
+those proxy variables when calling the helpers so `curl` talks to local
+containers (`localhost`) directly instead of being redirected through the
+proxy:
+
+```bash
+http_proxy= https_proxy= HTTP_PROXY= HTTPS_PROXY= all_proxy= ALL_PROXY= \
+  ./add_connection.sh
+
+http_proxy= https_proxy= HTTP_PROXY= HTTPS_PROXY= all_proxy= ALL_PROXY= \
+  EMAIL=user@example.com PASSWORD=secret ./add_user.sh
+
+http_proxy= https_proxy= HTTP_PROXY= HTTPS_PROXY= all_proxy= ALL_PROXY= \
+  USERNAME=user@example.com ./link_connection.sh
+```
 
 #### Add an RDP connection (SFTP enabled)
 
@@ -206,8 +390,8 @@ Script: [`add_connection.sh`](secure-remote-desktop/add_connection.sh)
 
 GUACAMOLE_URL="http://localhost:8081/remote-desktops"
 GUACAMOLE_DATA_SOURCE="postgresql"
-GUACAMOLE_USERNAME="guacadmin"
-GUACAMOLE_PASSWORD="guacadmin"
+GUACAMOLE_USERNAME="${GUACAMOLE_USERNAME:-${GUACAMOLE_ADMIN_USERNAME:-guacadmin}}"
+GUACAMOLE_PASSWORD="${GUACAMOLE_PASSWORD:-${GUACAMOLE_ADMIN_PASSWORD:-guacadmin}}"
 CONNECTION_NAME="Remote-Desktop"
 SSH_PORT="2022"
 
@@ -245,118 +429,24 @@ $GUACAMOLE_URL/api/session/data/$GUACAMOLE_DATA_SOURCE/connections?token=${authT
 Note `enable-sftp: true` and the `sftp-*` parameters: that is what enables
 browser drag-and-drop file transfer into the remote desktop.
 
-#### Add a user (Guacamole + Keycloak)
+#### Add a user (Guacamole; optional Keycloak)
 
 Script: [`add_user.sh`](secure-remote-desktop/add_user.sh)
 
-```bash
-#!/bin/bash
+Creates a Guacamole database user by default. Set `USE_KEYCLOAK=true` only when
+the Keycloak profile is running and you also want the user in Keycloak.
 
-# Variables
-GUACAMOLE_URL="http://localhost:8081/remote-desktops"
-GUACAMOLE_DATA_SOURCE="postgresql"
-GUACAMOLE_USERNAME="guacadmin"
-GUACAMOLE_PASSWORD="guacadmin"
-
-# Create user in Keycloak
-KEYCLOAK_URL="${KEYCLOAK_URL:-http://localhost:8080}"
-KEYCLOAK_REALM="${KEYCLOAK_REALM:-srd}"
-KEYCLOAK_ADMIN="${KEYCLOAK_ADMIN:-admin}"
-KEYCLOAK_ADMIN_PASSWORD="${KEYCLOAK_ADMIN_PASSWORD:-admin}"
-
-# You can override these by passing them as environment variables or inline:
-EMAIL="${EMAIL:-admin@srd.dsp.se}"
-PASSWORD="${PASSWORD:-changeme}"
-
-# Request Guacamole auth token
-authToken=$(curl -skX POST "$GUACAMOLE_URL/api/tokens" \
-  -H "Content-Type: application/x-www-form-urlencoded" \
-  -d "username=$GUACAMOLE_USERNAME&password=$GUACAMOLE_PASSWORD" | jq -r '.authToken')
-
-# Create user payload
-USER_PAYLOAD=$(jq -n \
-  --arg username "$EMAIL" \
-  --arg password "$PASSWORD" \
-  '{
-    username: $username,
-    password: $password,
-    attributes: {}
-  }'
-)
-
-# Create the user
-curl -skX POST \
-"$GUACAMOLE_URL/api/session/data/$GUACAMOLE_DATA_SOURCE/users?token=${authToken}"\
-  -H "Content-Type: application/json" \
-  -d "$USER_PAYLOAD"
-
-echo "User $EMAIL created (if not already present)."
-
-
-
-# Get Keycloak admin access token
-KC_TOKEN=$(curl -sk -X POST \
-  "${KEYCLOAK_URL}/realms/master/protocol/openid-connect/token" \
-  -d "client_id=admin-cli" \
-  -d "username=${KEYCLOAK_ADMIN}" \
-  -d "password=${KEYCLOAK_ADMIN_PASSWORD}" \
-  -d "grant_type=password" | jq -r '.access_token')
-
-if [ -z "$KC_TOKEN" ] || [ "$KC_TOKEN" == "null" ]; then
-  echo "Failed to obtain Keycloak admin token"
-  exit 1
-fi
-
-# Create user in Keycloak
-CREATE_USER_RESPONSE=$(curl -sk -o /dev/null -w "%{http_code}" -X POST \
-  "${KEYCLOAK_URL}/admin/realms/${KEYCLOAK_REALM}/users" \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $KC_TOKEN" \
-  -d "{
-    \"username\": \"$EMAIL\",
-    \"email\": \"$EMAIL\",
-    \"enabled\": true,
-    \"emailVerified\": true
-  }"
-)
-
-if [ "$CREATE_USER_RESPONSE" == "201" ] ||
-   [ "$CREATE_USER_RESPONSE" == "409" ]; then
-  echo "User $EMAIL exists or was created in Keycloak."
-else
-  echo "Failed to create user in Keycloak. HTTP status: $CREATE_USER_RESPONSE"
-  exit 1
-fi
-
-# Get user ID from Keycloak
-USER_ID=$(curl -sk -X GET \
-  "${KEYCLOAK_URL}/admin/realms/${KEYCLOAK_REALM}/users?username=${EMAIL}" \
-  -H "Authorization: Bearer $KC_TOKEN" | jq -r '.[0].id')
-
-if [ -z "$USER_ID" ] || [ "$USER_ID" == "null" ]; then
-  echo "Failed to retrieve Keycloak user ID for $EMAIL"
-  exit 1
-fi
-
-# Set Keycloak user password
-PASSWORD_PAYLOAD="{\"type\":\"password\",\"value\":\"$PASSWORD\",\"temporary\":false}"
-curl -sk -X PUT \
-  "${KEYCLOAK_URL}/admin/realms/${KEYCLOAK_REALM}/users/${USER_ID}/reset-password"\
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $KC_TOKEN" \
-  -d "$PASSWORD_PAYLOAD"
-
-echo "User $EMAIL password set in Keycloak."
-```
-
-Example:
+Prefix with the proxy-clearing assignments shown above when running on DSP.
 
 ```bash
-EMAIL=user@srd.dsp.se PASSWORD=secret ./add_user.sh
+EMAIL=user@example.com PASSWORD=secret ./add_user.sh
+
+# With optional Keycloak:
+EMAIL=user@srd.dsp.se PASSWORD=secret USE_KEYCLOAK=true ./add_user.sh
 ```
 
-OpenID username claim is email, so the Guacamole username must match the
-Keycloak email.
+When OpenID is enabled, the Guacamole username must match the IdP claim
+(default: email).
 
 #### Link a connection to a user
 
@@ -372,7 +462,14 @@ Convenience wrappers:
 - [`link_connection_to_user.sh`](secure-remote-desktop/link_connection_to_user.sh)
   — demo user (`user@srd.dsp.se`) with `READ` only
 
+Prefix with the proxy-clearing assignments shown above when running on DSP.
+
 ```bash
+# Default database admin already has access after creating the connection as guacadmin.
+# For additional users:
+USERNAME=user@example.com ./link_connection.sh
+
+# OIDC / Keycloak demo accounts:
 USERNAME=admin@srd.dsp.se GRANT_ADMIN=true ./link_connection.sh
 USERNAME=user@srd.dsp.se ./link_connection.sh
 
@@ -381,66 +478,11 @@ USERNAME=user@srd.dsp.se ./link_connection.sh
 ./link_connection_to_user.sh
 ```
 
-Typical sequence for a new colleague:
+Typical sequence for a new colleague (include the DSP proxy-clearing prefix):
 
 ```bash
-EMAIL=user@srd.dsp.se PASSWORD=secret ./add_user.sh
-USERNAME=user@srd.dsp.se ./link_connection.sh
-```
-
-### 8. Useful Compose commands and troubleshooting
-
-```bash
-# Start / stop
-docker compose up -d
-docker compose down
-
-# Follow Guacamole + Keycloak
-docker compose logs -f guacamole keycloak
-
-# Recreate after .env edits
-docker compose up -d --force-recreate
-
-# Full reset of stack data (destructive)
-docker compose down -v
-```
-
-After changing OpenID URLs or the Guacamole port:
-
-```bash
-docker compose up -d --force-recreate keycloak-init guacamole remote-desktop
-```
-
-Checklist:
-
-- **Redirect / OpenID errors** — Browser host, `OPENID_ISSUER`, and
-  `OPENID_REDIRECT_URI` must agree; re-run `keycloak-init` so client redirect
-  URIs match.
-- **No Remote Desktop connection** — Postgres seed runs only on empty data
-  volumes; `USER_EMAIL` must match the OpenID email claim.
-- **Cannot reach Keycloak from Guacamole login** — Check `KEYCLOAK_HTTP_PORT`
-  and that the browser can open `http://localhost:8080`.
-- **Home permission errors** — Confirm `remote-desktop-home-init` completed
-  (`chown 1000:1000`, mode `700` on `/home/ubuntu`).
-- **SFTP drag and drop fails** — Confirm the connection has `enable-sftp`,
-  `REMOTE_DESKTOP_SSH_PORT` is published, and SSH on the desktop accepts
-  `ubuntu` / `ubuntu`.
-
-### 9. File map
-
-```text
-secure-remote-desktop.md  # This tutorial
-secure-remote-desktop/
-  docker-compose.yml      # Service definitions and wiring
-  test.env                    # Ports, URLs, admin credentials
-  Stack.png               # Architecture diagram
-  keycloak/
-    init-srd-realm.sh    # Realm, client, demo user
-
-# Helper scripts (same directory)
-add_connection.sh
-add_user.sh
-link_connection.sh
-link_connection_to_admin.sh
-link_connection_to_user.sh
+http_proxy= https_proxy= HTTP_PROXY= HTTPS_PROXY= all_proxy= ALL_PROXY= \
+  EMAIL=user@example.com PASSWORD=secret ./add_user.sh
+http_proxy= https_proxy= HTTP_PROXY= HTTPS_PROXY= all_proxy= ALL_PROXY= \
+  USERNAME=user@example.com ./link_connection.sh
 ```
