@@ -16,7 +16,8 @@ This example assumes experience with Linux, and authority to initiate expense.
 
 ### 1. Launch a GPU enabled virtual machine
 
-1. Visit the DSP Horizon customer self-service portal at [https://dsp.aida.scilifelab.se/](https://dsp.aida.scilifelab.se/)
+1. Visit the DSP Horizon customer self-service portal at
+   [https://dsp.aida.scilifelab.se/](https://dsp.aida.scilifelab.se/)
 2. Log in using your DSP Horizon credentials.
 3. Pick the correct secure environment from the project selector drop down menu
    top left.
@@ -89,53 +90,55 @@ in this next step.
 
 To configure the VM to use the DSP proxy, run the following command:
 
-```bash
+```remote
 curl http://10.253.254.250/ | bash
 ```
 
 If you want to inspect the script, you can run:
 
-```bash
+```remote
 curl http://10.253.254.250/ > dspconfigscript
 cat dspconfigscript
 ```
 
 and then run:
 
-```bash
+```remote
 bash dspconfigscript
 ```
 
 #### 3.1 Install Nvidia GPU drivers
 
-In order to be able to use the GPU, you need to install the Nvidia GPU drivers, we recommend installing version 580.
+In order to be able to use the GPU, you need to install the Nvidia GPU drivers,
+we recommend installing version 580.
 
-```bash
+```remote
 sudo apt update
 sudo apt install nvidia-driver-580
 sudo depmod -a
 sudo modprobe nvidia
 ```
 
-Run `sudo modprobe nvidia` to load the kernel module and ensure the drivers are active. You may need to reboot after installation; if `modprobe` fails, reboot and run the command again.
+Run `sudo modprobe nvidia` to load the kernel module and ensure the drivers are
+active. You may need to reboot after installation; if `modprobe` fails, reboot
+and run the command again.
 
-#### 3.2 Clone the MONAI Tutorial repository and create a Python virtual environment
+#### 3.2 Clone MONAI tutorials and create a virtual environment
 
-In this tutorial we will use the MONAI Tutorial repository, which is a collection of Jupyter notebooks that
-demonstrate how to use the MONAI framework to build AI models specifically targeting medical image tasks
-such as segmentation, classification, and detection.
-Here, we clone the MONAI Tutorial repository and then create a Python virtual environment.
-We do this inside a tmux virtual terminal so that work is kept persistent, so that running processes are not killed if connection is lost.
+In this tutorial we will use the MONAI Tutorial repository, which is a
+collection of Jupyter notebooks that demonstrate how to use the MONAI framework
+to build AI models specifically targeting medical image tasks such as
+segmentation, classification, and detection.
+Here, we clone the MONAI Tutorial repository and then create a Python virtual
+environment.
 
-```bash
-ssh jupyter-demo
-tmux
+```remote
 git clone https://github.com/Project-MONAI/tutorials.git
 cd tutorials
 sudo apt update
 sudo apt install python3-venv
-sudo apt install python3.14-dev
-python3 -m venv .venv
+sudo apt install python3.12-dev
+python3.12 -m venv .venv
 source .venv/bin/activate
 pip install jupyterlab fire tensorboard
 ```
@@ -149,31 +152,37 @@ exploitable data exfiltration method.
 
 ### 4. Upload own data
 
-Most of the notebooks in the MONAI Tutorial have a link to a dataset which can be downloaded or they directly use Python functions to download the data.
-However, within DSP we have restricted outgoing access to the internet, so you need to download the data to your own computer and upload it to your VM.
+Most of the notebooks in the MONAI Tutorial have a link to a dataset which can
+be downloaded or they directly use Python functions to download the data.
+However, within DSP we have restricted outgoing access to the internet, so you
+need to download the data to your own computer and upload it to your VM.
 
 Create the data directory on the VM before uploading:
 
-```bash
-ssh jupyter-demo
+```remote
 mkdir -p /home/ubuntu/tutorials/Data
 ```
 
-Later steps set `MONAI_DATA_DIRECTORY` to this path, so datasets must be placed here.
+Later steps set `MONAI_DATA_DIRECTORY` to this path, so datasets must be placed
+here.
 
-For example, the notebook [MedNIST_tutorial.ipynb](https://github.com/Project-MONAI/tutorials/blob/main/2d_classification/mednist_tutorial.ipynb) uses the [MedNIST dataset](https://mednist.org/) which can be downloaded from [https://github.com/Project-MONAI/MONAI-extra-test-data/releases/download/0.8.1/MedNIST.tar.gz](https://github.com/Project-MONAI/MONAI-extra-test-data/releases/download/0.8.1/MedNIST.tar.gz).
+For example, the notebook
+[MedNIST_tutorial.ipynb](https://github.com/Project-MONAI/tutorials/blob/main/2d_classification/mednist_tutorial.ipynb)
+uses the [MedNIST dataset](https://mednist.org/) which can be downloaded from
+[MedNIST.tar.gz](https://github.com/Project-MONAI/MONAI-extra-test-data/releases/download/0.8.1/MedNIST.tar.gz).
 
 #### Transfer data with SFTP
 
-If you configured SSH as in step 2, you can use SFTP through the same `jupyter-demo` host entry (including the `ProxyJump` via `dspgateway`):
+If you configured SSH as in step 2, you can use SFTP through the same
+`jupyter-demo` host entry (including the `ProxyJump` via `dspgateway`):
 
-```bash
+```local
 sftp jupyter-demo
 ```
 
 At the `sftp>` prompt, upload a file or directory:
 
-```text
+```local
 cd /home/ubuntu/tutorials/Data
 put MedNIST.tar.gz
 bye
@@ -181,11 +190,11 @@ bye
 
 To upload a whole folder, use `put -r` from your local machine:
 
-```bash
+```local
 sftp jupyter-demo
 ```
 
-```text
+```local
 cd /home/ubuntu/tutorials/Data
 put -r ./Task09_Spleen
 bye
@@ -193,8 +202,7 @@ bye
 
 After uploading archives, extract them on the VM:
 
-```bash
-ssh jupyter-demo
+```remote
 cd /home/ubuntu/tutorials/Data
 tar -xvf MedNIST.tar.gz
 ```
@@ -203,23 +211,24 @@ tar -xvf MedNIST.tar.gz
 
 1. Install TightVNC and XFCE desktop environment inside the VM.
 
-```bash
-sudo apt install tightvncserver xfce4 xfce4-goodies
-mkdir ~/.vnc
-echo -e '#!/bin/sh\nxrdb $HOME/.Xresources\nstartxfce4 &' > ~/.vnc/xstartup
-chmod +x ~/.vnc/xstartup
-sudo chown -R ubuntu:ubuntu ~/.vnc
-```
+   ```remote
+   sudo apt install tightvncserver xfce4 xfce4-goodies
+   mkdir ~/.vnc
+   echo -e '#!/bin/sh\nxrdb $HOME/.Xresources\nstartxfce4 &' > ~/.vnc/xstartup
+   chmod +x ~/.vnc/xstartup
+   sudo chown -R ubuntu:ubuntu ~/.vnc
+   ```
 
 2. Start a VNC server on your VM
 
-```bash
-tightvncserver -nolisten tcp -localhost :1
-```
+   ```remote
+   tightvncserver -nolisten tcp -localhost :1
+   ```
 
-This starts a TightVNC server on the node. We also tell it to only listen to TCP
-connections, and only those coming from localhost (this means other computers in
-the same private network can't connect to the VNC server by default).
+   This starts a TightVNC server on the node. We also tell it to only listen to
+   TCP connections, and only those coming from localhost (this means other
+   computers in the same private network can't connect to the VNC server by
+   default).
 
 3. On your computer, point your VNC client of choice to `localhost:5901` to
    connect through the SSH port forward that you set up in step 2. You can for
@@ -229,40 +238,51 @@ the same private network can't connect to the VNC server by default).
 desktop in a secure environment which do not require the user to have server
 administrator skills.
 
-### 6. Use a Jupyter notebook to train an AI model, and monitor progress graphically
+### 6. Train an AI model in Jupyter and monitor progress graphically
 
 1. Connect to your VM and start up the demo Jupyter notebook
 
-```bash
-ssh jupyter-demo
-cd tutorials
-source .venv/bin/activate
-MONAI_DATA_DIRECTORY=/home/ubuntu/tutorials/Data jupyter lab --NotebookApp.token='' --NotebookApp.password='' --NotebookApp.open_browser=False --NotebookApp.ip='127.0.0.1' --no-browser
-```
+   ```remote
+   cd tutorials
+   source .venv/bin/activate
+   MONAI_DATA_DIRECTORY=/home/ubuntu/tutorials/Data jupyter lab \
+     --NotebookApp.token='' \
+     --NotebookApp.password='' \
+     --NotebookApp.open_browser=False \
+     --NotebookApp.ip='127.0.0.1' \
+     --no-browser
+   ```
 
-Note that we are setting the MONAI_DATA_DIRECTORY to the Data directory in the tutorials repository, the location where we will store the dataset.
+   Note that we are setting the MONAI_DATA_DIRECTORY to the Data directory in
+   the tutorials repository, the location where we will store the dataset.
 
-Your Jupyter notebook is now ready to use, as long as you have this SSH
-connection and its port forwards open.
+   Your Jupyter notebook is now ready to use, as long as you have this SSH
+   connection and its port forwards open.
 
-To follow the [Spleen segmentation tutorial](https://github.com/Project-MONAI/tutorials/blob/main/2d_segmentation/spleen_segmentation_tutorial.ipynb), we need to first download the dataset on our local computer:
+   To follow the
+   [Spleen segmentation tutorial](https://github.com/Project-MONAI/tutorials/blob/main/2d_segmentation/spleen_segmentation_tutorial.ipynb),
+   we need to first download the dataset on our local computer:
 
-```bash
-wget https://msd-for-monai.s3-us-west-2.amazonaws.com/Task09_Spleen.tar
-```
+   ```local
+   wget https://msd-for-monai.s3-us-west-2.amazonaws.com/Task09_Spleen.tar
+   ```
 
-Then we can upload the dataset to the VM:
+   Then we can upload the dataset to the VM:
 
-```bash
-scp Task09_Spleen.tar jupyter-demo:/home/ubuntu/tutorials/Data/
-ssh jupyter-demo
-cd tutorials/Data && tar -xvf Task09_Spleen.tar && rm Task09_Spleen.tar
-```
+   ```local
+   scp Task09_Spleen.tar jupyter-demo:/home/ubuntu/tutorials/Data/
+   ```
+
+   And extract it on the VM:
+
+   ```remote
+   cd tutorials/Data && tar -xvf Task09_Spleen.tar && rm Task09_Spleen.tar
+   ```
 
 2. Using a web browser on your computer, visit
    [http://127.0.0.1:8888](http://127.0.0.1:8888) to connect to your Jupyter
-   notebook through the SSH port forward that you set up in step 2. Without it, you
-   will not be able to connect.
+   notebook through the SSH port forward that you set up in step 2. Without it,
+   you will not be able to connect.
 3. Choose one of the following notebooks:
    - [spleen_segmentation_3d.ipynb](http://127.0.0.1:8888/lab/tree/3d_segmentation/spleen_segmentation_3d.ipynb)
    - [spleen_segmentation_3d_lightning.ipynb](http://127.0.0.1:8888/lab/tree/3d_segmentation/spleen_segmentation_3d_lightning.ipynb)
@@ -271,29 +291,47 @@ cd tutorials/Data && tar -xvf Task09_Spleen.tar && rm Task09_Spleen.tar
    are now training AI models on GPU enabled IaaS compute resources in a secure
    environment on the AIDA Data Hub Data Science Platform.
 5. Optional: Some of the notebooks create a TensorBoard interface, which can be
-   used to monitor training progress graphically. You can either visualize it in the Jupyter notebook or in a separate browser tab by visiting [http://127.0.0.1:6006](http://127.0.0.1:6006).
+   used to monitor training progress graphically. You can either visualize it
+   in the Jupyter notebook or in a separate browser tab by visiting
+   [http://127.0.0.1:6006](http://127.0.0.1:6006).
 
 ## MONet Bundle: Segmentation with MONAI and nnU-Net
 
-The current state-of-the-art in biomedical image segmentation is **nnU-Net** [1]. As a self-configuring deep learning framework, it has been widely adopted across numerous winning challenge entries and serves as the _de facto_ standard benchmark for medical image segmentation tasks.
+The current state-of-the-art in biomedical image segmentation is **nnU-Net**
+[1]. As a self-configuring deep learning framework, it has been widely adopted
+across numerous winning challenge entries and serves as the _de facto_ standard
+benchmark for medical image segmentation tasks.
 
-Complementing this is **MONAI**, a comprehensive medical image analysis framework. MONAI provides an extensive suite of tools for building and training AI models across various tasks—not just segmentation, but also classification, detection, and more.
-Crucially, it introduces the concept of the **MONAI Bundle**, which streamlines packaging models and deploying them for inference, active learning, and federated learning.
+Complementing this is **MONAI**, a comprehensive medical image analysis
+framework. MONAI provides an extensive suite of tools for building and training
+AI models across various tasks—not just segmentation, but also classification,
+detection, and more.
+Crucially, it introduces the concept of the **MONAI Bundle**, which streamlines
+packaging models and deploying them for inference, active learning, and
+federated learning.
 
-The **MONet Bundle** bridges these two powerful tools by expanding the MONAI Bundle concept to include nnU-Net. This integration combines the cutting-edge segmentation performance of nnU-Net with the flexibility and adaptability of MONAI, allowing users to leverage nnU-Net as a backend for both robust training and streamlined inference.
+The **MONet Bundle** bridges these two powerful tools by expanding the MONAI
+Bundle concept to include nnU-Net. This integration combines the cutting-edge
+segmentation performance of nnU-Net with the flexibility and adaptability of
+MONAI, allowing users to leverage nnU-Net as a backend for both robust training
+and streamlined inference.
 
 **Learn More & Applications:**
 
-- **Documentation & Code:** Explore the [MONet Bundle GitHub Repository](https://github.com/minnelab/MONet-Bundle).
-- **Real-World Application:** Read about the application of the [MONet Bundle for Federated Learning in PET-CT Lymphoma and Brain Tumor Segmentation](https://link.springer.com/chapter/10.1007/978-3-032-05663-4_10) [2].
+- **Documentation & Code:** Explore the
+  [MONet Bundle GitHub Repository](https://github.com/minnelab/MONet-Bundle).
+- **Real-World Application:** Read about the application of the
+  [MONet Bundle for federated PET-CT segmentation](https://link.springer.com/chapter/10.1007/978-3-032-05663-4_10)
+  [2].
 
 ---
 
 ### Example: Spleen Segmentation with MONet Bundle
 
-To get started with an example using the MONet Bundle, download and extract the bundle using the following terminal commands:
+To get started with an example using the MONet Bundle, download and extract the
+bundle using the following terminal commands:
 
-```bash
+```remote
 # Download the MONet Bundle
 wget https://raw.githubusercontent.com/minnelab/MONet-Bundle/main/MONetBundle.zip
 
@@ -301,10 +339,18 @@ wget https://raw.githubusercontent.com/minnelab/MONet-Bundle/main/MONetBundle.zi
 unzip MONetBundle.zip
 ```
 
-Once extracted, follow along with the [06_monet_bundle.ipynb](https://github.com/minnelab/MONet-Bundle/blob/main/06_monet_bundle.ipynb) tutorial notebook.
+Once extracted, follow along with the
+[06_monet_bundle.ipynb](https://github.com/minnelab/MONet-Bundle/blob/main/06_monet_bundle.ipynb)
+tutorial notebook.
 
 ## References
 
-[1] Isensee, F., Jaeger, P. F., Kohl, S. A., Petersen, J., & Maier-Hein, K. H. (2021). nnU-Net: a self-configuring method for deep learning-based biomedical image segmentation. Nature Methods, 18(2), 203-211.
+[1] Isensee, F., Jaeger, P. F., Kohl, S. A., Petersen, J., & Maier-Hein, K. H.
+(2021). nnU-Net: a self-configuring method for deep learning-based biomedical
+image segmentation. Nature Methods, 18(2), 203-211.
 
-[2] Bendazzoli, S. et al. (2026). MONet-FL: Extending nnU-Net with MONAI for Clinical Federated Learning. In: Zamzmi, G., et al. Bridging Regulatory Science and Medical Imaging Evaluation; and Distributed, Collaborative, and Federated Learning. MICCAI 2025. Lecture Notes in Computer Science, vol 16135. Springer, Cham.
+[2] Bendazzoli, S. et al. (2026). MONet-FL: Extending nnU-Net with MONAI for
+Clinical Federated Learning. In: Zamzmi, G., et al. Bridging Regulatory Science
+and Medical Imaging Evaluation; and Distributed, Collaborative, and Federated
+Learning. MICCAI 2025. Lecture Notes in Computer Science, vol 16135. Springer,
+Cham.
