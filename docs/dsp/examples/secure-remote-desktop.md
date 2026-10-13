@@ -30,30 +30,9 @@ browsers, RDP, and environment variables.
 To install Docker Engine, including Compose, follow the instructions available at
 [Docker Engine installation](https://docs.docker.com/engine/install/).
 
-Additionally, DSP secure environments block connections by default.
-However, DSP provides an inspecting http proxy that enables downloading software
-and security updates from public repositories that are trusted by AIDA Data Hub.
-DSP data science images are preconfigured to make transparent use of this proxy,
-as demonstrated in this next step.
-
-To configure the VM to use the DSP proxy, run the following command:
-
-```remote
-curl http://10.253.254.250/ | bash
-```
-
-If you want to inspect the script, you can run:
-
-```remote
-curl http://10.253.254.250/ > dspconfigscript
-cat dspconfigscript
-```
-
-and then run:
-
-```remote
-bash dspconfigscript
-```
+On a DSP VM, outbound traffic is restricted. Configure the inspecting HTTP
+proxy first so Compose can pull images and packages from trusted repositories.
+See [Basic setup for new VMs](../getting-started/basic-setup-network.md).
 
 ## Instructions
 
