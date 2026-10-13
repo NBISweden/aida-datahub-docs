@@ -150,18 +150,24 @@ One `test.env` example is available at [https://github.com/NBISweden/aida-datahu
 To start from it, download it to your VM and rename it to `.env`:
 
 ```bash
-wget https://raw.githubusercontent.com/NBISweden/aida-datahub-docs/main/docs/dsp/examples/secure-remote-desktop/test.env -O .env
+ENV_URL=https://raw.githubusercontent.com/NBISweden/aida-datahub-docs/main
+wget "$ENV_URL/docs/dsp/examples/secure-remote-desktop/test.env" -O .env
 ```
 
 #### Full variable reference (default stack)
 
 Variables that should be changed by users:
 
-- `POSTGRES_DB`: Should be changed by users to set the Guacamole JDBC database name (default: `guacamole_db`)
-- `POSTGRES_USER`: Should be changed by users to specify the database user Guacamole connects as (default: `guacamole_user`)
-- `POSTGRES_PASSWORD`: Should be changed by users to specify the database password (default: `guacamole_password`)
-- `GUACAMOLE_ADMIN_USERNAME`: Should be changed by users to set the Guacamole database admin username (default: `guacadmin`)
-- `GUACAMOLE_ADMIN_PASSWORD`: Should be changed by users to set the Guacamole database admin password (default: `guacadmin`)
+- `POSTGRES_DB`: Should be changed by users to set the Guacamole JDBC
+  database name (default: `guacamole_db`)
+- `POSTGRES_USER`: Should be changed by users to specify the database user
+  Guacamole connects as (default: `guacamole_user`)
+- `POSTGRES_PASSWORD`: Should be changed by users to specify the database
+  password (default: `guacamole_password`)
+- `GUACAMOLE_ADMIN_USERNAME`: Should be changed by users to set the
+  Guacamole database admin username (default: `guacadmin`)
+- `GUACAMOLE_ADMIN_PASSWORD`: Should be changed by users to set the
+  Guacamole database admin password (default: `guacadmin`)
 
 Other variables:
 
