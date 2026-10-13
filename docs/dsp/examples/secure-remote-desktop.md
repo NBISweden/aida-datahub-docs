@@ -113,10 +113,10 @@ That image is an Ubuntu desktop with XRDP, SSH/SFTP, and tools such as
 
 Any other container image can be used instead, as long as it exposes:
 
-| Protocol | Container port | Role |
-| --- | --- | --- |
-| **RDP** | `3389` | Desktop session via guacd / Guacamole |
-| **SSH** | `2022` | SFTP for Guacamole drag-and-drop file transfer |
+| Protocol | Container port | Role                                           |
+| -------- | -------------- | ---------------------------------------------- |
+| **RDP**  | `3389`         | Desktop session via guacd / Guacamole          |
+| **SSH**  | `2022`         | SFTP for Guacamole drag-and-drop file transfer |
 
 The Guacamole connection created by `add_connection.sh` expects those ports
 on the Compose service hostname `remote-desktop`, with desktop login
@@ -154,7 +154,9 @@ wget https://raw.githubusercontent.com/NBISweden/aida-datahub-docs/main/docs/dsp
 ```
 
 #### Full variable reference (default stack)
+
 Variables that should be changed by users:
+
 - `POSTGRES_DB`: Should be changed by users to set the Guacamole JDBC database name (default: `guacamole_db`)
 - `POSTGRES_USER`: Should be changed by users to specify the database user Guacamole connects as (default: `guacamole_user`)
 - `POSTGRES_PASSWORD`: Should be changed by users to specify the database password (default: `guacamole_password`)
@@ -162,6 +164,7 @@ Variables that should be changed by users:
 - `GUACAMOLE_ADMIN_PASSWORD`: Should be changed by users to set the Guacamole database admin password (default: `guacadmin`)
 
 Other variables:
+
 - `POSTGRES_PORT`: Host port for PostgreSQL (default `5432`)
 - `GUACD_PORT`: Host port for guacd (default `4822`)
 - `GUACAMOLE_HTTP_PORT`: Host port for Guacamole (default `8081`)
