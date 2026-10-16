@@ -3,6 +3,13 @@
 This tutorial walks through the deployment of a local **Secure Remote Desktop (SRD)**
 stack using Docker Compose. The stack is defined under `https://github.com/NBISweden/aida-datahub-docs/tree/main/docs/dsp/examples/secure-remote-desktop/`.
 
+To access the stack, you can clone the repository and run the stack locally.
+
+```bash
+git clone https://github.com/NBISweden/aida-datahub-docs.git
+cd aida-datahub-docs/docs/dsp/examples/secure-remote-desktop
+```
+
 By default the stack uses **Guacamole database authentication**. Admin
 credentials are set in `.env` as `GUACAMOLE_ADMIN_USERNAME` /
 `GUACAMOLE_ADMIN_PASSWORD` (defaults `guacadmin` / `guacadmin`). OpenID Connect
@@ -131,13 +138,14 @@ Guacamole and SFTP still reach the desktop.
 Credentials and URLs live in `.env`. Change them **before the first
 `docker compose up`** when possible.
 
-One `test.env` example is available at [https://github.com/NBISweden/aida-datahub-docs/blob/main/docs/dsp/examples/secure-remote-desktop/test.env](https://github.com/NBISweden/aida-datahub-docs/blob/main/docs/dsp/examples/secure-remote-desktop/test.env).
-
-To start from it, download it to your VM and rename it to `.env`:
-
+One `test.env` example is available in the stack directory.
 ```bash
-ENV_URL=https://raw.githubusercontent.com/NBISweden/aida-datahub-docs/main
-wget "$ENV_URL/docs/dsp/examples/secure-remote-desktop/test.env" -O .env
+cat test.env
+```
+
+Then rename it to `.env`:
+```bash
+mv test.env .env
 ```
 
 #### Full variable reference (default stack)
