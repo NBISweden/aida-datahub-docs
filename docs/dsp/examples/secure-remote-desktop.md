@@ -99,7 +99,7 @@ opens over RDP. This example uses:
 ```text
 # Example only:
 maiacloudai/ubuntu-rdp:1.0
-# Use this image as a starting point or reference. You are responsible for 
+# Use this image as a starting point or reference. You are responsible for
 # updating, maintaining, and securing any desktop image you use.
 # Or substitute your own compatible image as needed.
 ```
@@ -143,11 +143,13 @@ Credentials and URLs live in `.env`. Change them **before the first
 `docker compose up`** when possible.
 
 One `test.env` example is available in the stack directory.
+
 ```bash
 cat test.env
 ```
 
 Then rename it to `.env`:
+
 ```bash
 mv test.env .env
 ```
