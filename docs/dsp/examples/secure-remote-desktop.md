@@ -490,9 +490,31 @@ included nginx proxy and the certificate you already have.
 
 On AIDA DSP, follow
 [Exposing HTTPS services](../getting-started/exposing-https-services.md)
-first (domain, CNAME or namespaced name, floating IP, security group from
-`10.253.254.248/29`, then the cert and key from support). This recipe uses
-those files on the VM.
+first (domain, CNAME or namespaced name, floating IP, then the cert and key
+from support). Public traffic reaches your VM only through the DSP edge
+(`10.253.254.248/29`); OpenStack security groups must allow that path. See
+also [VM access](../getting-started/vm-access.md) for floating IPs and
+security groups in Horizon.
+
+### OpenStack: floating IP and security groups
+
+In OpenStack Horizon (DSP project):
+
+1. **Associate a floating IP** with the VM that runs this stack
+   (Instances → Actions → Associate Floating IP). Use that address when you
+   contact support for the domain and certificate.
+2. **Create or edit a security group** that allows the TLS proxy ports from
+   the DSP edge only:
+   - Ingress **TCP 443** (HTTPS) from `10.253.254.248/29`
+   - Ingress **TCP 80** (HTTP → HTTPS redirect) from `10.253.254.248/29`
+3. **Attach** that security group to the instance
+   (Instances → Actions → Edit Security Groups).
+4. **Do not** open Postgres (`5432`), guacd (`4822`), Guacamole’s plain HTTP
+   port (`8081`), or direct RDP/SSH (`3389` / `2022`) to the floating IP or
+   to `0.0.0.0/0`. Keep those for localhost / internal use only.
+
+After support has mapped the domain to the floating IP and issued certificates,
+continue with the steps below.
 
 ### 1. Place the certificate files
 
@@ -543,10 +565,6 @@ nginx listens on **443** (HTTPS) and redirects **80** to HTTPS. It proxies:
 Public URL:
 
 - Guacamole: `https://your.domain.example/remote-desktops/`
-
-On DSP, allow HTTPS (443) from `10.253.254.248/29` in the VM security group.
-Do not publish Postgres (`5432`), guacd (`4822`), or direct RDP/SSH on the
-floating IP for public access.
 
 Without `--profile tls`, the stack still runs on HTTP `8081` as in the
 recipe above. Local HTTP on `GUACAMOLE_HTTP_PORT` remains available even when
