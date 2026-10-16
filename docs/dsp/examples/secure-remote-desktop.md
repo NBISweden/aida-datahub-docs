@@ -97,7 +97,11 @@ The Compose service `remote-desktop` runs the GUI workspace that Guacamole
 opens over RDP. This example uses:
 
 ```text
+# Example only:
 maiacloudai/ubuntu-rdp:1.0
+# Use this image as a starting point or reference. You are responsible for 
+# updating, maintaining, and securing any desktop image you use.
+# Or substitute your own compatible image as needed.
 ```
 
 That image is an Ubuntu desktop with XRDP, SSH/SFTP, and tools such as
