@@ -530,20 +530,19 @@ In OpenStack Horizon (DSP project):
 After support has mapped the domain to the floating IP and issued certificates,
 continue with the steps below.
 
-### 1. Place the certificate files
+### 1. Install TLS materials for nginx
 
-Copy the certificate chain and private key into `certs/` in this folder,
-using these names:
+nginx (Compose profile `tls`) mounts `./certs` read-only. Put the support-issued
+files there as `fullchain.pem` (leaf + intermediates) and `privkey.pem`:
 
 ```bash
-cp /path/to/fullchain.pem certs/fullchain.pem
-cp /path/to/privkey.pem   certs/privkey.pem
-chmod 600 certs/privkey.pem
+mkdir -p certs
+install -m 644 /path/to/your-fullchain.pem certs/fullchain.pem
+install -m 600 /path/to/your-privkey.pem   certs/privkey.pem
 ```
 
-If your files have other names (for example `cert.crt` and `cert.key`), copy
-or symlink them to `fullchain.pem` and `privkey.pem`. `fullchain.pem` must
-include the leaf certificate and any intermediates.
+Rename or symlink if support gave you other filenames (e.g. `cert.crt` /
+`cert.key`); the paths above are what `nginx.conf` expects.
 
 ### 2. Point the stack at the public hostname
 
