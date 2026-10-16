@@ -21,6 +21,7 @@ In this example you will:
    profile).
 6. Add Guacamole connections and users with the helper scripts in the
    `secure-remote-desktop/` directory.
+7. Optionally serve Guacamole on a public domain with TLS (nginx profile).
 
 ## Prerequisites
 
@@ -64,6 +65,12 @@ See [Basic setup for new VMs](../getting-started/basic-setup-network.md).
 - **keycloak-init**: One-shot setup: creates realm `srd`, confidential client,
   groups mapper, and a demo user
   (defaults `admin@srd.dsp.se` / `admin`).
+
+**Optional (Compose profile `tls`):**
+
+- **proxy**: nginx TLS terminator on ports `80` / `443`. Proxies
+  `/remote-desktops/` to Guacamole (including WebSockets). Certificates live
+  in `certs/`.
 
 **End-to-end flow (default):**
 
@@ -162,6 +169,8 @@ Other variables:
 - `REMOTE_DESKTOP_SSH_PORT`: Host port for SSH/SFTP used by Guacamole file
   transfer (default `2022`)
 - `REMOTE_DESKTOP_TZ`: Timezone inside the remote desktop (default `Etc/UTC`)
+- `SERVER_NODENAME`: Public FQDN for the optional TLS nginx proxy (profile
+  `tls`; used in `Host` / `X-Forwarded-*` headers)
 
 #### Default public URL (`localhost`)
 
@@ -471,3 +480,75 @@ http_proxy= https_proxy= HTTP_PROXY= HTTPS_PROXY= all_proxy= ALL_PROXY= \
 http_proxy= https_proxy= HTTP_PROXY= HTTPS_PROXY= all_proxy= ALL_PROXY= \
   USERNAME=user@example.com ./link_connection.sh
 ```
+
+## Serve Guacamole on a domain with TLS
+
+Guacamole itself speaks HTTP on port `8080` inside the stack (published as
+`GUACAMOLE_HTTP_PORT`, default `8081`). To serve it as
+`https://your.domain/...`, terminate TLS in front of the stack with the
+included nginx proxy and the certificate you already have.
+
+On AIDA DSP, follow
+[Exposing HTTPS services](../getting-started/exposing-https-services.md)
+first (domain, CNAME or namespaced name, floating IP, security group from
+`10.253.254.248/29`, then the cert and key from support). This recipe uses
+those files on the VM.
+
+### 1. Place the certificate files
+
+Copy the certificate chain and private key into `certs/` in this folder,
+using these names:
+
+```bash
+cp /path/to/fullchain.pem certs/fullchain.pem
+cp /path/to/privkey.pem   certs/privkey.pem
+chmod 600 certs/privkey.pem
+```
+
+If your files have other names (for example `cert.crt` and `cert.key`), copy
+or symlink them to `fullchain.pem` and `privkey.pem`. `fullchain.pem` must
+include the leaf certificate and any intermediates.
+
+### 2. Point the stack at the public hostname
+
+In `.env`, set `SERVER_NODENAME` to the FQDN (not `localhost`):
+
+```env
+SERVER_NODENAME=your.domain.example
+```
+
+If you use OpenID Connect, also set the redirect URI to HTTPS:
+
+```env
+OPENID_REDIRECT_URI=https://your.domain.example/remote-desktops/
+```
+
+and recreate Guacamole after editing:
+
+```bash
+docker compose up -d --force-recreate guacamole
+```
+
+### 3. Start the stack with the TLS proxy
+
+```bash
+docker compose --profile tls up -d
+```
+
+nginx listens on **443** (HTTPS) and redirects **80** to HTTPS. It proxies:
+
+- `/remote-desktops/` → Guacamole (`guacamole:8080`), with WebSocket upgrade
+  headers required for remote desktop sessions
+
+Public URL:
+
+- Guacamole: `https://your.domain.example/remote-desktops/`
+
+On DSP, allow HTTPS (443) from `10.253.254.248/29` in the VM security group.
+Do not publish Postgres (`5432`), guacd (`4822`), or direct RDP/SSH on the
+floating IP for public access.
+
+Without `--profile tls`, the stack still runs on HTTP `8081` as in the
+recipe above. Local HTTP on `GUACAMOLE_HTTP_PORT` remains available even when
+the TLS profile is enabled (useful for admin scripts on the VM); prefer the
+HTTPS URL for browser access from outside.

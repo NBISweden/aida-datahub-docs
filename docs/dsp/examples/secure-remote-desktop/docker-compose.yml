@@ -198,6 +198,31 @@ services:
         condition: service_started
     restart: unless-stopped
 
+  # TLS reverse proxy. Start with: docker compose --profile tls up -d
+  # Place fullchain.pem and privkey.pem in ./certs/
+  proxy:
+    image: nginx:1.27-alpine
+    profiles: ["tls"]
+    container_name: srd-proxy
+    depends_on:
+      guacamole:
+        condition: service_started
+    environment:
+      SERVER_NODENAME: ${SERVER_NODENAME:-localhost}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf.template:ro
+      - ./certs:/etc/nginx/certs:ro
+    entrypoint:
+      - /bin/sh
+      - -c
+      - |
+        envsubst '$$SERVER_NODENAME' < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf
+        exec nginx -g 'daemon off;'
+    restart: unless-stopped
+
   # Ensure the home volume is owned by ubuntu (uid/gid 1000) with mode 700.
   remote-desktop-home-init:
     image: alpine:latest
