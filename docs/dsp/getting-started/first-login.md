@@ -17,7 +17,8 @@ If you have not already registered with Life Science login, please follow [this 
 Once you have authenticated properly, on the first time you return, you will
 not be let into DSP as your account needs to be assigned membership details.
 Instead you will receive the message "Login failed: You are not authorized for
-any projects or domains."
+any projects or domains". Once you have logged in, your account will receive
+the appropriate permissions within a few minutes.
 
 ![DSP not authorized](imgs/dsp-first-login/dsp-login-not-authorized.png)
 
