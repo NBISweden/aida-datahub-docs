@@ -22,5 +22,6 @@ nav:
           - GPU IaaS with custom software and data: dsp/examples/gpu-iaas.md
           - Remote Desktop Access: dsp/examples/secure-remote-desktop.md
           - EHRbase: dsp/examples/ehrbase/README.md
+          - Local LLM: dsp/examples/LLM/README.md
   - Contact: dsp/contact.md
   - Service status: https://status.aida.scilifelab.se/
